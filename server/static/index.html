@@ -84,6 +84,22 @@
   .cv-body .cv-sub { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
   .cv-body audio { width: 100%; height: 32px; }
   .cv-reset { margin-top: 10px; background: none; border: none; color: var(--muted); font-size: 11.5px; text-decoration: underline; cursor: pointer; padding: 0; }
+
+  .reqlog-wrap { margin-top: 24px; max-width: 560px; }
+  .reqlog-label { font-size: 11px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .02em; margin-bottom: 8px; }
+  .reqlog { background: var(--code-bg); border-radius: 10px; padding: 4px 0; font-family: ui-monospace,"SF Mono",Consolas,monospace; font-size: 11.5px; max-height: 220px; overflow-y: auto; }
+  .reqlog-empty { color: var(--faint); padding: 10px 14px; margin: 0; }
+  .req-row { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-bottom: 1px solid rgba(255,255,255,.06); color: var(--code-ink); }
+  .req-row:last-child { border-bottom: none; }
+  .req-method { flex-shrink: 0; width: 34px; font-weight: 700; }
+  .req-method.get { color: var(--code-blue); }
+  .req-method.post { color: var(--code-amber); }
+  .req-path { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .85; }
+  .req-status { flex-shrink: 0; font-weight: 700; }
+  .req-status.pending { color: var(--code-amber); }
+  .req-status.ok { color: var(--green); }
+  .req-status.err { color: var(--red); }
+  .req-ms { flex-shrink: 0; color: var(--faint); width: 46px; text-align: right; }
 </style>
 </head>
 <body>
@@ -118,6 +134,11 @@
         <div class="step" data-s="3"><span class="dot">3</span>오디오 파일(.m4a) 추출 완료</div>
       </div>
       <div id="result"></div>
+    </div>
+
+    <div class="reqlog-wrap">
+      <div class="reqlog-label">API 요청 로그 — 지금 뭐가 오가는지</div>
+      <div class="reqlog" id="reqlog"><p class="reqlog-empty">아직 없음</p></div>
     </div>
   </div>
 </div>
@@ -168,6 +189,46 @@ function mdToHtml(md) {
   return html;
 }
 
+// API 요청 로그 — 지금 뭐가 오가는지 devtools 안 열어도 화면에서 보이게 한다.
+let reqSeq = 0;
+function logRequest(method, path) {
+  const log = document.getElementById("reqlog");
+  log.querySelector(".reqlog-empty")?.remove();
+  const id = `req-${++reqSeq}`;
+  const row = document.createElement("div");
+  row.className = "req-row";
+  row.id = id;
+  row.innerHTML = `<span class="req-method ${method.toLowerCase()}">${method}</span>
+    <span class="req-path">${path}</span>
+    <span class="req-status pending">진행중</span>
+    <span class="req-ms"></span>`;
+  log.prepend(row);
+  const t0 = performance.now();
+  return {
+    ok(note) {
+      const ms = Math.round(performance.now() - t0);
+      row.querySelector(".req-status").className = "req-status ok";
+      row.querySelector(".req-status").textContent = note || "200 OK";
+      row.querySelector(".req-ms").textContent = `${ms}ms`;
+    },
+    err(note) {
+      const ms = Math.round(performance.now() - t0);
+      row.querySelector(".req-status").className = "req-status err";
+      row.querySelector(".req-status").textContent = note || "실패";
+      row.querySelector(".req-ms").textContent = `${ms}ms`;
+    },
+  };
+}
+// <audio src="..."> 로딩은 fetch()가 아니라 브라우저가 알아서 GET을 보내므로
+// 직접 가로챌 수 없다. loadstart(요청 시작)·canplay(응답 받아 재생 준비됨)·
+// error 이벤트로 대신 감지해서 로그에 남긴다.
+function wireAudioLog(audio, path) {
+  let log = null;
+  audio.addEventListener("loadstart", () => { log = logRequest("GET", path); });
+  audio.addEventListener("canplay", () => log?.ok("재생 준비됨"));
+  audio.addEventListener("error", () => log?.err("로드 실패"));
+}
+
 // 지금 작업 중인 영상 — localStorage에 저장해서 새로고침해도, 나중에
 // 2단계(전사)·3단계(청킹)를 만들어도 같은 영상 기준으로 이어서 볼 수 있게 한다.
 const CV_KEY = "digestube_current_video";
@@ -189,6 +250,7 @@ function renderCurrentVideo(data) {
     <div class="cv-sub">${data.channel ?? ""} · ${data.duration_sec ? Math.round(data.duration_sec) + "초" : ""} · ${data.audio_file}</div>
     <audio controls preload="none" src="${audioUrl}"></audio>`;
   box.style.display = "block";
+  wireAudioLog(body.querySelector("audio"), `/api/audio/${data.id}`);
 }
 document.getElementById("cvReset").onclick = () => {
   localStorage.removeItem(CV_KEY);
@@ -206,7 +268,10 @@ async function loadNotes() {
 }
 async function selectNote(id) {
   document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.id === id));
-  const { content } = await (await fetch(`${API}/api/notes/${id}`)).json();
+  const log = logRequest("GET", `/api/notes/${id}`);
+  const r = await fetch(`${API}/api/notes/${id}`);
+  const { content } = await r.json();
+  log.ok(`${r.status}`);
   document.getElementById("noteBody").innerHTML = mdToHtml(content);
 }
 loadNotes();
@@ -227,12 +292,14 @@ document.getElementById("go").onclick = async () => {
   out.innerHTML = "";
   try {
     setStep(2, "active");
+    const log = logRequest("POST", "/api/extract");
     const r = await fetch(`${API}/api/extract`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url }),
     });
     const data = await r.json();
-    if (!r.ok) throw new Error(data.detail || "실패");
+    if (!r.ok) { log.err(`${r.status}`); throw new Error(data.detail || "실패"); }
+    log.ok(`${r.status} · yt-dlp 완료`);
     setStep(3, "done"); steps[2]?.classList.add("done");
     saveCurrentVideo(data);
     const audioUrl = `${API}/api/audio/${data.id}`;
@@ -245,6 +312,7 @@ document.getElementById("go").onclick = async () => {
     <audio controls preload="none" src="${audioUrl}"></audio>
     <a class="dl" href="${audioUrl}" download="${data.audio_file}">오디오 파일 다운로드</a>
     </div>`;
+    wireAudioLog(out.querySelector("audio"), `/api/audio/${data.id}`);
   } catch (e) {
     out.innerHTML = `<div class="result err">${e.message}</div>`;
   } finally {
