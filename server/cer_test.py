@@ -50,3 +50,10 @@ if __name__ == "__main__":
     print(f"걸린 시간: {elapsed:.1f}초 (영상 길이 대비 {821/elapsed:.1f}배속)")
     print(f"\n정답 앞부분: {ref_text[:200]}")
     print(f"\n인식 앞부분: {hyp_text[:200]}")
+
+    # 유튜브 자동자막도 같은 영상·같은 정답으로 재측정한다. 예전 10.10%는 다른
+    # 영상("컴공")에서 잰 숫자라 이번 라운드 후보들과 같은 조건이 아니었다.
+    auto_text = vtt_to_text("work/fGNGKCz60NE.auto.ko.vtt")
+    auto_score = cer(ref_text, auto_text)
+    print(f"\n=== 유튜브 자동자막(같은 영상 재측정) ===")
+    print(f"CER: {auto_score*100:.2f}%")
