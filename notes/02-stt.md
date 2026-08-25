@@ -6,54 +6,40 @@
 
 ## 소거 흐름
 
+후보 20개를 카테고리별로 모아 단계마다 걸러냈다. 취소선이 그 단계에서 빠진 것이다.
+
 ```funnel
-20|전체 검토|카테고리별로 나열. 아래 명단에 전원 이름이 있다
-17|자격 있는 후보|제외: Kakao(가격 비공개)·Parakeet·Canary(한국어 미지원)
-14|중복 제거|합침: Whisper 원본·faster-whisper·whisper.cpp → mlx-whisper
-  ↳ 넷 다 OpenAI가 만든 같은 Whisper 가중치를 쓴다. 실행 방식(애플칩·NVIDIA GPU·CPU)만 다르고 정확도는 같아서, 우리 맥에 맞는 mlx-whisper 하나로 대표시켰다.
-5|1차 테스트 대상|보류: 계정 미생성 7개 · Qwen3-ASR · Meta MMS
-  ↳ 1차로 남은 것들은 전부 새 계정 없이 바로 시작할 수 있다는 공통점이 있다. 보류는 탈락이 아니라 순서를 미룬 것이다.
-3|측정 완료|결과: mlx-whisper 4.14% · Groq 4.21% · 유튜브자막 6.34%
-  ↳ 세 숫자 모두 무효다. 정답 자막을 사람이 검수하는 3단계(`03-cer-videos.md`)를 건너뛰고 쟀는데, 그 자막에 앞 30초가 통째로 빠져 있었다. 검수 후 다시 측정한다.
+20|전체 검토
+17|자격 있는 후보|제외
+  - Kakao|가격이 영업 문의로만 나옴
+  - Parakeet|다국어판도 유럽 25개 언어까지, 한국어 없음
+  - Canary|벤치마크가 전부 영어라 한국어 지원 확인 불가
+14|중복 제거|합침
+  ↳ 넷 다 OpenAI의 같은 Whisper 가중치를 쓴다. 실행 방식(애플칩·NVIDIA GPU·CPU)만 다르고 정확도는 같아서, 우리 맥에 맞는 mlx-whisper 하나로 대표시켰다.
+  - Whisper 원본|PyTorch 기본 구현체 → mlx-whisper
+  - faster-whisper|NVIDIA GPU용 → mlx-whisper
+  - whisper.cpp|CPU용 C++ 포팅 → mlx-whisper
+5|1차 테스트 대상|보류
+  ↳ 보류는 탈락이 아니다. 남은 5개는 전부 새 계정 없이 바로 시작할 수 있다는 공통점이 있다.
+  - OpenAI Whisper API|계정 미생성
+  - Google|계정 미생성
+  - Azure|계정 미생성
+  - AWS Transcribe|계정 미생성
+  - Deepgram|계정 미생성
+  - AssemblyAI|계정 미생성, 시간당 $0.15~0.21
+  - Speechmatics|계정 미생성, 시간당 약 $0.13
+  - Qwen3-ASR|2026년 1월 출시라 검증 사례가 아직 적음
+  - Meta MMS|1,162개 언어를 얕게 지원, 한국어 전용인 우리엔 불리할 것으로 봄
+3|측정 완료|결과
+  ↳ 세 숫자 모두 무효다. 정답 자막 검수(`03-cer-videos.md` 3단계)를 건너뛰고 쟀는데, 그 자막에 앞 30초가 통째로 빠져 있었다.
+  - mlx-whisper|Apple Silicon 로컬. 4.14%, 5.4배속
+  - Groq|LPU 칩으로 Whisper 호스팅. 4.21%, 167배속, 시간당 55원
+  - 유튜브 자동자막|이미 딸려있음, 비용 0. 6.34%
+  - 리턴제로|한국어 파인튜닝(VITO). 셀프 가입, 10시간 무료 — 측정 대기
+  - Naver Clova Speech|한국어 특화. 무료 크레딧 확인 필요 — 측정 대기
 ```
 
-## 후보 20개 — 누가 어떻게 됐나
-
-카테고리를 먼저 정하고 각 칸을 채웠다. 취소선은 이번 라운드에서 빠진 것이고, 색이 들어간 줄은 살아있는 것이다.
-
-```roster
-# 로컬 오픈소스
-mlx-whisper|done|Apple Silicon에 맞춘 Whisper. CER 4.14%, 5.4배속
-Whisper 원본|merge|OpenAI 기본 구현체(PyTorch). mlx-whisper와 같은 가중치라 대표 하나로 합침
-faster-whisper|merge|NVIDIA GPU용으로 다시 짠 것. 같은 가중치
-whisper.cpp|merge|CPU에서도 돌아가게 C++로 포팅. 같은 가중치
-Qwen3-ASR|defer|알리바바, 한국어 포함 30개 언어. 2026년 1월 출시라 검증 사례가 아직 적음
-Meta MMS|defer|1,162개 언어 지원. 여러 언어를 얕게 하는 쪽이라 한국어 전용인 우리에겐 불리할 것으로 봄
-Parakeet|exclude|NVIDIA. 다국어판(TDT v3)도 유럽 25개 언어까지, 한국어 없음
-Canary|exclude|NVIDIA. 벤치마크가 전부 영어 데이터셋이라 한국어 지원 확인 불가
-
-# 클라우드 해외
-Groq|done|자체 개발 칩(LPU)으로 Whisper 호스팅. CER 4.21%, 167배속, 시간당 55원
-OpenAI Whisper API|defer|Whisper 만든 곳이 직접 호스팅. 계정 미생성
-Google|defer|Speech-to-Text v2 / Gemini. 계정 미생성
-Azure|defer|마이크로소프트 클라우드 음성인식. 계정 미생성
-AWS Transcribe|defer|아마존 클라우드 음성인식. 계정 미생성
-Deepgram|defer|음성인식 전문 스타트업, 실시간 스트리밍 강점. 계정 미생성
-AssemblyAI|defer|99개 언어 지원 주장, 시간당 $0.15~0.21. 계정 미생성
-Speechmatics|defer|56개 이상 언어 지원 주장, 시간당 약 $0.13. 계정 미생성
-
-# 클라우드 국내
-리턴제로|test|Whisper를 한국어로 파인튜닝(VITO Speech). 셀프 가입, 10시간 무료
-Naver Clova Speech|test|네이버클라우드 한국어 특화. 무료 크레딧 확인 필요
-Kakao|exclude|카카오엔터프라이즈 기업용 커스텀 STT. 가격이 영업 문의로만 나옴
-
-# 기존 방식
-유튜브 자동자막|done|모든 영상에 이미 딸려있음, 비용 0. CER 6.34%
-```
-
-유튜브 자동자막은 기존 판단 기록에서 "비교 기준선"으로만 취급했지만, 처음부터 다시 하는 거라면 이것도 같은 선상에서 경쟁시켜야 한다. 다른 후보가 실제로 이겨야 자리를 대체할 자격이 생긴다.
-
-"보류"는 탈락이 아니다. 계정을 아직 안 만들었거나 이번 라운드 우선순위에서 밀린 것이고, 1차 결과가 애매하면 그때 꺼낸다. 1차로 고른 것들은 전부 새 계정 없이 바로 시작할 수 있다는 공통점이 있다.
+유튜브 자동자막은 기존 판단 기록에서 비교 기준선으로만 취급했지만, 여기서는 같은 선상에서 경쟁시킨다. 다른 후보가 실제로 이겨야 자리를 대체할 자격이 생긴다.
 
 ## 발견 1 — 비용은 변별력이 없었다
 
