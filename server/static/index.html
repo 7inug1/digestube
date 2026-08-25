@@ -161,19 +161,20 @@
   .diff-body { font-size: 12.5px; max-height: 62vh; overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
   .diff-body:empty { display: none; }
   .diff-none { padding: var(--sp-3); color: var(--muted); text-align: center; }
-  .dcols-head { display: grid; grid-template-columns: 1fr 1fr; position: sticky; top: 0; z-index: 2; background: var(--surface-2); border-bottom: 1px solid var(--line); }
-  .dcols-head > div { padding: 7px 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .03em; color: var(--faint); text-transform: uppercase; }
-  .dcols-head > div + div { border-left: 1px solid var(--line); }
-  .dcols-head span { text-transform: none; font-weight: 400; letter-spacing: 0; opacity: .8; }
-  .dpair { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
-  .dpair + .dpair { border-top: 1px solid var(--line); }
-  .dpair.has-diff { background: color-mix(in srgb, var(--red-soft) 35%, transparent); }
-  .dpair-a, .dpair-b { padding: 6px 12px; line-height: 1.85; font-size: 12.5px; color: var(--muted); min-width: 0; word-break: break-word; }
-  .dpair-b { border-left: 1px solid var(--line); }
+  .dcols { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+  .dpair { display: grid; grid-template-columns: 40px 1fr 40px 1fr; align-items: stretch; }
+  .dnum { padding: 4px 8px; text-align: right; color: var(--faint); font-size: 10.5px; user-select: none; border-right: 1px solid var(--line); }
+  .dtxt { padding: 4px 10px; line-height: 1.7; word-break: break-word; min-width: 0; color: var(--ink); }
+  .dtxt.dright { border-left: 1px solid var(--line); }
+  .dpair.chg .dleft, .dpair.chg .dnum:nth-child(1) { background: color-mix(in srgb, var(--red-soft) 60%, transparent); }
+  .dpair.chg .dright, .dpair.chg .dnum:nth-child(3) { background: color-mix(in srgb, var(--green-soft) 60%, transparent); }
+  .dpair.chg .dleft .d-del { background: var(--red-soft); color: var(--red); font-weight: 600; }
+  .dpair.chg .dright .d-ins { background: var(--green-soft); color: var(--green); font-weight: 600; }
   @media (max-width: 900px) {
-    .dcols-head, .dpair { grid-template-columns: 1fr; }
-    .dpair-b { border-left: none; border-top: 1px dashed var(--line); }
+    .dpair { grid-template-columns: 34px 1fr; }
+    .dtxt.dright { border-left: none; border-top: 1px dashed var(--line); }
   }
+
   .drow { display: grid; grid-template-columns: 34px 1fr; border-bottom: 1px solid var(--line); }
   .drow:last-child { border-bottom: none; }
   .drow-n { padding: 8px 6px; color: var(--faint); font-size: 10.5px; font-family: ui-monospace, monospace; text-align: right; background: var(--surface-2); }
@@ -184,7 +185,7 @@
   .drow.has-diff .drow-n { background: var(--red-soft); color: var(--red); font-weight: 700; }
   .d-eq { color: var(--muted); }
   .d-del, .d-ins, .d-rep-a, .d-rep-b { padding: 1px 4px; border-radius: 4px; }
-  .d-del { background: var(--red-soft); color: var(--red); text-decoration: line-through; }
+  .d-del { background: var(--red-soft); color: var(--red); }
   .d-ins { background: var(--green-soft); color: var(--green); }
   .d-rep-a { background: var(--red-soft); color: var(--red); text-decoration: line-through; }
   .d-rep-b { background: var(--green-soft); color: var(--green); }
@@ -603,19 +604,19 @@ function renderDiff() {
   }).filter(Boolean).join(" ");
 
   if (diffView === "full") {
-    // 왼쪽 정답, 오른쪽 STT. 줄 단위로 같은 높이에 놓아서 눈이 좌우로만
-    // 움직이면 되게 한다. 전체를 다 보여주고 어긋난 낱말에만 색을 얹는다.
+    // 양쪽에 줄번호를 두고, 바뀐 줄은 행 전체에 옅은 배경을 깔고 그 안에서
+    // 실제로 다른 낱말만 진한 색으로 덧칠한다(왼쪽 빨강 · 오른쪽 초록).
     body.innerHTML = `
       <div class="dcols">
-        <div class="dcols-head">
-          <div>정답 <span>빨강 = STT가 놓치거나 다르게 씀</span></div>
-          <div>STT <span>초록 = 정답과 다른 곳</span></div>
-        </div>
-        ${diffData.rows.map((r, i) => `
-          <div class="dpair${r.diffs ? " has-diff" : ""}">
-            <div class="dpair-a">${side(r.ops, "truth") || "&nbsp;"}</div>
-            <div class="dpair-b">${side(r.ops, "hyp") || "&nbsp;"}</div>
-          </div>`).join("")}
+        ${diffData.rows.map((r, i) => {
+          const cls = r.diffs ? " chg" : "";
+          const a = side(r.ops, "truth");
+          const b = side(r.ops, "hyp");
+          return `<div class="dpair${cls}">
+            <span class="dnum">${i + 1}</span><div class="dtxt dleft">${a || "&nbsp;"}</div>
+            <span class="dnum">${i + 1}</span><div class="dtxt dright">${b || "&nbsp;"}</div>
+          </div>`;
+        }).join("")}
       </div>`;
   } else {
     const rows = diffData.rows.map((r, i) => ({ ...r, i }))
