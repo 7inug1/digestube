@@ -70,6 +70,8 @@
   .funnel-tag.defer { background: var(--amber-soft); color: var(--amber); }
   .funnel-tag.merge { background: var(--blue-soft); color: var(--blue); }
   .funnel-tag.result { background: var(--green-soft); color: var(--green); }
+  .funnel-note { font-size: 11px; color: var(--muted); margin-top: 4px; padding-left: 10px; border-left: 2px solid var(--line); }
+  .funnel-note + .funnel-note { margin-top: 2px; }
 
   .build-panel { padding: var(--sp-4); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-4); }
   .panel-head { display: flex; flex-direction: column; gap: var(--sp-1); }
@@ -199,9 +201,10 @@ function mdToHtml(md) {
     html += '<div class="funnel">';
     funnelRows.forEach(r => {
       const pct = Math.max(18, Math.round((r.n / max) * 100));
+      const notesHtml = (r.notes || []).map(n => `<div class="funnel-note">${inline(n)}</div>`).join("");
       html += `<div class="funnel-row">
         <div class="funnel-track"><div class="funnel-bar" style="width:${pct}%"><span class="funnel-n">${r.n}</span></div></div>
-        <div class="funnel-label">${inline(r.label)}<span class="funnel-reasons">${funnelReasonHtml(r.reason)}</span></div>
+        <div class="funnel-label">${inline(r.label)}<span class="funnel-reasons">${funnelReasonHtml(r.reason)}</span>${notesHtml}</div>
       </div>`;
     });
     html += '</div>';
@@ -229,6 +232,13 @@ function mdToHtml(md) {
     if (/^```funnel/.test(line)) { inFunnel = true; continue; }
     if (inFunnel) {
       if (/^```/.test(line)) { inFunnel = false; flushFunnel(); continue; }
+      // "↳ " 로 시작하면 숫자 줄이 아니라 바로 위 막대에 붙는 메모다(별도 문단으로
+      // 안 빼고 흐름 안에서 바로 보이게 하려는 용도).
+      if (/^\s*↳/.test(line)) {
+        const last = funnelRows[funnelRows.length - 1];
+        if (last) { last.notes = last.notes || []; last.notes.push(line.replace(/^\s*↳\s*/, "")); }
+        continue;
+      }
       const [n, label, reason] = line.split("|").map(s => s?.trim());
       if (n) funnelRows.push({ n: parseInt(n, 10), label, reason });
       continue;
