@@ -146,6 +146,8 @@
   .rline-btns button { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; width: 26px; height: 24px; font-size: 12px; cursor: pointer; color: var(--muted); padding: 0; }
   .rline.ok .rline-btns button.ok { background: var(--green); border-color: var(--green); color: white; }
   .rline.bad .rline-btns button.bad { background: var(--red); border-color: var(--red); color: white; }
+  .rline-memo { grid-column: 2 / 4; margin-top: 5px; width: 100%; padding: 5px 9px; border: 1px solid var(--red); border-radius: 6px; background: var(--surface); color: var(--ink); font-size: 12px; }
+  .rline-memo::placeholder { color: var(--faint); }
 
   .reqlog-wrap { max-width: 560px; }
   .reqlog-label { font-size: 11px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .02em; margin-bottom: var(--sp-1); }
@@ -420,19 +422,38 @@ function renderReviewStat() {
     `<b>${ok + bad}</b> / ${total}줄 확인 &nbsp;·&nbsp; 맞음 <b>${ok}</b> &nbsp;·&nbsp; 틀림 <b>${bad}</b>`;
 }
 
-async function markLine(i, verdict) {
-  const marks = reviewData.marks;
-  const next = marks[i]?.verdict === verdict ? "" : verdict;
+async function saveMark(i, verdict, memo) {
   const log = logRequest("POST", `/api/review/${reviewData.id}/mark`, `${i}번 줄 판정`);
   const r = await fetch(`${API}/api/review/${reviewData.id}/mark`, {
     method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ index: i, verdict: next, memo: "" }),
+    body: JSON.stringify({ index: i, verdict, memo }),
   });
-  if (r.ok) { log.ok(`${r.status}`); } else { log.err(`${r.status}`); return; }
-  if (next) marks[i] = { verdict: next, memo: "" }; else delete marks[i];
+  if (r.ok) log.ok(`${r.status}`); else log.err(`${r.status}`);
+  return r.ok;
+}
+
+async function markLine(i, verdict) {
+  const marks = reviewData.marks;
+  const next = marks[i]?.verdict === verdict ? "" : verdict;
+  const memo = marks[i]?.memo || "";
+  if (!(await saveMark(i, next, next ? memo : ""))) return;
+  if (next) marks[i] = { verdict: next, memo }; else delete marks[i];
+
   const row = document.querySelector(`.rline[data-i="${i}"]`);
   row.className = `rline ${next}`;
+  // ✕ 로 표시한 줄에만 "뭐가 틀렸는지" 입력창을 띄운다. 틀렸다는 사실만으론
+  // 나중에 자막을 고칠 수 없어서, 실제로 뭐라고 말하는지를 같이 받아둔다.
+  const input = row.querySelector(".rline-memo");
+  input.hidden = next !== "bad";
+  if (next === "bad") input.focus();
   renderReviewStat();
+}
+
+async function saveMemo(i, memo) {
+  const cur = reviewData.marks[i];
+  if (!cur) return;
+  if (!(await saveMark(i, cur.verdict, memo))) return;
+  cur.memo = memo;
 }
 
 function renderReview() {
@@ -444,6 +465,7 @@ function renderReview() {
   document.getElementById("reviewLines").innerHTML = d.lines.map((ln, i) => {
     const m = d.marks[i]?.verdict || "";
     const mm = `${String(Math.floor(ln.t / 60)).padStart(2, "0")}:${String(Math.floor(ln.t % 60)).padStart(2, "0")}`;
+    const memo = d.marks[i]?.memo || "";
     return `<div class="rline ${m}" data-i="${i}">
       <button class="rline-t" data-seek="${ln.t}">${mm}</button>
       <span class="rline-text">${ln.text.replace(/</g, "&lt;")}</span>
@@ -451,12 +473,20 @@ function renderReview() {
         <button class="ok" data-mark="ok" data-i="${i}" title="자막이 말과 맞음">○</button>
         <button class="bad" data-mark="bad" data-i="${i}" title="자막이 말과 다름">✕</button>
       </span>
+      <input class="rline-memo" data-memo="${i}" value="${memo.replace(/"/g, "&quot;")}"
+             placeholder="실제로 뭐라고 말하는지, 또는 뭐가 틀렸는지"
+             ${m === "bad" ? "" : "hidden"} />
     </div>`;
   }).join("");
   document.querySelectorAll("[data-seek]").forEach(b =>
     b.onclick = () => ytSeek(parseFloat(b.dataset.seek)));
   document.querySelectorAll("[data-mark]").forEach(b =>
     b.onclick = () => markLine(parseInt(b.dataset.i, 10), b.dataset.mark));
+  document.querySelectorAll("[data-memo]").forEach(inp => {
+    const save = () => saveMemo(parseInt(inp.dataset.memo, 10), inp.value.trim());
+    inp.onblur = save;
+    inp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); inp.blur(); } };
+  });
   renderReviewStat();
 }
 
