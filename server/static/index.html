@@ -161,11 +161,19 @@
   .diff-body { font-size: 12.5px; max-height: 62vh; overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
   .diff-body:empty { display: none; }
   .diff-none { padding: var(--sp-3); color: var(--muted); text-align: center; }
-  .dfull { padding: var(--sp-2) var(--sp-3); }
-  .dfull + .dfull { border-top: 1px solid var(--line); }
-  .dfull-tag { font-size: 10.5px; font-weight: 700; letter-spacing: .03em; color: var(--faint); text-transform: uppercase; margin-bottom: 6px; }
-  .dfull-tag span { text-transform: none; font-weight: 400; letter-spacing: 0; }
-  .dfull-text { line-height: 2.05; font-size: 12.5px; color: var(--muted); }
+  .dcols-head { display: grid; grid-template-columns: 1fr 1fr; position: sticky; top: 0; z-index: 2; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+  .dcols-head > div { padding: 7px 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .03em; color: var(--faint); text-transform: uppercase; }
+  .dcols-head > div + div { border-left: 1px solid var(--line); }
+  .dcols-head span { text-transform: none; font-weight: 400; letter-spacing: 0; opacity: .8; }
+  .dpair { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+  .dpair + .dpair { border-top: 1px solid var(--line); }
+  .dpair.has-diff { background: color-mix(in srgb, var(--red-soft) 35%, transparent); }
+  .dpair-a, .dpair-b { padding: 6px 12px; line-height: 1.85; font-size: 12.5px; color: var(--muted); min-width: 0; word-break: break-word; }
+  .dpair-b { border-left: 1px solid var(--line); }
+  @media (max-width: 900px) {
+    .dcols-head, .dpair { grid-template-columns: 1fr; }
+    .dpair-b { border-left: none; border-top: 1px dashed var(--line); }
+  }
   .drow { display: grid; grid-template-columns: 34px 1fr; border-bottom: 1px solid var(--line); }
   .drow:last-child { border-bottom: none; }
   .drow-n { padding: 8px 6px; color: var(--faint); font-size: 10.5px; font-family: ui-monospace, monospace; text-align: right; background: var(--surface-2); }
@@ -595,15 +603,19 @@ function renderDiff() {
   }).filter(Boolean).join(" ");
 
   if (diffView === "full") {
-    const all = diffData.rows.flatMap(r => r.ops);
+    // 왼쪽 정답, 오른쪽 STT. 줄 단위로 같은 높이에 놓아서 눈이 좌우로만
+    // 움직이면 되게 한다. 전체를 다 보여주고 어긋난 낱말에만 색을 얹는다.
     body.innerHTML = `
-      <div class="dfull">
-        <div class="dfull-tag">정답 <span>(빨강 = STT가 다르게 받아쓴 곳)</span></div>
-        <div class="dfull-text">${side(all, "truth")}</div>
-      </div>
-      <div class="dfull">
-        <div class="dfull-tag">STT <span>(초록 = 정답과 다른 곳)</span></div>
-        <div class="dfull-text">${side(all, "hyp")}</div>
+      <div class="dcols">
+        <div class="dcols-head">
+          <div>정답 <span>빨강 = STT가 놓치거나 다르게 씀</span></div>
+          <div>STT <span>초록 = 정답과 다른 곳</span></div>
+        </div>
+        ${diffData.rows.map((r, i) => `
+          <div class="dpair${r.diffs ? " has-diff" : ""}">
+            <div class="dpair-a">${side(r.ops, "truth") || "&nbsp;"}</div>
+            <div class="dpair-b">${side(r.ops, "hyp") || "&nbsp;"}</div>
+          </div>`).join("")}
       </div>`;
   } else {
     const rows = diffData.rows.map((r, i) => ({ ...r, i }))
