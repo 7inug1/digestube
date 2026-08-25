@@ -15,7 +15,12 @@
 
 pytube는 GitHub에 2026년 들어서도 추출 실패 이슈가 해결 안 된 채 쌓여있고([#2167](https://github.com/pytube/pytube/issues/2167) — 제목부터 "Pytube is no longer maintained. Time to migrate to PYTUBEFIX", 2026-04, [#2166](https://github.com/pytube/pytube/issues/2166) — 2025-12, 아직 미해결), Snyk 분석에서도 최근 12개월간 신규 버전이 거의 없어 방치된 프로젝트로 분류된다. 유저들이 pytubefix라는 커뮤니티 포크로 옮겨가는 흐름까지 있다.
 
-pytubefix는 직접 설치해서 테스트했다. 처음엔 `use_po_token=True` 옵션으로 테스트했는데, 이건 deprecated된 경로라 `visitorData`를 사람이 직접 입력해야 했다 — 잘못된 방법으로 테스트한 결과였다. 진짜 자동 생성 방법은 `YouTube(url, 'WEB')`처럼 클라이언트를 지정하는 것이었고, 이걸로 다시 하니 사람 개입 없이 7초 만에 제목·메타데이터를 가져왔다. 다만 실제 오디오 다운로드까지 진행하면 `SABRError: Stream protection status: PoToken PENDING`으로 실패했다. 만들어진 파일도 1.1MB짜리 미완성본이었다(같은 영상을 yt-dlp로 받으면 9.99MB 완성본이 나온다). 즉 pytubefix의 자동 토큰 생성은 메타데이터 조회는 통과시키지만, 실제 스트림 다운로드 단계의 SABR 보호까지는 못 뚫는다. yt-dlp는 `player_client=android` 옵션으로 이 SABR 문제 자체를 우회하는 경로를 타서 다운로드까지 완전히 자동으로 끝낸다. pytubefix가 탈락한 이유는 활발함이 부족해서가 아니라, 메타데이터는 되고 실제 다운로드는 안 되는 상태이기 때문이다.
+pytubefix는 직접 설치해서 테스트했다. 결론부터 말하면 **지금 상태로는 이 파이프라인에 못 쓴다** — 메타데이터는 가져오지만 실제 오디오 다운로드가 안 된다.
+
+- **메타데이터 조회**: 자동 성공. 사람 개입 없이 7초 만에 제목을 가져왔다.
+- **실제 오디오 다운로드**: 실패. `SABRError: Stream protection status: PoToken PENDING`. 만들어진 파일도 1.1MB짜리 미완성본이었다(같은 영상을 yt-dlp로 받으면 9.99MB 완성본이 나온다).
+- **의미**: pytubefix의 자동 토큰 생성은 "입구 통과"(메타데이터 조회)까지만 되고, "스트림 전체 유지"(실제 다운로드)는 안 된다. 사람이 매번 개입해야 하는 건 아니지만, 그렇다고 지금 자동으로 완전히 돌아가는 것도 아닌 애매한 상태다.
+- **yt-dlp와의 차이**: yt-dlp는 `player_client=android` 옵션으로 이 SABR 검증 구간 자체를 타지 않는 경로를 써서 다운로드까지 완전히 끝낸다. pytubefix가 탈락한 이유는 활발함이 부족해서가 아니라, 지금은 다운로드가 실제로 안 되는 상태이기 때문이다.
 
 PO Token과 SABR이 정확히 뭔지 짚어둔다. **PO Token(Proof of Origin)은 이 요청이 진짜 브라우저·앱에서 온 것임을 증명하는 값이고, 유튜브 자체의 BotGuard(웹)·DroidGuard(안드로이드)가 발급한다.** 콘서트 입장 손목밴드라고 보면 된다. 원래는 입구에서 한 번 검사받으면 끝이지만, **SABR(유튜브의 최신 스트리밍 방식)이 적용된 클라이언트는 공연 내내 손목밴드를 계속 재검사한다.** pytubefix가 자동 생성한 토큰은 입구 검사(메타데이터 조회)는 통과시켰지만, 공연 내내 이어지는 재검사(SABR 스트림 다운로드)는 통과하지 못하고 중간에 걸렸다.
 
