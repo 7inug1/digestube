@@ -191,4 +191,65 @@ def set_mark(rid: str, inp: MarkIn):
     return {"saved": True, "count": len(cur)}
 
 
+# ── 오차 대조 ────────────────────────────────────────────────────
+# CER은 "몇 퍼센트 틀렸다"는 숫자 하나로 요약되는데, 그것만 봐서는 어디가 왜
+# 틀렸는지 알 수 없다. 정답과 STT 결과를 낱말 단위로 맞춰서 다른 부분을
+# 표시해주면, 오차가 특정 구간에 몰렸는지 전체에 흩어졌는지 눈으로 보인다.
+DIFF_CANDIDATES = {"mlx": "mlx-whisper(로컬)", "groq": "Groq(클라우드)", "auto": "유튜브 자동자막"}
+
+
+def _hyp_text(target: str, cand: str, refresh: bool) -> str:
+    import measure
+
+    tg = next((x for x in measure.TARGETS if x["truth"] == f"truth_{target}.txt"), None)
+    if tg is None:
+        raise HTTPException(404, "그런 대조 대상 없음")
+
+    if cand == "auto":
+        text = measure.read_vtt(tg["auto"])
+        if text is None:
+            raise HTTPException(404, "이 영상에는 유튜브 자동자막이 없습니다")
+        return text
+
+    cache = WORK / f"hyp_{target}_{cand}.txt"
+    if cache.exists() and not refresh:
+        return cache.read_text(encoding="utf-8")
+
+    audio = WORK / f"{tg['vid']}.m4a"
+    if not audio.exists():
+        raise HTTPException(404, f"오디오가 없습니다: {audio.name}")
+    text, _ = measure.run_mlx(audio) if cand == "mlx" else measure.run_groq(audio)
+    if not text:
+        raise HTTPException(400, "전사 실패 — API 키를 확인하세요")
+    cache.write_text(text, encoding="utf-8")
+    return text
+
+
+@app.get("/api/diff/{target}/{cand}")
+def get_diff(target: str, cand: str, refresh: bool = False):
+    import difflib
+
+    import measure
+
+    if cand not in DIFF_CANDIDATES:
+        raise HTTPException(404, "그런 후보 없음")
+    truth = measure.read_truth(f"truth_{target}.txt")
+    hyp = _hyp_text(target, cand, refresh)
+
+    a, b = truth.split(), hyp.split()
+    ops, real = [], 0
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        ta, hb = " ".join(a[i1:i2]), " ".join(b[j1:j2])
+        # 마침표·띄어쓰기만 다른 건 CER 계산 전에 정규화로 지워지므로 점수에
+        # 영향이 없다. 진짜 오차와 섞이면 어디가 문제인지 안 보여서 구분해둔다.
+        cosmetic = tag != "equal" and measure.norm(ta) == measure.norm(hb)
+        if tag != "equal" and not cosmetic:
+            real += 1
+        ops.append({"op": tag, "truth": ta, "hyp": hb, "cosmetic": cosmetic})
+    return {"target": target, "cand": cand, "label": DIFF_CANDIDATES[cand],
+            "cer": round(measure.cer(truth, hyp) * 100, 2),
+            "truth_chars": len(measure.norm(truth)),
+            "real_diffs": real, "ops": ops}
+
+
 app.mount("/static", StaticFiles(directory=pathlib.Path(__file__).resolve().parent / "static"), name="static")

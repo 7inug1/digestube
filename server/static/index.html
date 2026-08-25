@@ -149,6 +149,26 @@
   .rline-memo { grid-column: 2 / 4; margin-top: 5px; width: 100%; padding: 5px 9px; border: 1px solid var(--red); border-radius: 6px; background: var(--surface); color: var(--ink); font-size: 12px; }
   .rline-memo::placeholder { color: var(--faint); }
 
+  .diff-wrap { display: flex; flex-direction: column; gap: var(--sp-2); }
+  .diff-picker { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+  .diff-group { display: flex; gap: 5px; }
+  .diff-group button { padding: 5px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--muted); font-size: 12px; cursor: pointer; }
+  .diff-group button:hover { border-color: var(--blue); color: var(--blue); }
+  .diff-group button.active { background: var(--blue); border-color: var(--blue); color: white; font-weight: 600; }
+  .diff-toggle { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--muted); cursor: pointer; }
+  .diff-stat { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .diff-stat b { color: var(--ink); }
+  .diff-body { line-height: 2.1; font-size: 13px; max-height: 60vh; overflow-y: auto; padding: var(--sp-2); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  .diff-body:empty { display: none; }
+  .d-eq { color: var(--muted); }
+  .d-del, .d-ins, .d-rep-a, .d-rep-b { padding: 1px 4px; border-radius: 4px; }
+  .d-del { background: var(--red-soft); color: var(--red); text-decoration: line-through; }
+  .d-ins { background: var(--green-soft); color: var(--green); }
+  .d-rep-a { background: var(--red-soft); color: var(--red); text-decoration: line-through; }
+  .d-rep-b { background: var(--green-soft); color: var(--green); }
+  .d-cosmetic { opacity: .45; }
+  .diff-legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--faint); }
+
   .reqlog-wrap { max-width: 560px; }
   .reqlog-label { font-size: 11px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .02em; margin-bottom: var(--sp-1); }
   .reqlog { background: var(--code-bg); border-radius: 10px; padding: 4px 0; font-family: ui-monospace,"SF Mono",Consolas,monospace; font-size: 11.5px; max-height: 220px; overflow-y: auto; }
@@ -219,6 +239,20 @@
         </div>
         <div class="review-lines" id="reviewLines"></div>
       </div>
+    </div>
+
+    <div class="diff-wrap">
+      <div class="panel-head">
+        <h1>오차 대조</h1>
+        <p class="sub">정답과 STT 결과를 낱말 단위로 맞춰본다. CER 숫자만으로는 어디가 왜 틀렸는지 알 수 없다.</p>
+      </div>
+      <div class="diff-picker">
+        <span class="diff-group" id="diffTargets"></span>
+        <span class="diff-group" id="diffCands"></span>
+        <label class="diff-toggle"><input type="checkbox" id="diffHideCosmetic" checked /> 표기 차이(마침표·띄어쓰기) 숨기기</label>
+      </div>
+      <div class="diff-stat" id="diffStat"></div>
+      <div class="diff-body" id="diffBody"></div>
     </div>
 
     <div class="reqlog-wrap">
@@ -512,6 +546,63 @@ async function loadReview(rid) {
     `<button data-rid="${x.id}">${x.title.split(" — ")[0]} · ${Math.round(x.duration / 60)}분</button>`).join("");
   document.querySelectorAll("#reviewPicker button").forEach(b =>
     b.onclick = () => loadReview(b.dataset.rid));
+})();
+
+// ── 오차 대조 ────────────────────────────────────────────────────
+// 정답과 STT 결과를 낱말 단위로 맞춰 다른 부분만 색으로 보여준다.
+// 빨강(취소선)=정답에 있는데 STT가 놓친 말, 초록=STT가 더 넣은 말.
+const DIFF_TARGETS = [["고려대", "고려대 9분(한국어)"], ["PBS", "PBS 2.5분(영어)"], ["세바시", "세바시 13분(한국어)"]];
+const DIFF_CANDS = [["mlx", "mlx-whisper"], ["groq", "Groq"], ["auto", "유튜브 자동자막"]];
+let diffTarget = "고려대", diffCand = "auto", diffData = null;
+
+function renderDiff() {
+  const hide = document.getElementById("diffHideCosmetic").checked;
+  const body = document.getElementById("diffBody");
+  if (!diffData) { body.innerHTML = ""; return; }
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  body.innerHTML = diffData.ops.map(o => {
+    if (o.op === "equal") return `<span class="d-eq">${esc(o.truth)}</span>`;
+    if (hide && o.cosmetic) return `<span class="d-eq">${esc(o.truth)}</span>`;
+    const dim = o.cosmetic ? " d-cosmetic" : "";
+    if (o.op === "delete") return `<span class="d-del${dim}">${esc(o.truth)}</span>`;
+    if (o.op === "insert") return `<span class="d-ins${dim}">${esc(o.hyp)}</span>`;
+    return `<span class="d-rep-a${dim}">${esc(o.truth)}</span> <span class="d-rep-b${dim}">${esc(o.hyp)}</span>`;
+  }).join(" ");
+
+  const all = diffData.ops.filter(o => o.op !== "equal").length;
+  document.getElementById("diffStat").innerHTML =
+    `<b>${diffData.label}</b> · CER <b>${diffData.cer}%</b> · 정답 ${diffData.truth_chars.toLocaleString()}자 · ` +
+    `차이 ${all}곳 중 실제 오차 <b>${diffData.real_diffs}</b>곳, 표기 차이 ${all - diffData.real_diffs}곳` +
+    `<div class="diff-legend"><span class="d-del">빨강 = STT가 놓침</span>` +
+    `<span class="d-ins">초록 = STT가 더 넣음</span></div>`;
+}
+
+async function loadDiff() {
+  document.querySelectorAll("#diffTargets button").forEach(b => b.classList.toggle("active", b.dataset.v === diffTarget));
+  document.querySelectorAll("#diffCands button").forEach(b => b.classList.toggle("active", b.dataset.v === diffCand));
+  document.getElementById("diffStat").textContent = "전사 돌리는 중...";
+  document.getElementById("diffBody").innerHTML = "";
+  const path = `/api/diff/${encodeURIComponent(diffTarget)}/${diffCand}`;
+  const log = logRequest("GET", path, "정답 대비 오차 계산");
+  const r = await fetch(`${API}${path}`);
+  const d = await r.json();
+  if (!r.ok) { log.err(`${r.status}`); document.getElementById("diffStat").textContent = d.detail || "실패"; return; }
+  log.ok(`${r.status} · CER ${d.cer}%`);
+  diffData = d;
+  renderDiff();
+}
+
+(() => {
+  const mk = (el, list, set) => {
+    document.getElementById(el).innerHTML = list.map(([v, label]) =>
+      `<button data-v="${v}">${label}</button>`).join("");
+    document.querySelectorAll(`#${el} button`).forEach(b =>
+      b.onclick = () => { set(b.dataset.v); loadDiff(); });
+  };
+  mk("diffTargets", DIFF_TARGETS, v => diffTarget = v);
+  mk("diffCands", DIFF_CANDS, v => diffCand = v);
+  document.getElementById("diffHideCosmetic").onchange = renderDiff;
+  loadDiff();
 })();
 
 let notes = [];
