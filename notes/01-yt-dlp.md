@@ -15,7 +15,7 @@
 
 pytube는 GitHub에 2026년 들어서도 추출 실패 이슈가 해결 안 된 채 쌓여있고([#2167](https://github.com/pytube/pytube/issues/2167) — 제목부터 "Pytube is no longer maintained. Time to migrate to PYTUBEFIX", 2026-04, [#2166](https://github.com/pytube/pytube/issues/2166) — 2025-12, 아직 미해결), Snyk 분석에서도 최근 12개월간 신규 버전이 거의 없어 방치된 프로젝트로 분류된다. 유저들이 pytubefix라는 커뮤니티 포크로 옮겨가는 흐름까지 있다.
 
-pytubefix를 보기 전에 먼저 짚어야 할 용어가 둘 있다. **PO Token(Proof of Origin)은 이 요청이 진짜 브라우저·앱에서 온 것임을 증명하는 값이고, 유튜브 자체의 BotGuard(웹)·DroidGuard(안드로이드)가 발급한다.** 콘서트 입장 손목밴드라고 보면 된다. 원래는 입구에서 한 번 검사받으면 끝이지만, **SABR(유튜브의 최신 스트리밍 방식)이 적용된 클라이언트는 공연 내내 손목밴드를 계속 재검사한다.**
+pytubefix를 보기 전에 먼저 짚어야 할 용어가 둘 있다. **PO Token(Proof of Origin)은 이 요청이 진짜 브라우저·앱에서 온 것임을 증명하는 값이고, 유튜브 자체의 BotGuard(웹)·DroidGuard(안드로이드)가 발급한다.** 콘서트 입장 손목밴드라고 보면 된다. 원래는 입구에서 한 번 검사받으면 끝이지만, **SABR(Server Adaptive Bit Rate, 유튜브의 최신 스트리밍 방식)이 적용된 클라이언트는 공연 내내 손목밴드를 계속 재검사한다.**
 
 pytubefix는 직접 설치해서 테스트했다. 결론부터 말하면 **지금 상태로는 이 파이프라인에 못 쓴다** — 메타데이터는 가져오지만 실제 오디오 다운로드가 안 된다.
 
