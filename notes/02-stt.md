@@ -7,9 +7,10 @@
 ## 소거 흐름
 
 ```funnel
-19|전체 검토|카테고리별로 나열
-17|자격 있는 후보|제외: Kakao(비공개)·Parakeet/Canary(한국어 미지원)
-4|1차 테스트 대상|합침: Whisper 원본·faster-whisper·whisper.cpp → mlx-whisper; 보류: 계정 없는 7개(OpenAI API·Google·Azure·AWS·Deepgram·AssemblyAI·Speechmatics)·Qwen3-ASR·Meta MMS·유튜브자막(이미 측정함)
+20|전체 검토|카테고리별로 나열
+17|자격 있는 후보|제외: Kakao(비공개, 3건 중 1)·Parakeet(한국어 미지원, 2)·Canary(한국어 미지원, 3)
+14|가중치 중복 제거|합침: Whisper 원본·faster-whisper·whisper.cpp → mlx-whisper 하나로 대표(정확도 동일, 하드웨어만 다름)
+4|1차 테스트 대상|보류: OpenAI API·Google·Azure·AWS·Deepgram·AssemblyAI·Speechmatics(계정 없음, 7건)·Qwen3-ASR·Meta MMS(성숙도·특화 캐비어트, 2건)·유튜브자막(이미 측정함, 1건)
 1|측정 완료|결과: mlx-whisper CER 4.14%(잠정치)
 ```
 
