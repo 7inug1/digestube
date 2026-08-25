@@ -161,6 +161,11 @@
   .diff-body { font-size: 12.5px; max-height: 62vh; overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
   .diff-body:empty { display: none; }
   .diff-none { padding: var(--sp-3); color: var(--muted); text-align: center; }
+  .dfull { padding: var(--sp-2) var(--sp-3); }
+  .dfull + .dfull { border-top: 1px solid var(--line); }
+  .dfull-tag { font-size: 10.5px; font-weight: 700; letter-spacing: .03em; color: var(--faint); text-transform: uppercase; margin-bottom: 6px; }
+  .dfull-tag span { text-transform: none; font-weight: 400; letter-spacing: 0; }
+  .dfull-text { line-height: 2.05; font-size: 12.5px; color: var(--muted); }
   .drow { display: grid; grid-template-columns: 34px 1fr; border-bottom: 1px solid var(--line); }
   .drow:last-child { border-bottom: none; }
   .drow-n { padding: 8px 6px; color: var(--faint); font-size: 10.5px; font-family: ui-monospace, monospace; text-align: right; background: var(--surface-2); }
@@ -258,6 +263,10 @@
       <div class="diff-picker">
         <span class="diff-group" id="diffTargets"></span>
         <span class="diff-group" id="diffCands"></span>
+        <span class="diff-group" id="diffViews">
+          <button data-view="full" class="active">전문 보기</button>
+          <button data-view="rows">줄 단위</button>
+        </span>
         <label class="diff-toggle"><input type="checkbox" id="diffHideCosmetic" checked /> 표기 차이 숨기기</label>
         <label class="diff-toggle"><input type="checkbox" id="diffOnlyDiff" checked /> 다른 줄만 보기</label>
       </div>
@@ -565,6 +574,8 @@ const DIFF_TARGETS = [["고려대", "고려대 9분(한국어)"], ["PBS", "PBS 2
 const DIFF_CANDS = [["mlx", "mlx-whisper"], ["groq", "Groq"], ["auto", "유튜브 자동자막"]];
 let diffTarget = "고려대", diffCand = "auto", diffData = null;
 
+let diffView = "full";   // full = 전문 보기 · rows = 줄 단위 나란히 보기
+
 function renderDiff() {
   const hide = document.getElementById("diffHideCosmetic").checked;
   const onlyDiff = document.getElementById("diffOnlyDiff").checked;
@@ -572,39 +583,50 @@ function renderDiff() {
   if (!diffData) { body.innerHTML = ""; return; }
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
-  // 한 줄을 정답/STT 두 칸으로 나란히 놓고, 칸 안에서 다른 낱말만 색을 준다.
+  // 한 쪽(정답 또는 STT)의 글만 골라 이어붙인다. 그래야 각각을 끊김 없이
+  // 읽을 수 있고, 다른 쪽과 어긋나는 부분에만 색이 얹힌다.
   const side = (ops, which) => ops.map(o => {
     const txt = which === "truth" ? o.truth : o.hyp;
+    if (!txt) return "";
     if (o.op === "equal") return esc(txt);
     if (hide && o.cosmetic) return esc(txt);
-    if (!txt) return "";
-    if (which === "truth" && o.op === "insert") return "";
-    if (which === "hyp" && o.op === "delete") return "";
     const cls = which === "truth" ? "d-del" : "d-ins";
     return `<span class="${cls}${o.cosmetic ? " d-cosmetic" : ""}">${esc(txt)}</span>`;
   }).filter(Boolean).join(" ");
 
-  const rows = diffData.rows
-    .map((r, i) => ({ ...r, i }))
-    .filter(r => !onlyDiff || r.diffs > 0);
+  if (diffView === "full") {
+    const all = diffData.rows.flatMap(r => r.ops);
+    body.innerHTML = `
+      <div class="dfull">
+        <div class="dfull-tag">정답 <span>(빨강 = STT가 다르게 받아쓴 곳)</span></div>
+        <div class="dfull-text">${side(all, "truth")}</div>
+      </div>
+      <div class="dfull">
+        <div class="dfull-tag">STT <span>(초록 = 정답과 다른 곳)</span></div>
+        <div class="dfull-text">${side(all, "hyp")}</div>
+      </div>`;
+  } else {
+    const rows = diffData.rows.map((r, i) => ({ ...r, i }))
+      .filter(r => !onlyDiff || r.diffs > 0);
+    body.innerHTML = rows.length === 0
+      ? `<div class="diff-none">다른 곳이 없습니다.</div>`
+      : rows.map(r => `<div class="drow${r.diffs ? " has-diff" : ""}">
+          <span class="drow-n">${r.i + 1}</span>
+          <div class="drow-cells">
+            <div class="dcell"><span class="dcell-tag">정답</span>${side(r.ops, "truth")}</div>
+            <div class="dcell"><span class="dcell-tag">STT</span>${side(r.ops, "hyp")}</div>
+          </div>
+        </div>`).join("");
+  }
 
-  body.innerHTML = rows.length === 0
-    ? `<div class="diff-none">다른 곳이 없습니다.</div>`
-    : rows.map(r => `<div class="drow${r.diffs ? " has-diff" : ""}">
-        <span class="drow-n">${r.i + 1}</span>
-        <div class="drow-cells">
-          <div class="dcell"><span class="dcell-tag">정답</span>${side(r.ops, "truth")}</div>
-          <div class="dcell"><span class="dcell-tag">STT</span>${side(r.ops, "hyp")}</div>
-        </div>
-      </div>`).join("");
+  document.getElementById("diffOnlyDiff").parentElement.style.display =
+    diffView === "rows" ? "" : "none";
 
   const total = diffData.rows.length;
   const bad = diffData.rows.filter(r => r.diffs > 0).length;
   document.getElementById("diffStat").innerHTML =
     `<b>${diffData.label}</b> · CER <b>${diffData.cer}%</b> · 정답 ${diffData.truth_chars.toLocaleString()}자 · ` +
-    `${total}줄 중 <b>${bad}</b>줄에서 차이, 실제 오차 <b>${diffData.real_diffs}</b>곳` +
-    `<div class="diff-legend"><span class="d-del">빨강 = 정답에 있는데 STT가 놓침</span>` +
-    `<span class="d-ins">초록 = STT가 더 넣거나 다르게 씀</span></div>`;
+    `${total}줄 중 <b>${bad}</b>줄에서 차이, 실제 오차 <b>${diffData.real_diffs}</b>곳`;
 }
 
 async function loadDiff() {
@@ -633,6 +655,11 @@ async function loadDiff() {
   mk("diffCands", DIFF_CANDS, v => diffCand = v);
   document.getElementById("diffHideCosmetic").onchange = renderDiff;
   document.getElementById("diffOnlyDiff").onchange = renderDiff;
+  document.querySelectorAll("#diffViews button").forEach(b => b.onclick = () => {
+    diffView = b.dataset.view;
+    document.querySelectorAll("#diffViews button").forEach(x => x.classList.toggle("active", x === b));
+    renderDiff();
+  });
   loadDiff();
 })();
 
