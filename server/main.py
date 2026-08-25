@@ -1,16 +1,20 @@
 """Digestube v2 — 파이프라인을 한 단계씩 다시 만드는 서버.
 노트(notes/)와 실제 기능을 같은 화면에서 보여준다."""
 import json
+import os
 import pathlib
 import re
 import subprocess
 import sys
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+
+load_dotenv()
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 NOTES = ROOT / "notes"
@@ -289,6 +293,99 @@ def get_diff(target: str, cand: str, refresh: bool = False):
             "cer": round(measure.cer(truth, hyp) * 100, 2),
             "truth_chars": len(measure.norm(truth)),
             "real_diffs": real, "rows": rows}
+
+
+# ── 의미 오류 판정 ────────────────────────────────────────────────
+# CER은 "표기가 얼마나 일치하는가"를 잰다. 콘텐츠/컨텐츠처럼 같은 말을 다르게
+# 적은 것과, 체류시간/치료시간처럼 다른 말이 된 것을 똑같이 한 글자 오차로 센다.
+# 검색·요약이 목적인 이 제품에서는 뒤엣것만 실제로 문제가 되므로 따로 센다.
+LLM_MODEL = os.getenv("DIGESTUBE_LLM", "claude-haiku-4-5-20251001")
+SEM_PROMPT = """아래는 영상 자막(정답)과 음성인식(STT) 결과가 서로 다른 부분들이다.
+각 항목에 대해 "이 차이 때문에 문장의 뜻이 바뀌는가"만 판정하라.
+
+뜻이 바뀌지 않는 예: 같은 낱말의 표기 차이(콘텐츠/컨텐츠), 축약형(조금/좀),
+띄어쓰기, 숫자 표기(3/third), 간투사가 있고 없고(그, 좀, 이제).
+뜻이 바뀌는 예: 다른 낱말이 됨(체류시간/치료시간, 편견/평균), 부정이 뒤집힘,
+문장의 핵심 정보가 사라짐.
+
+JSON 배열로만 답하라. 다른 말은 붙이지 마라.
+[{"i": 0, "changed": true, "why": "짧은 이유"}]
+"""
+
+
+def _sem_path(target, cand):
+    return WORK / f"semantic_{target}_{cand}.json"
+
+
+@app.get("/api/semantic/{target}/{cand}")
+def get_semantic(target: str, cand: str, refresh: bool = False):
+    cache = _sem_path(target, cand)
+    if cache.exists() and not refresh:
+        return json.loads(cache.read_text(encoding="utf-8"))
+
+    diff = get_diff(target, cand)
+    pairs = []
+    for r in diff["rows"]:
+        for o in r["ops"]:
+            if o["op"] != "equal" and not o["cosmetic"]:
+                pairs.append({"i": len(pairs), "line": r["truth"],
+                              "truth": o["truth"], "hyp": o["hyp"]})
+    if not pairs:
+        out = {"target": target, "cand": cand, "cer": diff["cer"], "pairs": [], "changed": 0}
+        cache.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+        return out
+
+    key = os.getenv("ANTHROPIC_API_KEY")
+    if not key:
+        raise HTTPException(400, "ANTHROPIC_API_KEY 없음 — server/.env 확인")
+
+    from anthropic import Anthropic
+
+    body = "\n".join(
+        f'{p["i"]}. 문장: {p["line"]}\n   정답: {p["truth"] or "(없음)"}\n   STT: {p["hyp"] or "(없음)"}'
+        for p in pairs)
+    r = Anthropic(api_key=key).messages.create(
+        model=LLM_MODEL, max_tokens=4000,
+        messages=[{"role": "user", "content": f"{SEM_PROMPT}\n{body}"}])
+    text = re.sub(r"^```(json)?|```$", "", r.content[0].text.strip(), flags=re.M).strip()
+    try:
+        verdicts = {v["i"]: v for v in json.loads(text)}
+    except Exception:
+        raise HTTPException(502, "판정 결과를 읽지 못했습니다 — 다시 시도해 주세요")
+
+    for p in pairs:
+        v = verdicts.get(p["i"], {})
+        p["changed"] = bool(v.get("changed"))
+        p["why"] = v.get("why", "")
+        p["fixed"] = False   # 사람이 판정을 고쳤는지
+
+    out = {"target": target, "cand": cand, "cer": diff["cer"], "pairs": pairs,
+           "changed": sum(1 for p in pairs if p["changed"])}
+    cache.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+    return out
+
+
+class SemOverride(BaseModel):
+    index: int
+    changed: bool
+
+
+@app.post("/api/semantic/{target}/{cand}/override")
+def override_semantic(target: str, cand: str, inp: SemOverride):
+    """LLM 판정을 사람이 고친다. 정답 자막을 검수했던 것과 같은 구조 —
+    자동으로 뽑되 사람이 최종 확인해야 근거로 쓸 수 있다."""
+    cache = _sem_path(target, cand)
+    if not cache.exists():
+        raise HTTPException(404, "먼저 판정을 실행해야 합니다")
+    d = json.loads(cache.read_text(encoding="utf-8"))
+    for p in d["pairs"]:
+        if p["i"] == inp.index:
+            p["changed"] = inp.changed
+            p["fixed"] = True
+            break
+    d["changed"] = sum(1 for p in d["pairs"] if p["changed"])
+    cache.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"saved": True, "changed": d["changed"]}
 
 
 app.mount("/static", StaticFiles(directory=pathlib.Path(__file__).resolve().parent / "static"), name="static")
