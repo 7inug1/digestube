@@ -66,8 +66,9 @@
   .result dt { color: var(--muted); }
   .result dd { margin: 0; }
   .result audio { width: 100%; margin-top: 12px; }
-  .result a.dl { display: inline-block; margin-top: 10px; font-size: 12.5px; color: var(--blue); text-decoration: none; }
-  .result a.dl:hover { text-decoration: underline; }
+  a.dl { display: inline-block; margin-top: 10px; font-size: 12.5px; color: var(--blue); text-decoration: none; }
+  a.dl:hover { text-decoration: underline; }
+  .note-ptr { margin: 10px 0 0; font-size: 11.5px; color: var(--muted); }
 
   .steps { display: flex; flex-direction: column; gap: 0; margin: 18px 0 0; }
   .step { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 12.5px; color: var(--faint); }
@@ -95,6 +96,7 @@
   .req-method.get { color: var(--code-blue); }
   .req-method.post { color: var(--code-amber); }
   .req-path { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .85; }
+  .req-desc { opacity: .6; }
   .req-status { flex-shrink: 0; font-weight: 700; }
   .req-status.pending { color: var(--code-amber); }
   .req-status.ok { color: var(--green); }
@@ -191,7 +193,7 @@ function mdToHtml(md) {
 
 // API 요청 로그 — 지금 뭐가 오가는지 devtools 안 열어도 화면에서 보이게 한다.
 let reqSeq = 0;
-function logRequest(method, path) {
+function logRequest(method, path, desc) {
   const log = document.getElementById("reqlog");
   log.querySelector(".reqlog-empty")?.remove();
   const id = `req-${++reqSeq}`;
@@ -199,7 +201,7 @@ function logRequest(method, path) {
   row.className = "req-row";
   row.id = id;
   row.innerHTML = `<span class="req-method ${method.toLowerCase()}">${method}</span>
-    <span class="req-path">${path}</span>
+    <span class="req-path">${path}${desc ? `<span class="req-desc"> — ${desc}</span>` : ""}</span>
     <span class="req-status pending">진행중</span>
     <span class="req-ms"></span>`;
   log.prepend(row);
@@ -224,7 +226,7 @@ function logRequest(method, path) {
 // error 이벤트로 대신 감지해서 로그에 남긴다.
 function wireAudioLog(audio, path) {
   let log = null;
-  audio.addEventListener("loadstart", () => { log = logRequest("GET", path); });
+  audio.addEventListener("loadstart", () => { log = logRequest("GET", path, "추출된 오디오 파일 자체를 받아옴"); });
   audio.addEventListener("canplay", () => log?.ok("재생 준비됨"));
   audio.addEventListener("error", () => log?.err("로드 실패"));
 }
@@ -248,7 +250,8 @@ function renderCurrentVideo(data) {
   body.innerHTML = `
     <div class="cv-title">${data.title}</div>
     <div class="cv-sub">${data.channel ?? ""} · ${data.duration_sec ? Math.round(data.duration_sec) + "초" : ""} · ${data.audio_file}</div>
-    <audio controls preload="none" src="${audioUrl}"></audio>`;
+    <audio controls preload="none" src="${audioUrl}"></audio>
+    <a class="dl" href="${audioUrl}" download="${data.audio_file}">오디오 파일 다운로드</a>`;
   box.style.display = "block";
   wireAudioLog(body.querySelector("audio"), `/api/audio/${data.id}`);
 }
@@ -268,7 +271,7 @@ async function loadNotes() {
 }
 async function selectNote(id) {
   document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.id === id));
-  const log = logRequest("GET", `/api/notes/${id}`);
+  const log = logRequest("GET", `/api/notes/${id}`, "왼쪽 노트 내용 불러오기");
   const r = await fetch(`${API}/api/notes/${id}`);
   const { content } = await r.json();
   log.ok(`${r.status}`);
@@ -292,7 +295,7 @@ document.getElementById("go").onclick = async () => {
   out.innerHTML = "";
   try {
     setStep(2, "active");
-    const log = logRequest("POST", "/api/extract");
+    const log = logRequest("POST", "/api/extract", "yt-dlp 실행해서 오디오 추출");
     const r = await fetch(`${API}/api/extract`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url }),
@@ -302,17 +305,14 @@ document.getElementById("go").onclick = async () => {
     log.ok(`${r.status} · yt-dlp 완료`);
     setStep(3, "done"); steps[2]?.classList.add("done");
     saveCurrentVideo(data);
-    const audioUrl = `${API}/api/audio/${data.id}`;
     out.innerHTML = `<div class="result ok"><dl>
       <dt>제목</dt><dd>${data.title}</dd>
       <dt>채널</dt><dd>${data.channel}</dd>
       <dt>길이</dt><dd>${data.duration_sec ? Math.round(data.duration_sec) + "초" : "-"}</dd>
       <dt>파일</dt><dd>${data.audio_file} (${data.size_kb} KB)</dd>
     </dl>
-    <audio controls preload="none" src="${audioUrl}"></audio>
-    <a class="dl" href="${audioUrl}" download="${data.audio_file}">오디오 파일 다운로드</a>
+    <p class="note-ptr">↑ 위 "현재 작업 영상" 카드에서 바로 재생·다운로드할 수 있음 — 플레이어를 두 번 안 그림</p>
     </div>`;
-    wireAudioLog(out.querySelector("audio"), `/api/audio/${data.id}`);
   } catch (e) {
     out.innerHTML = `<div class="result err">${e.message}</div>`;
   } finally {
