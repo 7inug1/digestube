@@ -4,6 +4,13 @@
 
 **결론: yt-dlp 채택. youtube-dl·pytube·pytubefix 세 후보 모두 자동화된 파이프라인에 넣기엔 부족했다.**
 
+| 도구 | 저장소 | 최근 릴리스 | 월 다운로드(PyPI) | 봇 차단 우회 | 자동화 가능 |
+|---|---|---|---|:---:|:---:|
+| **yt-dlp** | [yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp) | 2주 주기 | 1,200만+ | `player_client=android` | ✅ |
+| youtube-dl | [ytdl-org/youtube-dl](https://github.com/ytdl-org/youtube-dl) | 2021-12 이후 정지 | 비교 안 될 만큼 적음 | 옵션 자체 없음 | ❌ |
+| pytube | [pytube/pytube](https://github.com/pytube/pytube) | 최근 12개월 신규 버전 거의 없음 | 미확인 | 없음 | ❌ |
+| pytubefix | [JuanBindez/pytubefix](https://github.com/JuanBindez/pytubefix) | 활발함 | 미확인 | PO Token(수동 입력) | ❌ |
+
 원조는 youtube-dl이었지만 안정 릴리스가 2021년 12월 이후로 멈춰 사실상 관리가 끊겼다. yt-dlp는 그 youtube-dl에서 갈라져 나온 포크로, 지금은 2주마다 릴리스되고 PyPI 월 다운로드가 1,200만 건을 넘는 이 분야의 사실상 표준이다. 유튜브 공식 API(Data API v3)는 오디오·영상 다운로드 기능 자체가 없어 처음부터 비교 대상이 아니었다.
 
 pytube는 GitHub에 2026년 들어서도 추출 실패 이슈가 해결 안 된 채 쌓여있고(#2167, #2166 등), Snyk 분석에서도 최근 12개월간 신규 버전이 거의 없어 방치된 프로젝트로 분류된다. 유저들이 pytubefix라는 커뮤니티 포크로 옮겨가는 흐름까지 있다.
