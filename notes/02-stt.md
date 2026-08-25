@@ -2,9 +2,9 @@
 
 상태: 진행 중 — 다음 액션 정해짐
 
-> **TLDR**: STT 후보 14개 중 로컬 Whisper·리턴제로·Groq·Naver Clova 4개를 실제 테스트 대상으로 확정했다. 참고했던 벤치마크는 경쟁 제품인 리턴제로 자사가 발행한 것이라 각주로만 남기고, 최종 판단은 우리 콘텐츠로 직접 측정한 결과로만 내리기로 했다.
+> **TLDR**: STT 후보 15개 중 로컬 Whisper·리턴제로·Groq·Naver Clova 4개를 실제 테스트 대상으로 확정했다. 참고했던 벤치마크는 경쟁 제품인 리턴제로 자사가 발행한 것이라 각주로만 남기고, 최종 판단은 우리 콘텐츠로 직접 측정한 결과로만 내리기로 했다.
 
-## 후보 (14개, 카테고리별)
+## 후보 (15개, 카테고리별)
 
 **로컬 오픈소스**
 - Whisper 원본: OpenAI가 만든 기본 구현체(PyTorch)
@@ -13,6 +13,7 @@
 - whisper.cpp: C++로 포팅해서 CPU에서도 가볍게 돌아가는 버전(Whisper와 같은 가중치)
 - Qwen3-ASR: 알리바바 Qwen팀의 오픈소스 모델, 한국어 포함 30개 언어 지원
 - NVIDIA Parakeet/Canary: HuggingFace Open ASR 리더보드 상위권 오픈소스 모델
+- Meta MMS(facebook/mms-1b-all): 한국어 포함 1,162개 언어를 지원하는 오픈소스 모델
 
 **클라우드 해외**
 - OpenAI Whisper API: OpenAI가 자기 서버에서 Whisper를 대신 돌려주는 유료 API
@@ -26,7 +27,7 @@
 - Naver Clova Speech: 네이버클라우드의 한국어 특화 음성인식 API
 - 리턴제로: 국내 스타트업이 Whisper를 한국어 데이터로 파인튜닝해서 만든 API(VITO Speech)
 
-**어떻게 골랐나**: 카테고리(로컬 오픈소스·해외 클라우드·국내 클라우드)를 먼저 정하고 각 칸을 채웠다. 이 목록도 완전하다고 장담은 못 한다 — Meta의 wav2vec2/MMS처럼 아직 안 찾아본 것도 더 있을 수 있다.
+**어떻게 골랐나**: 카테고리(로컬 오픈소스·해외 클라우드·국내 클라우드)를 먼저 정하고 각 칸을 채웠다.
 
 제외: 유튜브 자동자막(후보 아니라 비교 baseline), Kakao·AssemblyAI·Speechmatics(정보 부족으로 판단 보류), NVIDIA Parakeet/Canary(Parakeet은 영어 전용으로 확인됨, Canary는 벤치마크가 전부 영어 데이터셋 기준이라 한국어 지원 여부 확인 안 됨 — 둘 다 판단 보류).
 
