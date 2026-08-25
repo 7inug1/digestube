@@ -484,7 +484,11 @@ function renderReview() {
     b.onclick = () => markLine(parseInt(b.dataset.i, 10), b.dataset.mark));
   document.querySelectorAll("[data-memo]").forEach(inp => {
     const save = () => saveMemo(parseInt(inp.dataset.memo, 10), inp.value.trim());
-    inp.onblur = save;
+    // blur 에만 저장하면 타이핑 도중 탭을 옮길 때 날아간다. 입력이 멎고 600ms 뒤
+    // 자동 저장해서, 어디로 넘어가든 마지막 입력까지는 남게 한다.
+    let timer = null;
+    inp.oninput = () => { clearTimeout(timer); timer = setTimeout(save, 600); };
+    inp.onblur = () => { clearTimeout(timer); save(); };
     inp.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); inp.blur(); } };
   });
   renderReviewStat();
