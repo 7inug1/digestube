@@ -21,15 +21,24 @@
   ↳ 유튜브자막의 예전 수치(10.10%)는 다른 영상("컴공") 기준이라 이번 후보들과 같은 조건이 아니었다. 같은 영상(fGNGKCz60NE)으로 다시 재서 6.34%가 나왔다.
 ```
 
-**20개 전원 명단, 지금 상태 그대로.** 취소선 = 이번 라운드에서 빠짐(제외·합침·보류), 색 있는 글자 = 살아있음.
+**단계별로 누가 빠졌는지, 그 단계 바로 밑에.**
 
+20 → 17, 제외된 3명:
 ```roster
 Kakao|exclude|비공개
 Parakeet|exclude|한국어 미지원
 Canary|exclude|한국어 미지원
+```
+
+17 → 14, mlx-whisper로 합쳐진 3명:
+```roster
 Whisper 원본|merge|→ mlx-whisper
 faster-whisper|merge|→ mlx-whisper
 whisper.cpp|merge|→ mlx-whisper
+```
+
+14 → 5, 보류된 9명:
+```roster
 OpenAI API|defer|계정 없음
 Google|defer|계정 없음
 Azure|defer|계정 없음
@@ -39,6 +48,10 @@ AssemblyAI|defer|계정 없음
 Speechmatics|defer|계정 없음
 Qwen3-ASR|defer|성숙도 낮음
 Meta MMS|defer|다국어 특화라 후순위
+```
+
+5명 중 지금 상태:
+```roster
 mlx-whisper|done|CER 4.14%
 유튜브자막|done|CER 6.34%
 리턴제로|test|측정 대기
