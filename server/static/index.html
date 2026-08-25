@@ -76,6 +76,14 @@
   .step.active .dot { background: var(--blue-soft); color: var(--blue); }
   .step.done { color: var(--ink); }
   .step.done .dot { background: var(--green-soft); color: var(--green); }
+
+  .current-video { background: var(--green-soft); border: 1px solid var(--green); border-radius: 12px; padding: 14px 18px; max-width: 560px; margin-bottom: 26px; }
+  .cv-label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: .02em; margin-bottom: 8px; }
+  .cv-body { font-size: 13.5px; }
+  .cv-body .cv-title { font-weight: 600; margin-bottom: 2px; }
+  .cv-body .cv-sub { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+  .cv-body audio { width: 100%; height: 32px; }
+  .cv-reset { margin-top: 10px; background: none; border: none; color: var(--muted); font-size: 11.5px; text-decoration: underline; cursor: pointer; padding: 0; }
 </style>
 </head>
 <body>
@@ -90,6 +98,12 @@
   </div>
 
   <div class="build-panel">
+    <div class="current-video" id="currentVideo" style="display:none">
+      <div class="cv-label">현재 작업 영상 — 앞으로 만들 단계(전사·청킹 등)가 다 이 영상 기준으로 이어짐</div>
+      <div class="cv-body" id="cvBody"></div>
+      <button class="cv-reset" id="cvReset">다른 영상으로 바꾸기</button>
+    </div>
+
     <h1>1단계 — yt-dlp 오디오 추출</h1>
     <p class="sub">유튜브 URL을 넣으면, 왼쪽 노트에서 정한 그 도구·그 옵션 그대로 오디오를 뽑아낸다.</p>
     <div class="card">
@@ -154,6 +168,34 @@ function mdToHtml(md) {
   return html;
 }
 
+// 지금 작업 중인 영상 — localStorage에 저장해서 새로고침해도, 나중에
+// 2단계(전사)·3단계(청킹)를 만들어도 같은 영상 기준으로 이어서 볼 수 있게 한다.
+const CV_KEY = "digestube_current_video";
+function saveCurrentVideo(data) {
+  localStorage.setItem(CV_KEY, JSON.stringify(data));
+  renderCurrentVideo(data);
+}
+function loadCurrentVideo() {
+  const raw = localStorage.getItem(CV_KEY);
+  if (!raw) return;
+  try { renderCurrentVideo(JSON.parse(raw)); } catch {}
+}
+function renderCurrentVideo(data) {
+  const box = document.getElementById("currentVideo");
+  const body = document.getElementById("cvBody");
+  const audioUrl = `${API}/api/audio/${data.id}`;
+  body.innerHTML = `
+    <div class="cv-title">${data.title}</div>
+    <div class="cv-sub">${data.channel ?? ""} · ${data.duration_sec ? Math.round(data.duration_sec) + "초" : ""} · ${data.audio_file}</div>
+    <audio controls preload="none" src="${audioUrl}"></audio>`;
+  box.style.display = "block";
+}
+document.getElementById("cvReset").onclick = () => {
+  localStorage.removeItem(CV_KEY);
+  document.getElementById("currentVideo").style.display = "none";
+};
+loadCurrentVideo();
+
 let notes = [];
 async function loadNotes() {
   notes = await (await fetch(`${API}/api/notes`)).json();
@@ -192,6 +234,7 @@ document.getElementById("go").onclick = async () => {
     const data = await r.json();
     if (!r.ok) throw new Error(data.detail || "실패");
     setStep(3, "done"); steps[2]?.classList.add("done");
+    saveCurrentVideo(data);
     const audioUrl = `${API}/api/audio/${data.id}`;
     out.innerHTML = `<div class="result ok"><dl>
       <dt>제목</dt><dd>${data.title}</dd>
