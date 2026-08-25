@@ -388,4 +388,29 @@ def override_semantic(target: str, cand: str, inp: SemOverride):
     return {"saved": True, "changed": d["changed"]}
 
 
+# ── 문단 나누기(청킹) 비교 ────────────────────────────────────────
+# 나눠놓은 문단이 검색 결과 단위이자 읽는 단위가 된다. 방법마다 결과가 크게
+# 달라서 숫자만 봐서는 감이 안 오므로, 실제로 나뉜 문단을 그대로 보여준다.
+CHUNK_SOURCES = {
+    "고려대": {"file": "hyp_고려대_mlx.txt", "title": "고려대 9분 · mlx-whisper 전사"},
+    "PBS": {"file": "hyp_PBS_mlx.txt", "title": "PBS 2.5분 · mlx-whisper 전사"},
+}
+
+
+@app.get("/api/chunk/{src}")
+def get_chunks(src: str, target: int = 340):
+    import chunker
+
+    cfg = CHUNK_SOURCES.get(src)
+    if not cfg:
+        raise HTTPException(404, "그런 원문 없음")
+    f = WORK / cfg["file"]
+    if not f.exists():
+        raise HTTPException(404, f"전사 결과가 없습니다: {cfg['file']} — 먼저 오차 대조를 실행하세요")
+
+    text = re.sub(r"\s+", " ", f.read_text(encoding="utf-8")).strip()
+    return {"src": src, "title": cfg["title"], "chars": len(text), "target": target,
+            "methods": chunker.run_all(text, target)}
+
+
 app.mount("/static", StaticFiles(directory=pathlib.Path(__file__).resolve().parent / "static"), name="static")

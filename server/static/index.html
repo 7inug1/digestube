@@ -207,6 +207,27 @@
   .sembtns button.on { background: var(--blue); border-color: var(--blue); color: white; font-weight: 600; }
   .diff-legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--faint); }
 
+  .chunk-wrap { display: flex; flex-direction: column; gap: var(--sp-2); }
+  .chunk-score { overflow-x: auto; }
+  .chunk-score table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .chunk-score th, .chunk-score td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }
+  .chunk-score th:first-child, .chunk-score td:first-child,
+  .chunk-score th:nth-child(2), .chunk-score td:nth-child(2) { text-align: left; }
+  .chunk-score th { color: var(--faint); font-size: 10px; text-transform: uppercase; }
+  .chunk-score .bad { color: var(--red); font-weight: 700; }
+  .chunk-score .good { color: var(--green); font-weight: 700; }
+  .chunk-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-2); align-items: start; }
+  @media (max-width: 1000px) { .chunk-cols { grid-template-columns: 1fr; } }
+  .chunk-col { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
+  .chunk-col h4 { margin: 0; padding: 8px 12px; font-size: 12px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+  .chunk-col h4 span { font-weight: 400; color: var(--muted); font-size: 11px; }
+  .chunk-list { max-height: 56vh; overflow-y: auto; }
+  .chunk-item { padding: 8px 12px; border-bottom: 1px dashed var(--line); font-size: 11.5px; line-height: 1.75; color: var(--ink); }
+  .chunk-item:last-child { border-bottom: none; }
+  .chunk-item.cut { background: color-mix(in srgb, var(--red-soft) 45%, transparent); }
+  .chunk-meta { display: block; font-size: 9.5px; color: var(--faint); margin-bottom: 3px; }
+  .chunk-item.cut .chunk-meta { color: var(--red); font-weight: 700; }
+
   .reqlog-wrap { max-width: 560px; }
   .reqlog-label { font-size: 11px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .02em; margin-bottom: var(--sp-1); }
   .reqlog { background: var(--code-bg); border-radius: 10px; padding: 4px 0; font-family: ui-monospace,"SF Mono",Consolas,monospace; font-size: 11.5px; max-height: 220px; overflow-y: auto; }
@@ -297,6 +318,21 @@
       </div>
       <div class="diff-stat" id="diffStat"></div>
       <div class="diff-body" id="diffBody"></div>
+    </div>
+
+    <div class="chunk-wrap">
+      <div class="panel-head">
+        <h1>문단 나누기 비교</h1>
+        <p class="sub">나눠놓은 문단이 검색 결과 단위가 된다. 방법마다 어떻게 잘리는지 직접 본다.</p>
+      </div>
+      <div class="diff-picker">
+        <span class="diff-group" id="chunkSrc"></span>
+        <label class="diff-toggle">목표 길이
+          <input type="number" id="chunkTarget" value="340" min="80" max="1200" step="20" />자
+        </label>
+      </div>
+      <div class="chunk-score" id="chunkScore"></div>
+      <div class="chunk-cols" id="chunkCols"></div>
     </div>
 
     <div class="reqlog-wrap">
@@ -757,6 +793,58 @@ async function loadSemantic() {
   semData = d;
   renderSemantic();
 }
+
+// ── 문단 나누기 비교 ──────────────────────────────────────────────
+// 문단은 검색 결과로 나오는 단위다. 문장 중간에서 끊기면 검색에 걸려도 말이
+// 안 통하고, 길이가 들쭉날쭉하면 어떤 문단은 뜻이 없고 어떤 문단은 여러 얘기가
+// 섞인다. 숫자만으로는 감이 안 와서 실제로 나뉜 문단을 그대로 보여준다.
+let chunkSrc = "고려대";
+
+async function loadChunks() {
+  document.querySelectorAll("#chunkSrc button").forEach(b => b.classList.toggle("active", b.dataset.v === chunkSrc));
+  const target = document.getElementById("chunkTarget").value || 340;
+  const path = `/api/chunk/${encodeURIComponent(chunkSrc)}?target=${target}`;
+  const log = logRequest("GET", `/api/chunk/${chunkSrc}`, "세 방법으로 나눠보기");
+  const r = await fetch(`${API}${path}`);
+  const d = await r.json();
+  if (!r.ok) { log.err(`${r.status}`); document.getElementById("chunkScore").textContent = d.detail || "실패"; return; }
+  log.ok(`${r.status}`);
+
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const rows = Object.entries(d.methods).map(([k, m]) => {
+    const s = m.score;
+    const cut = s.broken_pct > 0 ? "bad" : "good";
+    const even = s.stdev > 80 ? "bad" : "good";
+    return `<tr><td><b>${k}</b></td><td>${m.label}</td><td>${s.count}</td>
+      <td class="${cut}">${s.broken}건 (${s.broken_pct}%)</td>
+      <td>${s.avg}자</td><td>${s.min}~${s.max}자</td>
+      <td class="${even}">±${s.stdev}</td></tr>`;
+  }).join("");
+  document.getElementById("chunkScore").innerHTML = `
+    <table><tr><th></th><th>방법</th><th>문단 수</th><th>① 문장 중간 끊김</th>
+    <th>평균 길이</th><th>② 최소~최대</th><th>길이 편차</th></tr>${rows}</table>
+    <div class="diff-legend">원문 ${d.chars.toLocaleString()}자 · 목표 ${d.target}자 · ③(한 얘기만)은 판정이 필요해 아직 없음</div>`;
+
+  document.getElementById("chunkCols").innerHTML = Object.entries(d.methods).map(([k, m]) => `
+    <div class="chunk-col">
+      <h4>${k}. ${m.label} <span>${m.score.count}개</span></h4>
+      <div class="chunk-list">${m.chunks.map((c, i) => {
+        const cut = c.trim() && !/[.!?。？！]$/.test(c.trim()) && i < m.chunks.length - 1;
+        return `<div class="chunk-item${cut ? " cut" : ""}">
+          <span class="chunk-meta">${i + 1}번 · ${c.length}자${cut ? " · 문장 중간에서 끊김" : ""}</span>
+          ${esc(c)}</div>`;
+      }).join("")}</div>
+    </div>`).join("");
+}
+
+(() => {
+  document.getElementById("chunkSrc").innerHTML = ["고려대", "PBS"]
+    .map(v => `<button data-v="${v}">${v}</button>`).join("");
+  document.querySelectorAll("#chunkSrc button").forEach(b =>
+    b.onclick = () => { chunkSrc = b.dataset.v; loadChunks(); });
+  document.getElementById("chunkTarget").onchange = loadChunks;
+  loadChunks();
+})();
 
 let notes = [];
 async function loadNotes() {
