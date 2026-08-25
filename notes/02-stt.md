@@ -11,7 +11,7 @@
 - mlx-whisper: Apple Silicon(M시리즈 칩)에 맞춰 최적화한 버전(Whisper와 같은 가중치)
 - faster-whisper: CTranslate2 엔진으로 다시 짜서 NVIDIA GPU에서 빠르게 돌리는 버전(Whisper와 같은 가중치)
 - whisper.cpp: C++로 포팅해서 CPU에서도 가볍게 돌아가는 버전(Whisper와 같은 가중치)
-- Qwen3-ASR: 알리바바 Qwen팀의 오픈소스 모델, 한국어 포함 30개 언어 지원
+- Qwen3-ASR: 알리바바 Qwen팀의 오픈소스 모델, 한국어 포함 30개 언어 지원. 2026년 1월 출시라 아직 생태계·툴링이 Whisper·NVIDIA NeMo만큼 성숙하지 않고, 공개된 벤치마크도 깨끗한 오디오 기준이라 실제 콘텐츠에서 검증이 더 필요함
 - NVIDIA Parakeet/Canary: HuggingFace Open ASR 리더보드 상위권 오픈소스 모델
 - Meta MMS(facebook/mms-1b-all): 한국어 포함 1,162개 언어를 지원하는 오픈소스 모델
 
@@ -29,7 +29,7 @@
 
 **어떻게 골랐나**: 카테고리(로컬 오픈소스·해외 클라우드·국내 클라우드)를 먼저 정하고 각 칸을 채웠다.
 
-제외: 유튜브 자동자막(후보 아니라 비교 baseline), Kakao·AssemblyAI·Speechmatics(정보 부족으로 판단 보류), NVIDIA Parakeet/Canary(Parakeet은 영어 전용으로 확인됨, Canary는 벤치마크가 전부 영어 데이터셋 기준이라 한국어 지원 여부 확인 안 됨 — 둘 다 판단 보류).
+제외: 유튜브 자동자막(후보 아니라 비교 baseline), Kakao·AssemblyAI·Speechmatics(정보 부족으로 판단 보류), NVIDIA Parakeet/Canary(Parakeet 다국어판(TDT v3)도 유럽 25개 언어까지만 지원, 한국어 없음. Canary는 벤치마크가 전부 영어 데이터셋 기준이라 한국어 지원 여부 확인 안 됨 — 둘 다 제외).
 
 ## 발견 1 — 비용은 변별력이 없었다
 
