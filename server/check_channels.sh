@@ -8,31 +8,37 @@ N=3
 
 check_channel() {
   local name="$1" url="$2"
-  local ids hit=0 tot=0
+  local ids hit=0 tot=0 langs=""
   ids=$("$YTDLP" --flat-playlist --playlist-end $N --extractor-args "$ARGS" --print "%(id)s" "$url" 2>/dev/null)
   if [ -z "$ids" ]; then
-    printf "%-22s 채널 접근 실패\n" "$name"
+    printf "%-24s 채널 접근 실패\n" "$name"
     return
   fi
   while IFS= read -r id; do
     [ -z "$id" ] && continue
     tot=$((tot + 1))
-    if "$YTDLP" --list-subs --extractor-args "$ARGS" "https://www.youtube.com/watch?v=$id" 2>/dev/null | grep -q "Available subtitles"; then
+    # "Available subtitles"(사람이 올린 것) 아래 줄들의 언어 코드를 모은다.
+    # 자막이 있어도 영어 번역본이면 한국어 정답으로 못 쓰므로 언어까지 확인해야 한다.
+    local out
+    out=$("$YTDLP" --list-subs --extractor-args "$ARGS" "https://www.youtube.com/watch?v=$id" 2>/dev/null \
+          | sed -n '/Available subtitles/,$p' | tail -n +3 | awk '{print $1}' | tr '\n' ' ')
+    if [ -n "$out" ]; then
       hit=$((hit + 1))
+      langs="$langs $out"
     fi
   done <<< "$ids"
-  printf "%-22s %d/%d편에 사람 자막\n" "$name" "$hit" "$tot"
+  printf "%-24s %d/%d편  %s\n" "$name" "$hit" "$tot" "$(echo $langs | tr ' ' '\n' | sort -u | tr '\n' ' ')"
 }
 
 while IFS='|' read -r name url; do
   [ -z "$name" ] && continue
   check_channel "$name" "$url"
 done << 'LIST'
-국회방송|https://www.youtube.com/@natv_korea/videos
-K-MOOC|https://www.youtube.com/@kmooc/videos
-연세대|https://www.youtube.com/@yonseiuniv/videos
-고려대|https://www.youtube.com/@KoreaUniv/videos
-POSTECH|https://www.youtube.com/@postechofficial/videos
-마이크임팩트|https://www.youtube.com/@micimpact/videos
-MIT OpenCourseWare|https://www.youtube.com/@mitocw/videos
+HYBE LABELS|https://www.youtube.com/@HYBELABELS/videos
+SMTOWN|https://www.youtube.com/@SMTOWN/videos
+JYP Entertainment|https://www.youtube.com/@JYPEntertainment/videos
+tvN|https://www.youtube.com/@tvN/videos
+스브스캐치|https://www.youtube.com/@SBSCatch/videos
+삼성전자|https://www.youtube.com/@SamsungKorea/videos
+서울시|https://www.youtube.com/@seoullive/videos
 LIST
