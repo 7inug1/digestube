@@ -55,6 +55,13 @@
   .note-body blockquote p { margin: 0; }
   .note-body blockquote .tldr-label { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; color: var(--blue); text-transform: uppercase; margin-bottom: 4px; }
 
+  .funnel { display: flex; flex-direction: column; gap: var(--sp-2); margin: var(--sp-2) 0; }
+  .funnel-row { display: flex; align-items: center; gap: 12px; }
+  .funnel-bar { flex-shrink: 0; background: var(--blue); border-radius: 6px; height: 30px; display: flex; align-items: center; justify-content: center; transition: width .3s; min-width: 44px; }
+  .funnel-n { color: white; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .funnel-label { font-size: 12.5px; color: var(--ink); }
+  .funnel-reason { display: block; font-size: 11px; color: var(--faint); margin-top: 1px; }
+
   .build-panel { padding: var(--sp-4); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-4); }
   .panel-head { display: flex; flex-direction: column; gap: var(--sp-1); }
   .build-panel h1 { font-size: 20px; margin: 0; }
@@ -161,7 +168,24 @@ const API = "http://127.0.0.1:8010";
 function mdToHtml(md) {
   const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const lines = md.split("\n");
-  let html = "", inList = false, inTable = false, tableRows = [];
+  let html = "", inList = false, inTable = false, tableRows = [], inFunnel = false, funnelRows = [];
+
+  // ```funnel 블록 안의 "숫자|라벨|사유(선택)" 줄을 깔때기 모양 막대로 그린다.
+  // 순차 소거 과정(18개 → 15개 → 4개 식)을 표로 나열하는 것보다 한눈에 들어온다.
+  function flushFunnel() {
+    if (!funnelRows.length) return;
+    const max = Math.max(...funnelRows.map(r => r.n));
+    html += '<div class="funnel">';
+    funnelRows.forEach(r => {
+      const pct = Math.max(18, Math.round((r.n / max) * 100));
+      html += `<div class="funnel-row">
+        <div class="funnel-bar" style="width:${pct}%"><span class="funnel-n">${r.n}</span></div>
+        <div class="funnel-label">${inline(r.label)}${r.reason ? `<span class="funnel-reason">${inline(r.reason)}</span>` : ""}</div>
+      </div>`;
+    });
+    html += '</div>';
+    funnelRows = [];
+  }
 
   function flushTable() {
     if (!tableRows.length) return;
@@ -181,6 +205,13 @@ function mdToHtml(md) {
   }
   for (const raw of lines) {
     const line = raw;
+    if (/^```funnel/.test(line)) { inFunnel = true; continue; }
+    if (inFunnel) {
+      if (/^```/.test(line)) { inFunnel = false; flushFunnel(); continue; }
+      const [n, label, reason] = line.split("|").map(s => s?.trim());
+      if (n) funnelRows.push({ n: parseInt(n, 10), label, reason });
+      continue;
+    }
     if (/^\|/.test(line)) { inTable = true; tableRows.push(line); continue; }
     else if (inTable) { flushTable(); inTable = false; }
 
