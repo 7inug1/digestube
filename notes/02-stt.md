@@ -6,9 +6,25 @@
 
 ## 후보 (12개, 카테고리별)
 
-- 로컬: Whisper 원본, mlx-whisper, faster-whisper, whisper.cpp
-- 클라우드 해외: OpenAI Whisper API, Groq(whisper-large-v3 호스팅), Google, Azure, AWS Transcribe, Deepgram
-- 클라우드 국내: Naver Clova Speech, 리턴제로
+**어떻게 골랐나**: 카테고리(로컬 오픈소스·해외 클라우드·국내 클라우드)를 먼저 정하고 각각 채웠다. 검색 한 번 돌려서 나온 결과만 쓰면 국내 후보가 통째로 빠지는 일이 실제로 있었어서(청킹용 임베딩 모델 조사 때 처음엔 국내 기업이 하나도 안 나왔었다) 이 순서를 지킨다.
+
+**로컬 오픈소스** — 전부 OpenAI가 공개한 Whisper 모델 가중치를 그대로 쓰고, 실행 방식만 다르다.
+- Whisper 원본: OpenAI가 만든 기본 구현체(PyTorch)
+- mlx-whisper: Apple Silicon(M시리즈 칩)에 맞춰 최적화한 버전
+- faster-whisper: CTranslate2 엔진으로 다시 짜서 NVIDIA GPU에서 빠르게 돌리는 버전
+- whisper.cpp: C++로 포팅해서 CPU에서도 가볍게 돌아가는 버전
+
+**클라우드 해외**
+- OpenAI Whisper API: OpenAI가 자기 서버에서 Whisper를 대신 돌려주는 유료 API
+- Groq: Groq가 자체 개발한 고속 AI 칩(LPU)으로 Whisper를 호스팅해 저렴하고 빠르게 제공하는 서비스
+- Google: 구글 클라우드 음성인식 API(Speech-to-Text v2 / Gemini)
+- Azure: 마이크로소프트 클라우드 음성인식 API
+- AWS Transcribe: 아마존 클라우드 음성인식 API
+- Deepgram: 음성인식 전문 스타트업의 API, 실시간 스트리밍에 강점
+
+**클라우드 국내**
+- Naver Clova Speech: 네이버클라우드의 한국어 특화 음성인식 API
+- 리턴제로: 국내 스타트업이 Whisper를 한국어 데이터로 파인튜닝해서 만든 API(VITO Speech)
 
 제외: 유튜브 자동자막(후보 아니라 비교 baseline), Kakao·AssemblyAI·Speechmatics(정보 부족으로 판단 보류).
 
