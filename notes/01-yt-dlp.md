@@ -2,6 +2,8 @@
 
 상태: 완료
 
+> **TLDR**: yt-dlp 채택. youtube-dl은 관리 끊김, pytube는 방치됨, pytubefix는 메타데이터만 자동화되고 실제 다운로드는 SABR 보호에 막힘 — 셋 다 직접 테스트해서 확인했다.
+
 **결론: yt-dlp 채택. youtube-dl·pytube·pytubefix 세 후보 모두 자동화된 파이프라인에 넣기엔 부족했다.**
 
 | 도구 | 저장소 | 최근 릴리스 | 월 다운로드(PyPI) | 봇 차단 우회 | 자동화 가능 |
