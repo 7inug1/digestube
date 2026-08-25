@@ -73,10 +73,13 @@
   .funnel-note { font-size: 11px; color: var(--muted); margin-top: 4px; padding-left: 10px; border-left: 2px solid var(--line); }
   .funnel-note + .funnel-note { margin-top: 2px; }
 
-  .roster { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--sp-2) 0; }
-  .roster-item { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; background: var(--surface-2); font-size: 12px; }
-  .roster-item.test, .roster-item.done { background: var(--blue-soft); }
+  .roster { display: flex; flex-direction: column; gap: 3px; margin: var(--sp-2) 0; }
+  .roster-group { font-size: 10.5px; font-weight: 700; letter-spacing: .03em; color: var(--faint); text-transform: uppercase; margin-top: var(--sp-2); padding-bottom: 2px; border-bottom: 1px solid var(--line); }
+  .roster-group:first-child { margin-top: 0; }
+  .roster-item { display: grid; grid-template-columns: 190px 1fr; align-items: baseline; gap: 4px 10px; padding: 5px 8px; border-radius: 6px; font-size: 12px; }
+  .roster-item.test { background: var(--blue-soft); }
   .roster-item.done { background: var(--green-soft); }
+  .roster-head { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
   .roster-name { color: var(--ink); }
   .roster-item.exclude .roster-name, .roster-item.merge .roster-name, .roster-item.defer .roster-name {
     color: var(--faint); text-decoration: line-through; text-decoration-thickness: 1.5px;
@@ -90,7 +93,8 @@
   .roster-badge.defer { background: var(--amber-soft); color: var(--amber); }
   .roster-badge.test { background: var(--blue); color: white; }
   .roster-badge.done { background: var(--green); color: white; }
-  .roster-note { font-size: 10.5px; color: var(--faint); }
+  .roster-note { font-size: 11px; color: var(--muted); min-width: 0; }
+  @media (max-width: 620px) { .roster-item { grid-template-columns: 1fr; } }
 
   .build-panel { padding: var(--sp-4); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-4); }
   .panel-head { display: flex; flex-direction: column; gap: var(--sp-1); }
@@ -233,15 +237,17 @@ function mdToHtml(md) {
   // ```roster 블록: "이름|상태|비고" 한 줄씩 = 후보 전원을 이름 그대로 나열하고
   // 상태(exclude/merge/defer/test/done)에 따라 취소선·색을 다르게 준다.
   // 퍼널이 "몇 개가 몇 개로 줄었다"는 흐름이라면, 이건 "누가 어떻게 됐다"를 이름으로 바로 보여준다.
-  const ROSTER_LABEL = { exclude: "제외", merge: "합침", defer: "보류", test: "테스트중", done: "완료" };
+  // "# 카테고리명" 줄을 넣으면 그 아래 항목들이 한 묶음으로 나온다. 후보 명단과
+  // 소거 결과를 따로 적으면 같은 이름이 두 번 나오므로, 한 명단에 상태까지 함께 담는다.
+  const ROSTER_LABEL = { exclude: "제외", merge: "합침", defer: "보류", test: "측정 대기", done: "측정 완료" };
   function flushRoster() {
     if (!rosterRows.length) return;
     html += '<div class="roster">';
     rosterRows.forEach(r => {
+      if (r.group) { html += `<div class="roster-group">${inline(r.group)}</div>`; return; }
       const st = ROSTER_LABEL[r.status] ? r.status : "test";
       html += `<div class="roster-item ${st}">
-        <span class="roster-name">${inline(r.name)}</span>
-        <span class="roster-badge ${st}">${ROSTER_LABEL[st]}</span>
+        <span class="roster-head"><span class="roster-name">${inline(r.name)}</span><span class="roster-badge ${st}">${ROSTER_LABEL[st]}</span></span>
         ${r.note ? `<span class="roster-note">${inline(r.note)}</span>` : ""}
       </div>`;
     });
@@ -284,6 +290,7 @@ function mdToHtml(md) {
     if (/^```roster/.test(line)) { inRoster = true; continue; }
     if (inRoster) {
       if (/^```/.test(line)) { inRoster = false; flushRoster(); continue; }
+      if (/^#\s+/.test(line)) { rosterRows.push({ group: line.replace(/^#\s+/, "") }); continue; }
       const [name, status, note] = line.split("|").map(s => s?.trim());
       if (name) rosterRows.push({ name, status, note });
       continue;
