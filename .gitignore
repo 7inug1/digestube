@@ -5,3 +5,4 @@ server/work/
 server/*.log
 node_modules/
 .env
+server/work/review_marks.json

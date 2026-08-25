@@ -97,4 +97,98 @@ def get_audio(vid: str):
     return FileResponse(f, media_type="audio/mp4", filename=f.name)
 
 
+# ── 정답 검수 ────────────────────────────────────────────────────
+# STT 정확도(CER)를 재려면 "사람이 만든 자막"을 정답으로 써야 하는데, 자막이
+# 있다고 다 맞는 건 아니다(빠진 구간, 화면 그래픽 글자 등). 사람이 영상을 보며
+# 한 줄씩 대조해야 정답으로 확정된다 — notes/03-cer-videos.md의 3단계.
+REVIEW_TARGETS = {
+    "korea-univ": {
+        "video_id": "ljnw_JyvJEQ",
+        "title": "고려대 — 내 알고리즘은 정말 내 취향일까?",
+        "vtt": "ljnw_JyvJEQ.ko.vtt",
+        "duration": 559,
+        "note": "자막 코드 ko(채널 자체 제작) · 0~559초 전 구간 커버 · 대괄호로 표시된 화면 그래픽 글자는 제거함",
+        "strip_brackets": True,
+    },
+    "sebasi": {
+        "video_id": "fGNGKCz60NE",
+        "title": "세바시 — 완벽주의 아니고 그냥 게으른 걸까?",
+        "vtt": "fGNGKCz60NE.ko.vtt",
+        "duration": 821,
+        "note": "알려진 결함: 앞 30초(티저 구간)에 자막이 없음",
+        "strip_brackets": False,
+    },
+    "pbs": {
+        "video_id": "EzG8dcpdMH4",
+        "title": "PBS NewsHour — Graham and Norman in South Carolina",
+        "vtt": "EzG8dcpdMH4.en.vtt",
+        "duration": 150,
+        "note": "자막이 0.4~149.3초로 영상 전체를 덮음",
+        "strip_brackets": False,
+    },
+}
+MARKS = WORK / "review_marks.json"
+
+
+def _vtt_lines(path: pathlib.Path, strip_brackets: bool):
+    def sec(x):
+        h, m, s = x.split(":")
+        return round(int(h) * 3600 + int(m) * 60 + float(s), 2)
+
+    out, start = [], None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if "-->" in line:
+            start = sec(line.split(" --> ")[0].strip())
+            continue
+        line = line.strip()
+        if not line or line == "WEBVTT" or line.startswith(("Kind:", "Language:")):
+            continue
+        if strip_brackets:
+            line = " ".join(re.sub(r"\[[^\]]*\]", " ", line).split())
+            if not line:
+                continue
+        if start is not None:
+            out.append({"t": start, "text": line})
+    return out
+
+
+@app.get("/api/review")
+def list_review():
+    return [{"id": k, **{f: v[f] for f in ("video_id", "title", "duration", "note")}}
+            for k, v in REVIEW_TARGETS.items()]
+
+
+@app.get("/api/review/{rid}")
+def get_review(rid: str):
+    cfg = REVIEW_TARGETS.get(rid)
+    if not cfg:
+        raise HTTPException(404, "그런 검수 대상 없음")
+    f = WORK / cfg["vtt"]
+    if not f.exists():
+        raise HTTPException(404, f"자막 파일이 없습니다: {cfg['vtt']}")
+    marks = json.loads(MARKS.read_text(encoding="utf-8")) if MARKS.exists() else {}
+    return {"id": rid, **cfg, "lines": _vtt_lines(f, cfg["strip_brackets"]),
+            "marks": marks.get(rid, {})}
+
+
+class MarkIn(BaseModel):
+    index: int
+    verdict: str  # ok · bad · "" (해제)
+    memo: str = ""
+
+
+@app.post("/api/review/{rid}/mark")
+def set_mark(rid: str, inp: MarkIn):
+    if rid not in REVIEW_TARGETS:
+        raise HTTPException(404, "그런 검수 대상 없음")
+    marks = json.loads(MARKS.read_text(encoding="utf-8")) if MARKS.exists() else {}
+    cur = marks.setdefault(rid, {})
+    if inp.verdict:
+        cur[str(inp.index)] = {"verdict": inp.verdict, "memo": inp.memo}
+    else:
+        cur.pop(str(inp.index), None)
+    MARKS.write_text(json.dumps(marks, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"saved": True, "count": len(cur)}
+
+
 app.mount("/static", StaticFiles(directory=pathlib.Path(__file__).resolve().parent / "static"), name="static")

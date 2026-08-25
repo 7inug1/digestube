@@ -121,6 +121,32 @@
   .cv-body audio { width: 100%; height: 32px; }
   .cv-reset { margin-top: 10px; background: none; border: none; color: var(--muted); font-size: 11.5px; text-decoration: underline; cursor: pointer; padding: 0; }
 
+  .review-wrap { display: flex; flex-direction: column; gap: var(--sp-2); }
+  .review-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+  .review-picker button { padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--muted); font-size: 12.5px; cursor: pointer; }
+  .review-picker button:hover { border-color: var(--blue); color: var(--blue); }
+  .review-picker button.active { background: var(--blue); border-color: var(--blue); color: white; font-weight: 600; }
+  .review-body { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: var(--sp-3); align-items: start; }
+  @media (max-width: 1100px) { .review-body { grid-template-columns: 1fr; } }
+  .review-video { position: sticky; top: 0; display: flex; flex-direction: column; gap: var(--sp-1); }
+  .yt-box { position: relative; padding-top: 56.25%; border-radius: 10px; overflow: hidden; background: #000; }
+  .yt-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .review-note { font-size: 11.5px; color: var(--muted); padding: 8px 10px; background: var(--surface-2); border-radius: 8px; }
+  .review-stat { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .review-stat b { color: var(--ink); }
+  .review-lines { display: flex; flex-direction: column; gap: 2px; max-height: 70vh; overflow-y: auto; }
+  .rline { display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: start; padding: 6px 8px; border-radius: 7px; font-size: 12.5px; line-height: 1.6; }
+  .rline:hover { background: var(--surface-2); }
+  .rline.ok { background: var(--green-soft); }
+  .rline.bad { background: var(--red-soft); }
+  .rline-t { background: none; border: none; padding: 0; color: var(--blue); font-family: ui-monospace, monospace; font-size: 11.5px; cursor: pointer; text-align: left; }
+  .rline-t:hover { text-decoration: underline; }
+  .rline-text { min-width: 0; color: var(--ink); }
+  .rline-btns { display: flex; gap: 3px; }
+  .rline-btns button { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; width: 26px; height: 24px; font-size: 12px; cursor: pointer; color: var(--muted); padding: 0; }
+  .rline.ok .rline-btns button.ok { background: var(--green); border-color: var(--green); color: white; }
+  .rline.bad .rline-btns button.bad { background: var(--red); border-color: var(--red); color: white; }
+
   .reqlog-wrap { max-width: 560px; }
   .reqlog-label { font-size: 11px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .02em; margin-bottom: var(--sp-1); }
   .reqlog { background: var(--code-bg); border-radius: 10px; padding: 4px 0; font-family: ui-monospace,"SF Mono",Consolas,monospace; font-size: 11.5px; max-height: 220px; overflow-y: auto; }
@@ -175,6 +201,22 @@
       <div class="cv-label">현재 작업 영상 — 앞으로 만들 단계(전사·청킹 등)가 다 이 영상 기준으로 이어짐</div>
       <div class="cv-body" id="cvBody"></div>
       <button class="cv-reset" id="cvReset">다른 영상으로 바꾸기</button>
+    </div>
+
+    <div class="review-wrap">
+      <div class="panel-head">
+        <h1>정답 검수</h1>
+        <p class="sub">자막이 실제 말과 맞는지 한 줄씩 확인한다. 이게 끝나야 CER을 잴 수 있다.</p>
+      </div>
+      <div class="review-picker" id="reviewPicker"></div>
+      <div class="review-body" id="reviewBody" style="display:none">
+        <div class="review-video">
+          <div class="review-note" id="reviewNote"></div>
+          <div class="yt-box"><iframe id="ytFrame" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+          <div class="review-stat" id="reviewStat"></div>
+        </div>
+        <div class="review-lines" id="reviewLines"></div>
+      </div>
     </div>
 
     <div class="reqlog-wrap">
@@ -353,6 +395,91 @@ loadCurrentVideo();
 
 // 노트 선택 상태를 URL 해시(#02-stt)에 반영한다 — 새로고침해도 방금 보던
 // 탭이 유지되고, 이 URL 자체를 그 노트로 가는 링크로도 쓸 수 있다.
+// ── 정답 검수 ────────────────────────────────────────────────────
+// 영상과 자막을 나란히 놓고 한 줄씩 대조한다. 시각을 누르면 그 지점부터 재생되고,
+// ○/✕ 로 판정을 남기면 서버에 바로 저장된다(work/review_marks.json).
+let reviewData = null;
+
+function ytSeek(sec) {
+  const f = document.getElementById("ytFrame");
+  f.contentWindow.postMessage(JSON.stringify({
+    event: "command", func: "seekTo", args: [Math.max(0, sec - 0.5), true],
+  }), "*");
+  f.contentWindow.postMessage(JSON.stringify({
+    event: "command", func: "playVideo", args: [],
+  }), "*");
+}
+
+function renderReviewStat() {
+  const marks = reviewData.marks || {};
+  const vals = Object.values(marks);
+  const ok = vals.filter(v => v.verdict === "ok").length;
+  const bad = vals.filter(v => v.verdict === "bad").length;
+  const total = reviewData.lines.length;
+  document.getElementById("reviewStat").innerHTML =
+    `<b>${ok + bad}</b> / ${total}줄 확인 &nbsp;·&nbsp; 맞음 <b>${ok}</b> &nbsp;·&nbsp; 틀림 <b>${bad}</b>`;
+}
+
+async function markLine(i, verdict) {
+  const marks = reviewData.marks;
+  const next = marks[i]?.verdict === verdict ? "" : verdict;
+  const log = logRequest("POST", `/api/review/${reviewData.id}/mark`, `${i}번 줄 판정`);
+  const r = await fetch(`${API}/api/review/${reviewData.id}/mark`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ index: i, verdict: next, memo: "" }),
+  });
+  if (r.ok) { log.ok(`${r.status}`); } else { log.err(`${r.status}`); return; }
+  if (next) marks[i] = { verdict: next, memo: "" }; else delete marks[i];
+  const row = document.querySelector(`.rline[data-i="${i}"]`);
+  row.className = `rline ${next}`;
+  renderReviewStat();
+}
+
+function renderReview() {
+  const d = reviewData;
+  document.getElementById("reviewBody").style.display = "grid";
+  document.getElementById("reviewNote").textContent = d.note;
+  document.getElementById("ytFrame").src =
+    `https://www.youtube.com/embed/${d.video_id}?enablejsapi=1&rel=0`;
+  document.getElementById("reviewLines").innerHTML = d.lines.map((ln, i) => {
+    const m = d.marks[i]?.verdict || "";
+    const mm = `${String(Math.floor(ln.t / 60)).padStart(2, "0")}:${String(Math.floor(ln.t % 60)).padStart(2, "0")}`;
+    return `<div class="rline ${m}" data-i="${i}">
+      <button class="rline-t" data-seek="${ln.t}">${mm}</button>
+      <span class="rline-text">${ln.text.replace(/</g, "&lt;")}</span>
+      <span class="rline-btns">
+        <button class="ok" data-mark="ok" data-i="${i}" title="자막이 말과 맞음">○</button>
+        <button class="bad" data-mark="bad" data-i="${i}" title="자막이 말과 다름">✕</button>
+      </span>
+    </div>`;
+  }).join("");
+  document.querySelectorAll("[data-seek]").forEach(b =>
+    b.onclick = () => ytSeek(parseFloat(b.dataset.seek)));
+  document.querySelectorAll("[data-mark]").forEach(b =>
+    b.onclick = () => markLine(parseInt(b.dataset.i, 10), b.dataset.mark));
+  renderReviewStat();
+}
+
+async function loadReview(rid) {
+  document.querySelectorAll("#reviewPicker button")
+    .forEach(b => b.classList.toggle("active", b.dataset.rid === rid));
+  const log = logRequest("GET", `/api/review/${rid}`, "검수용 자막 불러오기");
+  const r = await fetch(`${API}/api/review/${rid}`);
+  const d = await r.json();
+  if (!r.ok) { log.err(`${r.status}`); return; }
+  log.ok(`${r.status} · ${d.lines.length}줄`);
+  reviewData = d;
+  renderReview();
+}
+
+(async () => {
+  const list = await (await fetch(`${API}/api/review`)).json();
+  document.getElementById("reviewPicker").innerHTML = list.map(x =>
+    `<button data-rid="${x.id}">${x.title.split(" — ")[0]} · ${Math.round(x.duration / 60)}분</button>`).join("");
+  document.querySelectorAll("#reviewPicker button").forEach(b =>
+    b.onclick = () => loadReview(b.dataset.rid));
+})();
+
 let notes = [];
 async function loadNotes() {
   notes = await (await fetch(`${API}/api/notes`)).json();
