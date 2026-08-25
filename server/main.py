@@ -2,6 +2,7 @@
 노트(notes/)와 실제 기능을 같은 화면에서 보여준다."""
 import json
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -79,6 +80,21 @@ def extract(inp: ExtractIn):
         "duration_sec": meta.get("duration"),
         "audio_file": audio_path.name, "size_kb": size_kb,
     }
+
+
+_VID_RE = re.compile(r"^[\w-]{1,32}$")
+
+
+@app.get("/api/audio/{vid}")
+def get_audio(vid: str):
+    """방금 뽑은 오디오를 화면에서 바로 재생·다운로드할 수 있게 내려준다.
+    vid를 파일명으로 그대로 쓰므로 영숫자·-·_ 외 문자는 막는다(경로 탈출 방지)."""
+    if not _VID_RE.match(vid):
+        raise HTTPException(400, "잘못된 id")
+    f = WORK / f"{vid}.m4a"
+    if not f.exists():
+        raise HTTPException(404, "그 오디오 없음 — 먼저 추출해야 함")
+    return FileResponse(f, media_type="audio/mp4", filename=f.name)
 
 
 app.mount("/static", StaticFiles(directory=pathlib.Path(__file__).resolve().parent / "static"), name="static")
