@@ -116,12 +116,6 @@
   </div>
 
   <div class="build-panel">
-    <div class="current-video" id="currentVideo" style="display:none">
-      <div class="cv-label">현재 작업 영상 — 앞으로 만들 단계(전사·청킹 등)가 다 이 영상 기준으로 이어짐</div>
-      <div class="cv-body" id="cvBody"></div>
-      <button class="cv-reset" id="cvReset">다른 영상으로 바꾸기</button>
-    </div>
-
     <h1>1단계 — yt-dlp 오디오 추출</h1>
     <p class="sub">유튜브 URL을 넣으면, 왼쪽 노트에서 정한 그 도구·그 옵션 그대로 오디오를 뽑아낸다.</p>
     <div class="card">
@@ -136,6 +130,12 @@
         <div class="step" data-s="3"><span class="dot">3</span>오디오 파일(.m4a) 추출 완료</div>
       </div>
       <div id="result"></div>
+    </div>
+
+    <div class="current-video" id="currentVideo" style="display:none">
+      <div class="cv-label">현재 작업 영상 — 앞으로 만들 단계(전사·청킹 등)가 다 이 영상 기준으로 이어짐</div>
+      <div class="cv-body" id="cvBody"></div>
+      <button class="cv-reset" id="cvReset">다른 영상으로 바꾸기</button>
     </div>
 
     <div class="reqlog-wrap">
