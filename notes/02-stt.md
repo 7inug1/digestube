@@ -8,10 +8,19 @@
 
 ```funnel
 18|전체 후보|카테고리별로 나열
-15|1차 제외 후|Kakao(비공개)·Parakeet·Canary(한국어 미지원) 제외
-4|실제 테스트 대상|mlx-whisper·리턴제로·Groq·Naver Clova
+15|자격 있는 후보|Kakao(비공개)·Parakeet·Canary(한국어 미지원) 제외
+4|1차 테스트 대상|지금 바로 접근 가능한 것만 우선 선정
 1|측정 완료|mlx-whisper CER 4.14%(잠정치)
 ```
+
+**15개에서 4개로 줄어든 기준은 "안 됨"이 아니라 "이번 라운드에 바로 시작 가능한가"다.** 11개는 탈락이 아니라 뒤로 미뤄둔 것이다.
+
+- Whisper 원본·faster-whisper·whisper.cpp — mlx-whisper와 가중치가 같아 정확도는 동일하다. 하드웨어(우리 맥)에 맞는 mlx-whisper 하나로 대표시켰다.
+- 유튜브 자동자막 — 이미 실측값(CER 10.10%)이 있어서 재측정이 필요 없다.
+- Qwen3-ASR·Meta MMS — 성숙도·다국어 특화 관련 캐비어트가 있어 이번 라운드에서는 후순위로 미뤘다.
+- OpenAI Whisper API·Google·Azure·AWS·Deepgram·AssemblyAI·Speechmatics — 계정·API 키를 아직 안 만들었다. 1차 결과가 애매하면 그때 만든다.
+
+1차 4개(로컬 무료 · 국내 2개 무료 크레딧 · 이미 계정 있는 Groq)는 전부 새 계정을 만들 필요가 없다는 공통점이 있다.
 
 ## 후보 (18개, 카테고리별)
 
