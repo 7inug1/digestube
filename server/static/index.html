@@ -278,15 +278,26 @@ document.getElementById("cvReset").onclick = () => {
 };
 loadCurrentVideo();
 
+// 노트 선택 상태를 URL 해시(#02-stt)에 반영한다 — 새로고침해도 방금 보던
+// 탭이 유지되고, 이 URL 자체를 그 노트로 가는 링크로도 쓸 수 있다.
 let notes = [];
 async function loadNotes() {
   notes = await (await fetch(`${API}/api/notes`)).json();
   const tabs = document.getElementById("tabs");
   tabs.innerHTML = notes.map(n => `<button data-id="${n.id}">${n.title}</button>`).join("");
-  tabs.querySelectorAll("button").forEach(b => b.onclick = () => selectNote(b.dataset.id));
-  if (notes.length) selectNote(notes.find(n => n.id.includes("yt-dlp"))?.id || notes[0].id);
+  tabs.querySelectorAll("button").forEach(b => b.onclick = () => { location.hash = b.dataset.id; });
+  const fromHash = location.hash.replace(/^#/, "");
+  const startId = notes.find(n => n.id === fromHash)?.id
+    || notes.find(n => n.id.includes("yt-dlp"))?.id
+    || notes[0]?.id;
+  if (startId) selectNote(startId);
 }
+window.addEventListener("hashchange", () => {
+  const id = location.hash.replace(/^#/, "");
+  if (notes.find(n => n.id === id)) selectNote(id);
+});
 async function selectNote(id) {
+  if (location.hash.replace(/^#/, "") !== id) location.hash = id;
   document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.id === id));
   const log = logRequest("GET", `/api/notes/${id}`, "왼쪽 노트 내용 불러오기");
   const r = await fetch(`${API}/api/notes/${id}`);
