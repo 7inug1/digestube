@@ -225,6 +225,21 @@ def _hyp_text(target: str, cand: str, refresh: bool) -> str:
     return text
 
 
+def _word_ops(a, b):
+    """낱말 단위 정렬. 마침표·띄어쓰기만 다른 건 CER 정규화로 지워지므로
+    점수에 영향이 없다 — 진짜 오차와 섞이지 않게 cosmetic으로 따로 표시한다."""
+    import difflib
+
+    import measure
+
+    out = []
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        ta, hb = " ".join(a[i1:i2]), " ".join(b[j1:j2])
+        out.append({"op": tag, "truth": ta, "hyp": hb,
+                    "cosmetic": tag != "equal" and measure.norm(ta) == measure.norm(hb)})
+    return out
+
+
 @app.get("/api/diff/{target}/{cand}")
 def get_diff(target: str, cand: str, refresh: bool = False):
     import difflib
@@ -233,23 +248,47 @@ def get_diff(target: str, cand: str, refresh: bool = False):
 
     if cand not in DIFF_CANDIDATES:
         raise HTTPException(404, "그런 후보 없음")
-    truth = measure.read_truth(f"truth_{target}.txt")
+
+    lines = [l for l in (WORK / f"truth_{target}.txt").read_text(encoding="utf-8").splitlines()
+             if l.strip() and not l.startswith("#")]
+    truth = " ".join(lines)
     hyp = _hyp_text(target, cand, refresh)
 
-    a, b = truth.split(), hyp.split()
-    ops, real = [], 0
-    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
-        ta, hb = " ".join(a[i1:i2]), " ".join(b[j1:j2])
-        # 마침표·띄어쓰기만 다른 건 CER 계산 전에 정규화로 지워지므로 점수에
-        # 영향이 없다. 진짜 오차와 섞이면 어디가 문제인지 안 보여서 구분해둔다.
-        cosmetic = tag != "equal" and measure.norm(ta) == measure.norm(hb)
-        if tag != "equal" and not cosmetic:
-            real += 1
-        ops.append({"op": tag, "truth": ta, "hyp": hb, "cosmetic": cosmetic})
+    # 정답 낱말마다 "몇 번째 줄에 속하는지"를 기억해두고, 정렬 결과를 그 줄에
+    # 다시 나눠 담는다. 그래야 줄 단위로 나란히 놓고 볼 수 있다.
+    tw, line_of = [], []
+    for idx, line in enumerate(lines):
+        for w in line.split():
+            tw.append(w)
+            line_of.append(idx)
+    hw = hyp.split()
+
+    buckets = [[] for _ in lines]
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, tw, hw, autojunk=False).get_opcodes():
+        if tag == "insert":
+            at = line_of[i1] if i1 < len(line_of) else len(lines) - 1
+            buckets[at].extend(hw[j1:j2])
+            continue
+        # equal·replace·delete 는 정답 낱말 구간이 있으므로, 줄이 바뀌는 지점을
+        # 기준으로 대응하는 STT 낱말을 비율대로 쪼개 넣는다.
+        span = i2 - i1
+        for k in range(i1, i2):
+            at = line_of[k]
+            s = j1 + round((k - i1) * (j2 - j1) / span) if span else j1
+            e = j1 + round((k - i1 + 1) * (j2 - j1) / span) if span else j2
+            buckets[at].extend(hw[s:e])
+
+    rows, real = [], 0
+    for idx, line in enumerate(lines):
+        ops = _word_ops(line.split(), buckets[idx])
+        n = sum(1 for o in ops if o["op"] != "equal" and not o["cosmetic"])
+        real += n
+        rows.append({"truth": line, "hyp": " ".join(buckets[idx]), "ops": ops, "diffs": n})
+
     return {"target": target, "cand": cand, "label": DIFF_CANDIDATES[cand],
             "cer": round(measure.cer(truth, hyp) * 100, 2),
             "truth_chars": len(measure.norm(truth)),
-            "real_diffs": real, "ops": ops}
+            "real_diffs": real, "rows": rows}
 
 
 app.mount("/static", StaticFiles(directory=pathlib.Path(__file__).resolve().parent / "static"), name="static")
