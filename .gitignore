@@ -2,6 +2,6 @@
 __pycache__/
 *.pyc
 server/work/
-server/server.log
+server/*.log
 node_modules/
 .env
