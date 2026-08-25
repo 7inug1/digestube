@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>Digestube v2 — 빌드 화면</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --bg: #EEF1F5; --surface: #FFFFFF; --surface-2: #E4E9F0;
+    --ink: #1A2233; --muted: #5B6472; --faint: #8A93A3; --line: #D2D9E2;
+    --blue: #2454A6; --blue-soft: #E4ECFB;
+    --green: #2E7D5B; --green-soft: #E4F3EC;
+    --red: #B3432F; --red-soft: #FBEAE6;
+    --code-bg: #101826; --code-ink: #D7DEEA;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0D131D; --surface: #151D2B; --surface-2: #1C2635;
+      --ink: #E3E8F0; --muted: #9AA5B6; --faint: #6C7688; --line: #2A3446;
+      --blue: #7FA8F0; --blue-soft: #1B2A47;
+      --green: #6FCBA0; --green-soft: #12271E;
+      --red: #E38070; --red-soft: #33140F;
+      --code-bg: #0A0F18; --code-ink: #D7DEEA;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system,"Apple SD Gothic Neo",system-ui,sans-serif; font-size: 14.5px; }
+  .app { display: grid; grid-template-columns: 360px 1fr; height: 100vh; }
+  @media (max-width: 860px) { .app { grid-template-columns: 1fr; height: auto; } }
+
+  .notes-panel { border-right: 1px solid var(--line); overflow-y: auto; background: var(--surface); }
+  .notes-panel header { padding: 16px 18px 10px; border-bottom: 1px solid var(--line); }
+  .notes-panel h1 { font-size: 15px; margin: 0 0 4px; }
+  .notes-panel p { font-size: 12px; color: var(--muted); margin: 0; }
+  .tabs { display: flex; flex-direction: column; padding: 8px; gap: 2px; }
+  .tabs button { text-align: left; background: none; border: none; padding: 8px 10px; border-radius: 8px; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+  .tabs button:hover { background: var(--surface-2); }
+  .tabs button.active { background: var(--blue-soft); color: var(--blue); font-weight: 600; }
+  .note-body { padding: 4px 18px 30px; font-size: 13px; line-height: 1.7; }
+  .note-body h1 { font-size: 17px; margin: 18px 0 8px; }
+  .note-body h2 { font-size: 14.5px; margin: 16px 0 6px; color: var(--blue); }
+  .note-body p { margin: 6px 0; color: var(--ink); }
+  .note-body ul, .note-body ol { padding-left: 18px; margin: 6px 0; }
+  .note-body li { margin: 3px 0; }
+  .note-body code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  .note-body table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 12px; }
+  .note-body th, .note-body td { border-bottom: 1px solid var(--line); padding: 5px 6px; text-align: left; }
+  .note-body th { color: var(--faint); font-size: 10.5px; text-transform: uppercase; }
+  .note-body strong { color: var(--ink); }
+
+  .build-panel { padding: 28px 34px; overflow-y: auto; }
+  .build-panel h1 { font-size: 20px; margin: 0 0 4px; }
+  .build-panel .sub { color: var(--muted); font-size: 13px; margin: 0 0 22px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; max-width: 560px; }
+  .card label { display: block; font-size: 11.5px; font-weight: 700; color: var(--faint); text-transform: uppercase; margin-bottom: 6px; }
+  .row { display: flex; gap: 8px; }
+  input[type=text] { flex: 1; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 13.5px; }
+  button.go { padding: 9px 16px; border: none; border-radius: 8px; background: var(--blue); color: white; font-weight: 600; font-size: 13px; cursor: pointer; }
+  button.go:disabled { opacity: .5; cursor: default; }
+  .result { margin-top: 16px; padding: 14px 16px; border-radius: 10px; font-size: 13px; }
+  .result.ok { background: var(--green-soft); }
+  .result.err { background: var(--red-soft); color: var(--red); }
+  .result dl { display: grid; grid-template-columns: 90px 1fr; gap: 4px 10px; margin: 0; }
+  .result dt { color: var(--muted); }
+  .result dd { margin: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="notes-panel">
+    <header>
+      <h1>Digestube v2 · 판단 기록</h1>
+      <p>왜 이 기술을 골랐는지, 옆에서 계속 보면서 만든다</p>
+    </header>
+    <div class="tabs" id="tabs"></div>
+    <div class="note-body" id="noteBody">불러오는 중...</div>
+  </div>
+
+  <div class="build-panel">
+    <h1>1단계 — yt-dlp 오디오 추출</h1>
+    <p class="sub">유튜브 URL을 넣으면, 왼쪽 노트에서 정한 그 도구·그 옵션 그대로 오디오를 뽑아낸다.</p>
+    <div class="card">
+      <label>유튜브 URL</label>
+      <div class="row">
+        <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." />
+        <button class="go" id="go">추출</button>
+      </div>
+      <div id="result"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8010";
+
+function mdToHtml(md) {
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const lines = md.split("\n");
+  let html = "", inList = false, inTable = false, tableRows = [];
+
+  function flushTable() {
+    if (!tableRows.length) return;
+    const [head, , ...body] = tableRows;
+    const cells = r => r.split("|").slice(1, -1).map(c => c.trim());
+    html += "<table><tr>" + cells(head).map(c => `<th>${c}</th>`).join("") + "</tr>";
+    body.forEach(r => { html += "<tr>" + cells(r).map(c => `<td>${inline(c)}</td>`).join("") + "</tr>"; });
+    html += "</table>";
+    tableRows = [];
+  }
+  function inline(s) {
+    s = esc(s);
+    s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/`(.+?)`/g, "<code>$1</code>");
+    return s;
+  }
+  for (const raw of lines) {
+    const line = raw;
+    if (/^\|/.test(line)) { inTable = true; tableRows.push(line); continue; }
+    else if (inTable) { flushTable(); inTable = false; }
+
+    if (/^# /.test(line)) html += `<h1>${inline(line.slice(2))}</h1>`;
+    else if (/^## /.test(line)) html += `<h2>${inline(line.slice(3))}</h2>`;
+    else if (/^### /.test(line)) html += `<h2 style="font-size:13.5px">${inline(line.slice(4))}</h2>`;
+    else if (/^-\s+/.test(line)) {
+      if (!inList) { html += "<ul>"; inList = true; }
+      html += `<li>${inline(line.replace(/^-\s+/, ""))}</li>`;
+    } else {
+      if (inList) { html += "</ul>"; inList = false; }
+      if (/^\d+\.\s/.test(line)) html += `<p>${inline(line)}</p>`;
+      else if (line.trim()) html += `<p>${inline(line)}</p>`;
+    }
+  }
+  if (inList) html += "</ul>";
+  flushTable();
+  return html;
+}
+
+let notes = [];
+async function loadNotes() {
+  notes = await (await fetch(`${API}/api/notes`)).json();
+  const tabs = document.getElementById("tabs");
+  tabs.innerHTML = notes.map(n => `<button data-id="${n.id}">${n.title}</button>`).join("");
+  tabs.querySelectorAll("button").forEach(b => b.onclick = () => selectNote(b.dataset.id));
+  if (notes.length) selectNote(notes.find(n => n.id.includes("yt-dlp"))?.id || notes[0].id);
+}
+async function selectNote(id) {
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.id === id));
+  const { content } = await (await fetch(`${API}/api/notes/${id}`)).json();
+  document.getElementById("noteBody").innerHTML = mdToHtml(content);
+}
+loadNotes();
+
+document.getElementById("go").onclick = async () => {
+  const url = document.getElementById("url").value.trim();
+  const btn = document.getElementById("go");
+  const out = document.getElementById("result");
+  if (!url) return;
+  btn.disabled = true; btn.textContent = "추출 중...";
+  out.innerHTML = "";
+  try {
+    const r = await fetch(`${API}/api/extract`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || "실패");
+    out.innerHTML = `<div class="result ok"><dl>
+      <dt>제목</dt><dd>${data.title}</dd>
+      <dt>채널</dt><dd>${data.channel}</dd>
+      <dt>길이</dt><dd>${data.duration_sec ? Math.round(data.duration_sec) + "초" : "-"}</dd>
+      <dt>파일</dt><dd>${data.audio_file} (${data.size_kb} KB)</dd>
+    </dl></div>`;
+  } catch (e) {
+    out.innerHTML = `<div class="result err">${e.message}</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = "추출";
+  }
+};
+</script>
+</body>
+</html>
