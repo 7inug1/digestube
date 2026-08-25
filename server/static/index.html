@@ -73,6 +73,25 @@
   .funnel-note { font-size: 11px; color: var(--muted); margin-top: 4px; padding-left: 10px; border-left: 2px solid var(--line); }
   .funnel-note + .funnel-note { margin-top: 2px; }
 
+  .roster { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--sp-2) 0; }
+  .roster-item { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; background: var(--surface-2); font-size: 12px; }
+  .roster-item.test, .roster-item.done { background: var(--blue-soft); }
+  .roster-item.done { background: var(--green-soft); }
+  .roster-name { color: var(--ink); }
+  .roster-item.exclude .roster-name, .roster-item.merge .roster-name, .roster-item.defer .roster-name {
+    color: var(--faint); text-decoration: line-through; text-decoration-thickness: 1.5px;
+  }
+  .roster-item.exclude .roster-name { text-decoration-color: var(--red); }
+  .roster-item.merge .roster-name { text-decoration-color: var(--blue); }
+  .roster-item.defer .roster-name { text-decoration-color: var(--amber); }
+  .roster-badge { font-size: 9px; font-weight: 700; letter-spacing: .02em; padding: 1px 6px; border-radius: 100px; }
+  .roster-badge.exclude { background: var(--red-soft); color: var(--red); }
+  .roster-badge.merge { background: var(--blue-soft); color: var(--blue); }
+  .roster-badge.defer { background: var(--amber-soft); color: var(--amber); }
+  .roster-badge.test { background: var(--blue); color: white; }
+  .roster-badge.done { background: var(--green); color: white; }
+  .roster-note { font-size: 10.5px; color: var(--faint); }
+
   .build-panel { padding: var(--sp-4); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-4); }
   .panel-head { display: flex; flex-direction: column; gap: var(--sp-1); }
   .build-panel h1 { font-size: 20px; margin: 0; }
@@ -179,7 +198,7 @@ const API = "http://127.0.0.1:8010";
 function mdToHtml(md) {
   const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const lines = md.split("\n");
-  let html = "", inList = false, inTable = false, tableRows = [], inFunnel = false, funnelRows = [];
+  let html = "", inList = false, inTable = false, tableRows = [], inFunnel = false, funnelRows = [], inRoster = false, rosterRows = [];
 
   // ```funnel 블록 안의 "숫자|라벨|사유(선택)" 줄을 깔때기 모양 막대로 그린다.
   // 순차 소거 과정(18개 → 15개 → 4개 식)을 표로 나열하는 것보다 한눈에 들어온다.
@@ -209,6 +228,25 @@ function mdToHtml(md) {
     });
     html += '</div>';
     funnelRows = [];
+  }
+
+  // ```roster 블록: "이름|상태|비고" 한 줄씩 = 후보 전원을 이름 그대로 나열하고
+  // 상태(exclude/merge/defer/test/done)에 따라 취소선·색을 다르게 준다.
+  // 퍼널이 "몇 개가 몇 개로 줄었다"는 흐름이라면, 이건 "누가 어떻게 됐다"를 이름으로 바로 보여준다.
+  const ROSTER_LABEL = { exclude: "제외", merge: "합침", defer: "보류", test: "테스트중", done: "완료" };
+  function flushRoster() {
+    if (!rosterRows.length) return;
+    html += '<div class="roster">';
+    rosterRows.forEach(r => {
+      const st = ROSTER_LABEL[r.status] ? r.status : "test";
+      html += `<div class="roster-item ${st}">
+        <span class="roster-name">${inline(r.name)}</span>
+        <span class="roster-badge ${st}">${ROSTER_LABEL[st]}</span>
+        ${r.note ? `<span class="roster-note">${inline(r.note)}</span>` : ""}
+      </div>`;
+    });
+    html += '</div>';
+    rosterRows = [];
   }
 
   function flushTable() {
@@ -241,6 +279,13 @@ function mdToHtml(md) {
       }
       const [n, label, reason] = line.split("|").map(s => s?.trim());
       if (n) funnelRows.push({ n: parseInt(n, 10), label, reason });
+      continue;
+    }
+    if (/^```roster/.test(line)) { inRoster = true; continue; }
+    if (inRoster) {
+      if (/^```/.test(line)) { inRoster = false; flushRoster(); continue; }
+      const [name, status, note] = line.split("|").map(s => s?.trim());
+      if (name) rosterRows.push({ name, status, note });
       continue;
     }
     if (/^\|/.test(line)) { inTable = true; tableRows.push(line); continue; }
