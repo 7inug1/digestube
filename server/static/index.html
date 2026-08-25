@@ -11,6 +11,7 @@
     --blue: #2454A6; --blue-soft: #E4ECFB;
     --green: #2E7D5B; --green-soft: #E4F3EC;
     --red: #B3432F; --red-soft: #FBEAE6;
+    --amber: #B8681E; --amber-soft: #FBEEDE;
     --code-bg: #101826; --code-ink: #D7DEEA;
     --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px;
   }
@@ -21,6 +22,7 @@
       --blue: #7FA8F0; --blue-soft: #1B2A47;
       --green: #6FCBA0; --green-soft: #12271E;
       --red: #E38070; --red-soft: #33140F;
+      --amber: #E3A34E; --amber-soft: #33270F;
       --code-bg: #0A0F18; --code-ink: #D7DEEA;
     }
   }
@@ -61,7 +63,13 @@
   .funnel-bar { background: var(--blue); border-radius: 6px; height: 28px; display: flex; align-items: center; justify-content: center; transition: width .3s; min-width: 32px; }
   .funnel-n { color: white; font-weight: 700; font-size: 12.5px; font-variant-numeric: tabular-nums; }
   .funnel-label { font-size: 12.5px; color: var(--ink); min-width: 0; }
-  .funnel-reason { display: block; font-size: 11px; color: var(--faint); margin-top: 1px; }
+  .funnel-reasons { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 3px; }
+  .funnel-reason { font-size: 11px; color: var(--faint); }
+  .funnel-tag { font-size: 9.5px; font-weight: 700; letter-spacing: .02em; padding: 1px 6px; border-radius: 100px; }
+  .funnel-tag.exclude { background: var(--red-soft); color: var(--red); }
+  .funnel-tag.defer { background: var(--amber-soft); color: var(--amber); }
+  .funnel-tag.merge { background: var(--blue-soft); color: var(--blue); }
+  .funnel-tag.result { background: var(--green-soft); color: var(--green); }
 
   .build-panel { padding: var(--sp-4); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-4); }
   .panel-head { display: flex; flex-direction: column; gap: var(--sp-1); }
@@ -173,6 +181,18 @@ function mdToHtml(md) {
 
   // ```funnel 블록 안의 "숫자|라벨|사유(선택)" 줄을 깔때기 모양 막대로 그린다.
   // 순차 소거 과정(18개 → 15개 → 4개 식)을 표로 나열하는 것보다 한눈에 들어온다.
+  const FUNNEL_TAGS = { "제외": "exclude", "보류": "defer", "합침": "merge", "결과": "result" };
+  function funnelReasonHtml(reason) {
+    if (!reason) return "";
+    // "제외: A·B; 보류: C·D" 처럼 세미콜론으로 구분된 여러 태그를 각각 다른 색 칩으로 그린다.
+    // 태그 없는 문장은 그냥 회색 문장으로 나온다.
+    return reason.split(";").map(part => {
+      const m = part.match(/^\s*(제외|보류|합침|결과)\s*:\s*(.+)$/);
+      if (!m) return `<span class="funnel-reason">${inline(part.trim())}</span>`;
+      const cls = FUNNEL_TAGS[m[1]];
+      return `<span class="funnel-tag ${cls}">${m[1]}</span><span class="funnel-reason">${inline(m[2].trim())}</span>`;
+    }).join(" ");
+  }
   function flushFunnel() {
     if (!funnelRows.length) return;
     const max = Math.max(...funnelRows.map(r => r.n));
@@ -181,7 +201,7 @@ function mdToHtml(md) {
       const pct = Math.max(18, Math.round((r.n / max) * 100));
       html += `<div class="funnel-row">
         <div class="funnel-track"><div class="funnel-bar" style="width:${pct}%"><span class="funnel-n">${r.n}</span></div></div>
-        <div class="funnel-label">${inline(r.label)}${r.reason ? `<span class="funnel-reason">${inline(r.reason)}</span>` : ""}</div>
+        <div class="funnel-label">${inline(r.label)}<span class="funnel-reasons">${funnelReasonHtml(r.reason)}</span></div>
       </div>`;
     });
     html += '</div>';

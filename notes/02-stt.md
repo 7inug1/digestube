@@ -2,18 +2,18 @@
 
 상태: 진행 중 — 직접 측정 시작함(1/4)
 
-> **TLDR**: STT 후보 18개 중 로컬 Whisper·리턴제로·Groq·Naver Clova 4개를 실제 테스트 대상으로 확정했다. 첫 번째로 mlx-whisper를 우리 콘텐츠로 직접 돌려 CER 4.14%를 확인했다. 참고했던 벤치마크는 경쟁 제품인 리턴제로 자사가 발행한 것이라 각주로만 남기고, 최종 판단은 우리 콘텐츠로 직접 측정한 결과로만 내린다.
+> **TLDR**: STT 후보 17개 중 로컬 Whisper·리턴제로·Groq·Naver Clova 4개를 실제 테스트 대상으로 확정했다. 첫 번째로 mlx-whisper를 우리 콘텐츠로 직접 돌려 CER 4.14%를 확인했다. 참고했던 벤치마크는 경쟁 제품인 리턴제로 자사가 발행한 것이라 각주로만 남기고, 최종 판단은 우리 콘텐츠로 직접 측정한 결과로만 내린다.
 
 ## 소거 흐름
 
 ```funnel
-18|전체 후보|카테고리별로 나열
-15|자격 있는 후보|Kakao(비공개)·Parakeet·Canary(한국어 미지원) 제외
-4|1차 테스트 대상|지금 바로 접근 가능한 것만 우선 선정
-1|측정 완료|mlx-whisper CER 4.14%(잠정치)
+19|전체 검토|카테고리별로 나열
+17|자격 있는 후보|제외: Kakao(비공개)·Parakeet/Canary(한국어 미지원)
+4|1차 테스트 대상|합침: Whisper 원본·faster-whisper·whisper.cpp → mlx-whisper; 보류: 계정 없는 7개(OpenAI API·Google·Azure·AWS·Deepgram·AssemblyAI·Speechmatics)·Qwen3-ASR·Meta MMS·유튜브자막(이미 측정함)
+1|측정 완료|결과: mlx-whisper CER 4.14%(잠정치)
 ```
 
-**15개에서 4개로 줄어든 기준은 "안 됨"이 아니라 "이번 라운드에 바로 시작 가능한가"다.** 11개는 탈락이 아니라 뒤로 미뤄둔 것이다.
+**17개에서 4개로 줄어든 기준은 "안 됨"이 아니라 "이번 라운드에 바로 시작 가능한가"다.** 나머지 13개는 탈락이 아니라 뒤로 미뤄둔 것이다.
 
 - Whisper 원본·faster-whisper·whisper.cpp — mlx-whisper와 가중치가 같아 정확도는 동일하다. 하드웨어(우리 맥)에 맞는 mlx-whisper 하나로 대표시켰다.
 - 유튜브 자동자막 — 이미 실측값(CER 10.10%)이 있어서 재측정이 필요 없다.
@@ -22,7 +22,7 @@
 
 1차 4개(로컬 무료 · 국내 2개 무료 크레딧 · 이미 계정 있는 Groq)는 전부 새 계정을 만들 필요가 없다는 공통점이 있다.
 
-## 후보 (18개, 카테고리별)
+## 후보 (17개, 카테고리별)
 
 **로컬 오픈소스**
 - Whisper 원본: OpenAI가 만든 기본 구현체(PyTorch)
@@ -30,7 +30,6 @@
 - faster-whisper: CTranslate2 엔진으로 다시 짜서 NVIDIA GPU에서 빠르게 돌리는 버전(Whisper와 같은 가중치)
 - whisper.cpp: C++로 포팅해서 CPU에서도 가볍게 돌아가는 버전(Whisper와 같은 가중치)
 - Qwen3-ASR: 알리바바 Qwen팀의 오픈소스 모델, 한국어 포함 30개 언어 지원. 2026년 1월 출시라 아직 생태계·툴링이 Whisper·NVIDIA NeMo만큼 성숙하지 않고, 공개된 벤치마크도 깨끗한 오디오 기준이라 실제 콘텐츠에서 검증이 더 필요함
-- NVIDIA Parakeet/Canary: HuggingFace Open ASR 리더보드 상위권 오픈소스 모델
 - Meta MMS(facebook/mms-1b-all): 한국어 포함 1,162개 언어를 지원하는 오픈소스 모델
 
 **클라우드 해외**
