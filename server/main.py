@@ -10,7 +10,7 @@ import sys
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -32,9 +32,15 @@ app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
+NO_CACHE = {"Cache-Control": "no-store, must-revalidate", "Pragma": "no-cache"}
+
+
 @app.get("/")
 def index():
-    return FileResponse(pathlib.Path(__file__).resolve().parent / "static" / "index.html")
+    # 개발 중에는 화면 파일이 계속 바뀐다. 브라우저가 옛 버전을 들고 있으면
+    # 고친 내용이 안 보이므로 캐시를 막는다.
+    return FileResponse(pathlib.Path(__file__).resolve().parent / "static" / "index.html",
+                        headers=NO_CACHE)
 
 
 @app.get("/api/notes")
@@ -49,7 +55,8 @@ def get_note(note_id: str):
     f = NOTES / f"{note_id}.md"
     if not f.exists():
         raise HTTPException(404, "그런 노트 없음")
-    return {"id": note_id, "content": f.read_text(encoding="utf-8")}
+    return JSONResponse({"id": note_id, "content": f.read_text(encoding="utf-8")},
+                        headers=NO_CACHE)
 
 
 class ExtractIn(BaseModel):

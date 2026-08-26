@@ -49,6 +49,7 @@
   .note-body { padding: var(--sp-1) 18px 30px; font-size: 14px; line-height: 1.7; }
   .note-body > *:first-child { margin-top: 0 !important; }
   .note-body h1 { font-size: 18px; margin: var(--sp-4) 0 var(--sp-1); }
+  .note-body h3 { font-size: 13px; margin: var(--sp-3) 0 var(--sp-1); color: var(--ink); }
   .note-body h2 { font-size: 15px; margin: var(--sp-3) 0 var(--sp-1); color: var(--blue); }
   .note-body p { margin: var(--sp-2) 0; color: var(--ink); }
   .note-body ul, .note-body ol { padding-left: 18px; margin: var(--sp-2) 0; }
@@ -460,8 +461,8 @@ function mdToHtml(md) {
     else if (inTable) { flushTable(); inTable = false; }
 
     if (/^# /.test(line)) html += `<h1>${inline(line.slice(2))}</h1>`;
-    else if (/^## /.test(line)) html += `<h2>${inline(line.slice(3))}</h2>`;
-    else if (/^### /.test(line)) html += `<h2 style="font-size:13.5px">${inline(line.slice(4))}</h2>`;
+    else if (/^## /.test(line)) html += `<h2>${inline(line.slice(3))}</h3>`;
+    else if (/^### /.test(line)) html += `<h3>${inline(line.slice(4))}</h3>`;
     else if (/^>\s+/.test(line)) {
       let body = line.replace(/^>\s+/, "");
       let label = "";
