@@ -84,6 +84,26 @@
   .fitem.result .fitem-name { color: var(--green); font-weight: 600; }
   @media (max-width: 620px) { .fitem { grid-template-columns: 1fr; } }
 
+  .steps-nav { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+  .steps-nav button { background: none; border: none; border-bottom: 2px solid transparent; padding: 9px 14px; font-size: 13px; color: var(--muted); cursor: pointer; margin-bottom: -1px; }
+  .steps-nav button:hover { color: var(--ink); }
+  .steps-nav button.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 700; }
+
+  .vbar { display: flex; flex-wrap: wrap; gap: 6px; }
+  .vbar button { display: flex; align-items: baseline; gap: 6px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--muted); font-size: 12.5px; cursor: pointer; }
+  .vbar button span { font-size: 10.5px; color: var(--faint); }
+  .vbar button:hover { border-color: var(--blue); color: var(--blue); }
+  .vbar button.active { background: var(--blue); border-color: var(--blue); color: white; font-weight: 600; }
+  .vbar button.active span { color: rgba(255,255,255,.75); }
+
+  .subtabs { display: flex; gap: 4px; }
+  .subtabs button { background: var(--surface-2); border: 1px solid transparent; border-radius: 8px; padding: 6px 14px; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+  .subtabs button.active { background: var(--surface); border-color: var(--line); color: var(--ink); font-weight: 600; }
+  .tab-help { font-size: 12px; color: var(--muted); margin: 0; }
+
+  section[data-panel] { display: flex; flex-direction: column; gap: var(--sp-2); }
+  [data-tab-panel] { display: flex; flex-direction: column; gap: var(--sp-2); }
+
   .build-panel { padding: var(--sp-4); overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-4); }
   .panel-head { display: flex; flex-direction: column; gap: var(--sp-1); }
   .build-panel h1 { font-size: 20px; margin: 0; }
@@ -258,71 +278,82 @@
   </div>
 
   <div class="build-panel">
-    <div class="panel-head">
-      <h1>1단계 — yt-dlp 오디오 추출</h1>
-      <p class="sub">유튜브 URL을 넣으면, 왼쪽 노트에서 정한 그 도구·그 옵션 그대로 오디오를 뽑아낸다.</p>
-    </div>
-    <div class="card">
-      <div class="field">
-        <label>유튜브 URL</label>
-        <div class="row">
-          <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." />
-          <button class="go" id="go">추출</button>
+    <nav class="steps-nav" id="stepsNav">
+      <button data-step="1">1 · 오디오 추출</button>
+      <button data-step="2">2 · 전사</button>
+      <button data-step="3">3 · 문단 나누기</button>
+    </nav>
+
+    <!-- ── 1단계 ── -->
+    <section data-panel="1">
+      <div class="panel-head">
+        <h1>오디오 추출</h1>
+        <p class="sub">유튜브 URL을 넣으면 yt-dlp가 오디오만 뽑아낸다. 왜 yt-dlp인지는 왼쪽 노트에 있다.</p>
+      </div>
+      <div class="card">
+        <div class="field">
+          <label>유튜브 URL</label>
+          <div class="row">
+            <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." />
+            <button class="go" id="go">추출</button>
+          </div>
+        </div>
+        <div class="steps" id="steps">
+          <div class="step" data-s="1"><span class="dot">1</span>URL 입력</div>
+          <div class="step" data-s="2"><span class="dot">2</span>yt-dlp 실행 (android 클라이언트 우회)</div>
+          <div class="step" data-s="3"><span class="dot">3</span>오디오 파일(.m4a) 추출 완료</div>
+        </div>
+        <div id="result"></div>
+      </div>
+      <div class="current-video" id="currentVideo" style="display:none">
+        <div class="cv-label">방금 뽑은 오디오</div>
+        <div class="cv-body" id="cvBody"></div>
+        <button class="cv-reset" id="cvReset">지우기</button>
+      </div>
+    </section>
+
+    <!-- ── 2단계 ── -->
+    <section data-panel="2">
+      <div class="panel-head">
+        <h1>전사</h1>
+        <p class="sub">음성을 글자로 옮긴다. 어느 STT가 나은지 고르려면 먼저 정답이 있어야 한다.</p>
+      </div>
+      <div class="vbar" id="videoBar"></div>
+      <nav class="subtabs" id="step2Tabs">
+        <button data-tab="review">정답 검수</button>
+        <button data-tab="compare">결과 비교</button>
+      </nav>
+
+      <div data-tab-panel="review">
+        <p class="tab-help">영상을 보면서 자막이 실제 말과 맞는지 확인한다. 시각을 누르면 그 지점부터 재생된다.</p>
+        <div class="review-body" id="reviewBody" style="display:none">
+          <div class="review-video">
+            <div class="review-note" id="reviewNote"></div>
+            <div class="yt-box"><iframe id="ytFrame" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+            <div class="review-stat" id="reviewStat"></div>
+          </div>
+          <div class="review-lines" id="reviewLines"></div>
         </div>
       </div>
-      <div class="steps" id="steps">
-        <div class="step" data-s="1"><span class="dot">1</span>URL 입력</div>
-        <div class="step" data-s="2"><span class="dot">2</span>yt-dlp 실행 (android 클라이언트 우회)</div>
-        <div class="step" data-s="3"><span class="dot">3</span>오디오 파일(.m4a) 추출 완료</div>
-      </div>
-      <div id="result"></div>
-    </div>
 
-    <div class="current-video" id="currentVideo" style="display:none">
-      <div class="cv-label">현재 작업 영상 — 앞으로 만들 단계(전사·청킹 등)가 다 이 영상 기준으로 이어짐</div>
-      <div class="cv-body" id="cvBody"></div>
-      <button class="cv-reset" id="cvReset">다른 영상으로 바꾸기</button>
-    </div>
-
-    <div class="review-wrap">
-      <div class="panel-head">
-        <h1>정답 검수</h1>
-        <p class="sub">자막이 실제 말과 맞는지 한 줄씩 확인한다. 이게 끝나야 CER을 잴 수 있다.</p>
-      </div>
-      <div class="review-picker" id="reviewPicker"></div>
-      <div class="review-body" id="reviewBody" style="display:none">
-        <div class="review-video">
-          <div class="review-note" id="reviewNote"></div>
-          <div class="yt-box"><iframe id="ytFrame" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
-          <div class="review-stat" id="reviewStat"></div>
+      <div data-tab-panel="compare">
+        <div class="diff-picker">
+          <span class="diff-group" id="diffCands"></span>
+          <span class="diff-group" id="diffViews">
+            <button data-view="full" class="active">나란히 대조</button>
+            <button data-view="sem">의미 오류</button>
+          </span>
+          <label class="diff-toggle" id="cosmeticToggle"><input type="checkbox" id="diffHideCosmetic" checked /> 표기 차이 숨기기</label>
         </div>
-        <div class="review-lines" id="reviewLines"></div>
+        <div class="diff-stat" id="diffStat"></div>
+        <div class="diff-body" id="diffBody"></div>
       </div>
-    </div>
+    </section>
 
-    <div class="diff-wrap">
+    <!-- ── 3단계 ── -->
+    <section data-panel="3">
       <div class="panel-head">
-        <h1>오차 대조</h1>
-        <p class="sub">정답과 STT 결과를 낱말 단위로 맞춰본다. CER 숫자만으로는 어디가 왜 틀렸는지 알 수 없다.</p>
-      </div>
-      <div class="diff-picker">
-        <span class="diff-group" id="diffTargets"></span>
-        <span class="diff-group" id="diffCands"></span>
-        <span class="diff-group" id="diffViews">
-          <button data-view="full" class="active">전문 보기</button>
-          <button data-view="rows">줄 단위</button>
-          <button data-view="sem">의미 오류</button>
-        </span>
-        <label class="diff-toggle"><input type="checkbox" id="diffHideCosmetic" checked /> 표기 차이 숨기기</label>
-        <label class="diff-toggle"><input type="checkbox" id="diffOnlyDiff" checked /> 다른 줄만 보기</label>
-      </div>
-      <div class="diff-stat" id="diffStat"></div>
-      <div class="diff-body" id="diffBody"></div>
-    </div>
-
-    <div class="chunk-wrap">
-      <div class="panel-head">
-        <h1>문단 나누기 비교</h1>
+        <h1>문단 나누기</h1>
         <p class="sub">나눠놓은 문단이 검색 결과 단위가 된다. 방법마다 어떻게 잘리는지 직접 본다.</p>
       </div>
       <div class="diff-picker">
@@ -333,7 +364,7 @@
       </div>
       <div class="chunk-score" id="chunkScore"></div>
       <div class="chunk-cols" id="chunkCols"></div>
-    </div>
+    </section>
 
     <div class="reqlog-wrap">
       <div class="reqlog-label">API 요청 로그 — 지금 뭐가 오가는지</div>
@@ -620,26 +651,17 @@ async function loadReview(rid) {
   renderReview();
 }
 
-(async () => {
-  const list = await (await fetch(`${API}/api/review`)).json();
-  document.getElementById("reviewPicker").innerHTML = list.map(x =>
-    `<button data-rid="${x.id}">${x.title.split(" — ")[0]} · ${Math.round(x.duration / 60)}분</button>`).join("");
-  document.querySelectorAll("#reviewPicker button").forEach(b =>
-    b.onclick = () => loadReview(b.dataset.rid));
-})();
 
 // ── 오차 대조 ────────────────────────────────────────────────────
 // 정답과 STT 결과를 낱말 단위로 맞춰 다른 부분만 색으로 보여준다.
 // 빨강(취소선)=정답에 있는데 STT가 놓친 말, 초록=STT가 더 넣은 말.
-const DIFF_TARGETS = [["고려대", "고려대 9분(한국어)"], ["PBS", "PBS 2.5분(영어)"], ["세바시", "세바시 13분(한국어)"]];
 const DIFF_CANDS = [["mlx", "mlx-whisper"], ["groq", "Groq"], ["auto", "유튜브 자동자막"]];
-let diffTarget = "고려대", diffCand = "auto", diffData = null;
+let diffCand = "mlx", diffData = null;
 
-let diffView = "full";   // full = 전문 보기 · rows = 줄 단위 나란히 보기
+let diffView = "full";   // full = 나란히 대조 · sem = 의미 오류
 
 function renderDiff() {
   const hide = document.getElementById("diffHideCosmetic").checked;
-  const onlyDiff = document.getElementById("diffOnlyDiff").checked;
   const body = document.getElementById("diffBody");
   if (!diffData) { body.innerHTML = ""; return; }
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
@@ -655,6 +677,7 @@ function renderDiff() {
     return `<span class="${cls}${o.cosmetic ? " d-cosmetic" : ""}">${esc(txt)}</span>`;
   }).filter(Boolean).join(" ");
 
+  document.getElementById("cosmeticToggle").style.display = diffView === "sem" ? "none" : "";
   if (diffView === "sem") { renderSemantic(); return; }
   if (diffView === "full") {
     // 양쪽에 줄번호를 두고, 바뀐 줄은 행 전체에 옅은 배경을 깔고 그 안에서
@@ -671,22 +694,7 @@ function renderDiff() {
           </div>`;
         }).join("")}
       </div>`;
-  } else {
-    const rows = diffData.rows.map((r, i) => ({ ...r, i }))
-      .filter(r => !onlyDiff || r.diffs > 0);
-    body.innerHTML = rows.length === 0
-      ? `<div class="diff-none">다른 곳이 없습니다.</div>`
-      : rows.map(r => `<div class="drow${r.diffs ? " has-diff" : ""}">
-          <span class="drow-n">${r.i + 1}</span>
-          <div class="drow-cells">
-            <div class="dcell"><span class="dcell-tag">정답</span>${side(r.ops, "truth")}</div>
-            <div class="dcell"><span class="dcell-tag">STT</span>${side(r.ops, "hyp")}</div>
-          </div>
-        </div>`).join("");
   }
-
-  document.getElementById("diffOnlyDiff").parentElement.style.display =
-    diffView === "rows" ? "" : "none";
 
   const total = diffData.rows.length;
   const bad = diffData.rows.filter(r => r.diffs > 0).length;
@@ -696,11 +704,10 @@ function renderDiff() {
 }
 
 async function loadDiff() {
-  document.querySelectorAll("#diffTargets button").forEach(b => b.classList.toggle("active", b.dataset.v === diffTarget));
   document.querySelectorAll("#diffCands button").forEach(b => b.classList.toggle("active", b.dataset.v === diffCand));
   document.getElementById("diffStat").textContent = "전사 돌리는 중...";
   document.getElementById("diffBody").innerHTML = "";
-  const path = `/api/diff/${encodeURIComponent(diffTarget)}/${diffCand}`;
+  const path = `/api/diff/${encodeURIComponent(curVideo.diff)}/${diffCand}`;
   const log = logRequest("GET", path, "정답 대비 오차 계산");
   const r = await fetch(`${API}${path}`);
   const d = await r.json();
@@ -711,24 +718,6 @@ async function loadDiff() {
   if (diffView === "sem") loadSemantic(); else renderDiff();
 }
 
-(() => {
-  const mk = (el, list, set) => {
-    document.getElementById(el).innerHTML = list.map(([v, label]) =>
-      `<button data-v="${v}">${label}</button>`).join("");
-    document.querySelectorAll(`#${el} button`).forEach(b =>
-      b.onclick = () => { set(b.dataset.v); loadDiff(); });
-  };
-  mk("diffTargets", DIFF_TARGETS, v => diffTarget = v);
-  mk("diffCands", DIFF_CANDS, v => diffCand = v);
-  document.getElementById("diffHideCosmetic").onchange = renderDiff;
-  document.getElementById("diffOnlyDiff").onchange = renderDiff;
-  document.querySelectorAll("#diffViews button").forEach(b => b.onclick = () => {
-    diffView = b.dataset.view;
-    document.querySelectorAll("#diffViews button").forEach(x => x.classList.toggle("active", x === b));
-    if (diffView === "sem" && !semData) loadSemantic(); else renderDiff();
-  });
-  loadDiff();
-})();
 
 // ── 의미 오류 판정 ────────────────────────────────────────────────
 // CER은 표기 차이(콘텐츠/컨텐츠)와 뜻이 바뀐 오류(체류시간/치료시간)를 똑같이
@@ -737,7 +726,7 @@ async function loadDiff() {
 let semData = null;
 
 async function overrideSem(i, changed) {
-  const path = `/api/semantic/${encodeURIComponent(diffTarget)}/${diffCand}/override`;
+  const path = `/api/semantic/${encodeURIComponent(curVideo.diff)}/${diffCand}/override`;
   const log = logRequest("POST", path, `${i}번 판정 수정`);
   const r = await fetch(`${API}${path}`, {
     method: "POST", headers: { "Content-Type": "application/json" },
@@ -784,7 +773,7 @@ function renderSemantic() {
 async function loadSemantic() {
   semData = null;
   renderSemantic();
-  const path = `/api/semantic/${encodeURIComponent(diffTarget)}/${diffCand}`;
+  const path = `/api/semantic/${encodeURIComponent(curVideo.diff)}/${diffCand}`;
   const log = logRequest("GET", path, "뜻이 바뀐 오류만 판정");
   const r = await fetch(`${API}${path}`);
   const d = await r.json();
@@ -798,7 +787,6 @@ async function loadSemantic() {
 // 문단은 검색 결과로 나오는 단위다. 문장 중간에서 끊기면 검색에 걸려도 말이
 // 안 통하고, 길이가 들쭉날쭉하면 어떤 문단은 뜻이 없고 어떤 문단은 여러 얘기가
 // 섞인다. 숫자만으로는 감이 안 와서 실제로 나뉜 문단을 그대로 보여준다.
-let chunkSrc = "고려대";
 
 async function loadChunks() {
   document.querySelectorAll("#chunkSrc button").forEach(b => b.classList.toggle("active", b.dataset.v === chunkSrc));
@@ -837,13 +825,72 @@ async function loadChunks() {
     </div>`).join("");
 }
 
+
+// ── 화면 구성 ────────────────────────────────────────────────────
+// 이 앱은 파이프라인을 한 단계씩 만들어가는 도구다. 그래서 화면도 단계를
+// 뼈대로 잡는다. 2단계(전사)의 "정답 검수"와 "결과 비교"는 같은 영상에 대한
+// 앞뒤 작업이라 영상 선택을 하나로 공유한다 — 예전엔 각각 따로 골라야 했다.
+const VIDEOS = [
+  { rid: "korea-univ", diff: "고려대", label: "고려대 9분", lang: "한국어" },
+  { rid: "pbs",        diff: "PBS",    label: "PBS 2.5분",  lang: "영어" },
+  { rid: "sebasi",     diff: "세바시",  label: "세바시 13분", lang: "한국어" },
+];
+let curVideo = VIDEOS[0];
+let step2Tab = "review";
+let chunkSrc = "고려대";
+
+function showStep(n) {
+  document.querySelectorAll("#stepsNav button").forEach(b => b.classList.toggle("active", b.dataset.step === n));
+  document.querySelectorAll("[data-panel]").forEach(s => s.style.display = s.dataset.panel === n ? "" : "none");
+  if (n === "2") loadStep2();
+  if (n === "3") loadChunks();
+}
+
+function showStep2Tab(tab) {
+  step2Tab = tab;
+  document.querySelectorAll("#step2Tabs button").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+  document.querySelectorAll("[data-tab-panel]").forEach(s => s.style.display = s.dataset.tabPanel === tab ? "" : "none");
+  loadStep2();
+}
+
+function loadStep2() {
+  document.querySelectorAll("#videoBar button").forEach(b =>
+    b.classList.toggle("active", b.dataset.rid === curVideo.rid));
+  if (step2Tab === "review") loadReview(curVideo.rid);
+  else if (diffView === "sem") loadSemantic();
+  else loadDiff();
+}
+
 (() => {
+  document.getElementById("videoBar").innerHTML = VIDEOS.map(v =>
+    `<button data-rid="${v.rid}">${v.label}<span>${v.lang}</span></button>`).join("");
+  document.querySelectorAll("#videoBar button").forEach(b => b.onclick = () => {
+    curVideo = VIDEOS.find(v => v.rid === b.dataset.rid);
+    diffData = null; semData = null;
+    loadStep2();
+  });
+  document.querySelectorAll("#stepsNav button").forEach(b => b.onclick = () => showStep(b.dataset.step));
+  document.querySelectorAll("#diffViews button").forEach(b => b.onclick = () => {
+    diffView = b.dataset.view;
+    document.querySelectorAll("#diffViews button").forEach(x => x.classList.toggle("active", x === b));
+    if (diffView === "sem" && !semData) loadSemantic(); else renderDiff();
+  });
+  document.querySelectorAll("#step2Tabs button").forEach(b => b.onclick = () => showStep2Tab(b.dataset.tab));
+
+  document.getElementById("diffCands").innerHTML = DIFF_CANDS.map(([v, label]) =>
+    `<button data-v="${v}">${label}</button>`).join("");
+  document.querySelectorAll("#diffCands button").forEach(b => b.onclick = () => {
+    diffCand = b.dataset.v; diffData = null; semData = null; loadStep2();
+  });
+
   document.getElementById("chunkSrc").innerHTML = ["고려대", "PBS"]
     .map(v => `<button data-v="${v}">${v}</button>`).join("");
   document.querySelectorAll("#chunkSrc button").forEach(b =>
     b.onclick = () => { chunkSrc = b.dataset.v; loadChunks(); });
   document.getElementById("chunkTarget").onchange = loadChunks;
-  loadChunks();
+
+  showStep2Tab("review");
+  showStep("1");
 })();
 
 let notes = [];
