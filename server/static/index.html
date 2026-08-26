@@ -36,6 +36,8 @@
   .notes-panel h1 { font-size: 15px; margin: 0 0 4px; }
   .notes-panel p { font-size: 13px; color: var(--muted); margin: 0; }
   .tabs { display: flex; flex-direction: column; padding: 8px; gap: 2px; }
+  .tab-group { padding: 12px 12px 4px; font-size: 11px; font-weight: 700; letter-spacing: .03em; color: var(--faint); text-transform: uppercase; }
+  .tab-group:first-child { padding-top: 6px; }
   .tabs button { text-align: left; background: none; border: none; padding: 8px 8px; border-radius: 8px; font-size: 13px; color: var(--muted); cursor: pointer; }
   .tabs button:hover { background: var(--surface-2); }
   .tabs button.active { background: var(--blue-soft); color: var(--blue); font-weight: 600; }
@@ -99,6 +101,7 @@
   .subtabs { display: flex; gap: 4px; }
   .subtabs button { background: var(--surface-2); border: 1px solid transparent; border-radius: 8px; padding: 6px 16px; font-size: 13px; color: var(--muted); cursor: pointer; }
   .subtabs button.active { background: var(--surface); border-color: var(--line); color: var(--ink); font-weight: 600; }
+  .no-truth { padding: var(--sp-3); background: var(--surface-2); border-radius: 10px; font-size: 13px; color: var(--muted); line-height: 1.7; }
   .tab-help { font-size: 13px; color: var(--muted); margin: 0; }
 
   section[data-panel] { display: flex; flex-direction: column; gap: var(--sp-2); }
@@ -249,6 +252,11 @@
   .chunk-item.cut .chunk-meta { color: var(--red); font-weight: 700; }
 
   .reqlog-wrap { max-width: 560px; }
+  .reqlog-wrap > summary { cursor: pointer; list-style: none; }
+  .reqlog-wrap > summary::-webkit-details-marker { display: none; }
+  .reqlog-wrap > summary::before { content: "▸ "; color: var(--faint); }
+  .reqlog-wrap[open] > summary::before { content: "▾ "; }
+  #reqlogCount { font-weight: 400; text-transform: none; letter-spacing: 0; opacity: .7; }
   .reqlog-label { font-size: 11px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .02em; margin-bottom: var(--sp-1); }
   .reqlog { background: var(--code-bg); border-radius: 10px; padding: 4px 0; font-family: ui-monospace,"SF Mono",Consolas,monospace; font-size: 11px; max-height: 220px; overflow-y: auto; }
   .reqlog-empty { color: var(--faint); padding: 8px 16px; margin: 0; }
@@ -270,7 +278,7 @@
 <div class="app">
   <div class="notes-panel">
     <header>
-      <h1>Digestube v2 · 판단 기록</h1>
+      <h1>Digestube v2</h1>
       <p>기술을 고른 근거</p>
     </header>
     <div class="tabs" id="tabs"></div>
@@ -286,9 +294,7 @@
 
     <!-- ── 1단계 ── -->
     <section data-panel="1">
-      <div class="panel-head">
-        <h1>오디오 추출</h1>
-        </div>
+      <h1>오디오 추출</h1>
       <div class="card">
         <div class="field">
           <label>유튜브 URL</label>
@@ -297,17 +303,16 @@
             <button class="go" id="go">추출</button>
           </div>
         </div>
-        <div class="steps" id="steps">
+        <div class="steps" id="steps" style="display:none">
           <div class="step" data-s="1"><span class="dot">1</span>URL 입력</div>
           <div class="step" data-s="2"><span class="dot">2</span>yt-dlp 실행 (android 클라이언트 우회)</div>
           <div class="step" data-s="3"><span class="dot">3</span>오디오 파일(.m4a) 추출 완료</div>
         </div>
         <div id="result"></div>
-      </div>
-      <div class="current-video" id="currentVideo" style="display:none">
-        <div class="cv-label">방금 뽑은 오디오</div>
-        <div class="cv-body" id="cvBody"></div>
-        <button class="cv-reset" id="cvReset">지우기</button>
+        <div class="current-video" id="currentVideo" style="display:none">
+          <div class="cv-body" id="cvBody"></div>
+          <button class="cv-reset" id="cvReset">지우기</button>
+        </div>
       </div>
     </section>
 
@@ -323,6 +328,10 @@
         <button data-tab="compare">결과 비교</button>
       </nav>
 
+      <div class="no-truth" id="noTruth" style="display:none">
+        이 영상에는 정답 자막이 없어서 검수도 대조도 할 수 없다.
+        정답으로 쓸 수 있는 영상을 고르는 기준은 왼쪽 <b>정답 영상 선정</b> 노트에 있다.
+      </div>
       <div data-tab-panel="review">
         <p class="tab-help">시각을 누르면 그 지점부터 재생된다.</p>
         <div class="review-body" id="reviewBody" style="display:none">
@@ -365,10 +374,10 @@
       <div class="chunk-cols" id="chunkCols"></div>
     </section>
 
-    <div class="reqlog-wrap">
-      <div class="reqlog-label">API 요청</div>
+    <details class="reqlog-wrap" id="reqlogWrap">
+      <summary class="reqlog-label">API 요청 <span id="reqlogCount"></span></summary>
       <div class="reqlog" id="reqlog"><p class="reqlog-empty">아직 없음</p></div>
-    </div>
+    </details>
   </div>
 </div>
 
@@ -483,6 +492,8 @@ function logRequest(method, path, desc) {
     <span class="req-status pending">진행중</span>
     <span class="req-ms"></span>`;
   log.prepend(row);
+  const c = document.getElementById("reqlogCount");
+  if (c) c.textContent = `${log.querySelectorAll(".req-row").length}건`;
   const t0 = performance.now();
   return {
     ok(note) {
@@ -706,7 +717,7 @@ async function loadDiff() {
   document.querySelectorAll("#diffCands button").forEach(b => b.classList.toggle("active", b.dataset.v === diffCand));
   document.getElementById("diffStat").textContent = "전사 돌리는 중...";
   document.getElementById("diffBody").innerHTML = "";
-  const path = `/api/diff/${encodeURIComponent(curVideo.diff)}/${diffCand}`;
+  const path = `/api/diff/${encodeURIComponent(curVideo.short)}/${diffCand}`;
   const log = logRequest("GET", path, "정답 대비 오차 계산");
   const r = await fetch(`${API}${path}`);
   const d = await r.json();
@@ -725,7 +736,7 @@ async function loadDiff() {
 let semData = null;
 
 async function overrideSem(i, changed) {
-  const path = `/api/semantic/${encodeURIComponent(curVideo.diff)}/${diffCand}/override`;
+  const path = `/api/semantic/${encodeURIComponent(curVideo.short)}/${diffCand}/override`;
   const log = logRequest("POST", path, `${i}번 판정 수정`);
   const r = await fetch(`${API}${path}`, {
     method: "POST", headers: { "Content-Type": "application/json" },
@@ -772,7 +783,7 @@ function renderSemantic() {
 async function loadSemantic() {
   semData = null;
   renderSemantic();
-  const path = `/api/semantic/${encodeURIComponent(curVideo.diff)}/${diffCand}`;
+  const path = `/api/semantic/${encodeURIComponent(curVideo.short)}/${diffCand}`;
   const log = logRequest("GET", path, "뜻이 바뀐 오류만 판정");
   const r = await fetch(`${API}${path}`);
   const d = await r.json();
@@ -829,17 +840,19 @@ async function loadChunks() {
 // 이 앱은 파이프라인을 한 단계씩 만들어가는 도구다. 그래서 화면도 단계를
 // 뼈대로 잡는다. 2단계(전사)의 "정답 검수"와 "결과 비교"는 같은 영상에 대한
 // 앞뒤 작업이라 영상 선택을 하나로 공유한다 — 예전엔 각각 따로 골라야 했다.
-const VIDEOS = [
-  { rid: "korea-univ", diff: "고려대", label: "고려대 9분", lang: "한국어" },
-  { rid: "pbs",        diff: "PBS",    label: "PBS 2.5분",  lang: "영어" },
-  { rid: "sebasi",     diff: "세바시",  label: "세바시 13분", lang: "한국어" },
-];
-let curVideo = VIDEOS[0];
+// 1단계에서 뽑아둔 오디오를 서버에서 받아온다. 새로 추출한 영상도 바로 여기
+// 나타나야 파이프라인이 이어진다 — 예전엔 목록이 코드에 박혀 있어서 끊겼다.
+let VIDEOS = [];
+let curVideo = null;
 let step2Tab = "review";
 let chunkSrc = "고려대";
 
 function showStep(n) {
   document.querySelectorAll("#stepsNav button").forEach(b => b.classList.toggle("active", b.dataset.step === n));
+  // 단계를 고르면 그 단계를 설명하는 노트로 왼쪽도 옮긴다. 이미 그 단계의
+  // 노트를 보고 있으면(03-cer-videos 처럼) 그대로 둔다.
+  const cur = location.hash.replace(/^#/, "");
+  if (!syncing && NOTE_INFO[cur]?.step !== n) { syncing = true; selectNote(STEP_NOTE[n]); syncing = false; }
   document.querySelectorAll("[data-panel]").forEach(s => s.style.display = s.dataset.panel === n ? "" : "none");
   if (n === "2") loadStep2();
   if (n === "3") loadChunks();
@@ -853,21 +866,89 @@ function showStep2Tab(tab) {
 }
 
 function loadStep2() {
+  if (!curVideo) return;
   document.querySelectorAll("#videoBar button").forEach(b =>
-    b.classList.toggle("active", b.dataset.rid === curVideo.rid));
+    b.classList.toggle("active", b.dataset.vid === curVideo.vid));
+  const panels = document.querySelectorAll("[data-tab-panel]");
+  // 정답이 없는 영상은 검수도 대조도 할 수 없다. 무엇을 해야 하는지 알려준다.
+  if (!curVideo.has_truth) {
+    panels.forEach(x => x.style.display = "none");
+    document.getElementById("noTruth").style.display = "";
+    return;
+  }
+  document.getElementById("noTruth").style.display = "none";
+  panels.forEach(x => x.style.display = x.dataset.tabPanel === step2Tab ? "" : "none");
   if (step2Tab === "review") loadReview(curVideo.rid);
   else if (diffView === "sem") loadSemantic();
   else loadDiff();
 }
 
-(() => {
+async function loadVideos() {
+  const log = logRequest("GET", "/api/videos", "뽑아둔 오디오 목록");
+  const r = await fetch(`${API}/api/videos`);
+  VIDEOS = await r.json();
+  log.ok(`${r.status} · ${VIDEOS.length}개`);
   document.getElementById("videoBar").innerHTML = VIDEOS.map(v =>
-    `<button data-rid="${v.rid}">${v.label}<span>${v.lang}</span></button>`).join("");
+    `<button data-vid="${v.vid}">${v.short}<span>${v.has_truth ? "정답 있음" : "정답 없음"}</span></button>`).join("");
   document.querySelectorAll("#videoBar button").forEach(b => b.onclick = () => {
-    curVideo = VIDEOS.find(v => v.rid === b.dataset.rid);
+    curVideo = VIDEOS.find(v => v.vid === b.dataset.vid);
     diffData = null; semData = null;
     loadStep2();
   });
+  if (!curVideo) curVideo = VIDEOS.find(v => v.has_truth) || VIDEOS[0];
+}
+
+
+let notes = [];
+// 왼쪽 노트와 오른쪽 단계는 같은 것을 가리킨다 — 노트는 "왜 이렇게 정했나",
+// 화면은 "그래서 이렇게 돌아간다". 한쪽을 고르면 다른 쪽도 따라가게 묶는다.
+const NOTE_INFO = {
+  "00-methodology":        { label: "작업 방식", group: "방법론" },
+  "01-yt-dlp":             { label: "yt-dlp", group: "1단계 · 오디오 추출", step: "1" },
+  "02-stt":                { label: "STT 후보 고르기", group: "2단계 · 전사", step: "2" },
+  "03-cer-videos":         { label: "정답 영상 선정", group: "2단계 · 전사", step: "2" },
+  "04-chunking-embedding": { label: "청킹", group: "3단계 · 문단 나누기", step: "3" },
+  "05-pending":            { label: "아직 안 건드린 것", group: "그 밖에" },
+  "06-cloud-ingest":       { label: "클라우드 배포", group: "그 밖에" },
+};
+const STEP_NOTE = { "1": "01-yt-dlp", "2": "02-stt", "3": "04-chunking-embedding" };
+let syncing = false;
+
+async function loadNotes() {
+  notes = await (await fetch(`${API}/api/notes`)).json();
+  const tabs = document.getElementById("tabs");
+  let html = "", lastGroup = null;
+  for (const n of notes) {
+    const info = NOTE_INFO[n.id] || { label: n.id, group: "그 밖에" };
+    if (info.group !== lastGroup) {
+      html += `<div class="tab-group">${info.group}</div>`;
+      lastGroup = info.group;
+    }
+    html += `<button data-id="${n.id}">${info.label}</button>`;
+  }
+  tabs.innerHTML = html;
+  tabs.querySelectorAll("button").forEach(b => b.onclick = () => { location.hash = b.dataset.id; });
+  const fromHash = location.hash.replace(/^#/, "");
+  selectNote(notes.find(n => n.id === fromHash)?.id || "01-yt-dlp");
+}
+window.addEventListener("hashchange", () => {
+  const id = location.hash.replace(/^#/, "");
+  if (notes.find(n => n.id === id)) selectNote(id);
+});
+async function selectNote(id) {
+  if (location.hash.replace(/^#/, "") !== id) location.hash = id;
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.id === id));
+  // 노트를 고르면 그 노트가 다루는 단계로 오른쪽도 옮긴다
+  const step = NOTE_INFO[id]?.step;
+  if (step && !syncing) { syncing = true; showStep(step); syncing = false; }
+  const log = logRequest("GET", `/api/notes/${id}`, "노트 불러오기");
+  const r = await fetch(`${API}/api/notes/${id}`);
+  const { content } = await r.json();
+  log.ok(`${r.status}`);
+  document.getElementById("noteBody").innerHTML = mdToHtml(content);
+}
+
+(() => {
   document.querySelectorAll("#stepsNav button").forEach(b => b.onclick = () => showStep(b.dataset.step));
   document.querySelectorAll("#diffViews button").forEach(b => b.onclick = () => {
     diffView = b.dataset.view;
@@ -888,36 +969,12 @@ function loadStep2() {
     b.onclick = () => { chunkSrc = b.dataset.v; loadChunks(); });
   document.getElementById("chunkTarget").onchange = loadChunks;
 
-  showStep2Tab("review");
-  showStep("1");
+  loadVideos().then(() => {
+    showStep2Tab("review");
+    showStep("1");
+    loadNotes();
+  });
 })();
-
-let notes = [];
-async function loadNotes() {
-  notes = await (await fetch(`${API}/api/notes`)).json();
-  const tabs = document.getElementById("tabs");
-  tabs.innerHTML = notes.map(n => `<button data-id="${n.id}">${n.title}</button>`).join("");
-  tabs.querySelectorAll("button").forEach(b => b.onclick = () => { location.hash = b.dataset.id; });
-  const fromHash = location.hash.replace(/^#/, "");
-  const startId = notes.find(n => n.id === fromHash)?.id
-    || notes.find(n => n.id.includes("yt-dlp"))?.id
-    || notes[0]?.id;
-  if (startId) selectNote(startId);
-}
-window.addEventListener("hashchange", () => {
-  const id = location.hash.replace(/^#/, "");
-  if (notes.find(n => n.id === id)) selectNote(id);
-});
-async function selectNote(id) {
-  if (location.hash.replace(/^#/, "") !== id) location.hash = id;
-  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.id === id));
-  const log = logRequest("GET", `/api/notes/${id}`, "왼쪽 노트 내용 불러오기");
-  const r = await fetch(`${API}/api/notes/${id}`);
-  const { content } = await r.json();
-  log.ok(`${r.status}`);
-  document.getElementById("noteBody").innerHTML = mdToHtml(content);
-}
-loadNotes();
 
 document.getElementById("go").onclick = async () => {
   const url = document.getElementById("url").value.trim();
@@ -930,6 +987,7 @@ document.getElementById("go").onclick = async () => {
     steps.forEach(s => { if (+s.dataset.s < n) s.classList.add("done"); });
     if (cls) steps[n - 1]?.classList.add(cls);
   };
+  document.getElementById("steps").style.display = "";
   setStep(1, "done");
   btn.disabled = true; btn.textContent = "추출 중...";
   out.innerHTML = "";
@@ -945,6 +1003,7 @@ document.getElementById("go").onclick = async () => {
     log.ok(`${r.status} · yt-dlp 완료`);
     setStep(3, "done"); steps[2]?.classList.add("done");
     saveCurrentVideo(data);
+    loadVideos();
     out.innerHTML = `<div class="result ok"><dl>
       <dt>제목</dt><dd>${data.title}</dd>
       <dt>채널</dt><dd>${data.channel}</dd>

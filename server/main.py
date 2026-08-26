@@ -107,6 +107,7 @@ def get_audio(vid: str):
 # 한 줄씩 대조해야 정답으로 확정된다 — notes/03-cer-videos.md의 3단계.
 REVIEW_TARGETS = {
     "korea-univ": {
+        "short": "고려대",
         "video_id": "ljnw_JyvJEQ",
         "title": "고려대 — 내 알고리즘은 정말 내 취향일까?",
         "vtt": "ljnw_JyvJEQ.ko.vtt",
@@ -115,6 +116,7 @@ REVIEW_TARGETS = {
         "strip_brackets": True,
     },
     "sebasi": {
+        "short": "세바시",
         "video_id": "fGNGKCz60NE",
         "title": "세바시 — 완벽주의 아니고 그냥 게으른 걸까?",
         "vtt": "fGNGKCz60NE.ko.vtt",
@@ -123,6 +125,7 @@ REVIEW_TARGETS = {
         "strip_brackets": False,
     },
     "pbs": {
+        "short": "PBS",
         "video_id": "EzG8dcpdMH4",
         "title": "PBS NewsHour — Graham and Norman in South Carolina",
         "vtt": "EzG8dcpdMH4.en.vtt",
@@ -395,6 +398,23 @@ CHUNK_SOURCES = {
     "고려대": {"file": "hyp_고려대_mlx.txt", "title": "고려대 9분 · mlx-whisper 전사"},
     "PBS": {"file": "hyp_PBS_mlx.txt", "title": "PBS 2.5분 · mlx-whisper 전사"},
 }
+
+
+@app.get("/api/videos")
+def list_videos():
+    """1단계에서 뽑아둔 오디오를 그대로 2·3단계에서 쓸 수 있게 목록으로 준다.
+    검수 대상으로 등록된 영상은 정답 자막이 있다는 뜻이라 따로 표시한다."""
+    known = {v["video_id"]: (k, v) for k, v in REVIEW_TARGETS.items()}
+    out = []
+    for f in sorted(WORK.glob("*.m4a")):
+        vid = f.stem
+        rid, cfg = known.get(vid, (None, None))
+        short = cfg["short"] if cfg else vid
+        out.append({"vid": vid, "rid": rid, "short": short,
+                    "title": cfg["title"] if cfg else vid,
+                    "size_kb": round(f.stat().st_size / 1024),
+                    "has_truth": (WORK / f"truth_{short}.txt").exists()})
+    return out
 
 
 @app.get("/api/chunk/{src}")
