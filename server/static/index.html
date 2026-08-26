@@ -30,6 +30,11 @@
   body { margin: 0; background: var(--bg); color: var(--ink); font-family: -apple-system,"Apple SD Gothic Neo",system-ui,sans-serif; font-size: 15px; }
   .app { display: grid; grid-template-columns: 360px 1fr; height: 100vh; }
   @media (max-width: 860px) { .app { grid-template-columns: 1fr; height: auto; } }
+  .app.reading { grid-template-columns: 1fr; }
+  .app.reading .build-panel { display: none; }
+  .app.reading .notes-panel { border-right: none; }
+  .app.reading .note-body { max-width: 70ch; margin: 0 auto; padding-left: var(--sp-4); padding-right: var(--sp-4); }
+  .app.reading .notes-panel header, .app.reading .tabs { max-width: 70ch; margin-left: auto; margin-right: auto; width: 100%; }
 
   .notes-panel { border-right: 1px solid var(--line); overflow-y: auto; background: var(--surface); }
   .notes-panel header { padding: 16px 18px 8px; border-bottom: 1px solid var(--line); }
@@ -938,8 +943,10 @@ window.addEventListener("hashchange", () => {
 async function selectNote(id) {
   if (location.hash.replace(/^#/, "") !== id) location.hash = id;
   document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.id === id));
-  // 노트를 고르면 그 노트가 다루는 단계로 오른쪽도 옮긴다
+  // 노트는 두 종류다. 단계 노트(01~04)는 오른쪽에 대응하는 실행 화면이 있고,
+  // 나머지(방법론·남은 것·배포)는 읽기만 하는 글이라 오른쪽이 필요 없다.
   const step = NOTE_INFO[id]?.step;
+  document.querySelector(".app").classList.toggle("reading", !step);
   if (step && !syncing) { syncing = true; showStep(step); syncing = false; }
   const log = logRequest("GET", `/api/notes/${id}`, "노트 불러오기");
   const r = await fetch(`${API}/api/notes/${id}`);
