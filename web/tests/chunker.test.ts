@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {chunk} from "../src/lib/chunker";
+import {prepareTranscript} from "../src/lib/transcript";
 import {readFileSync} from "node:fs";
 
 const normalized = (s:string) => s.replace(/\s+/gu," ").trim();
@@ -57,4 +58,12 @@ test("reported video's stored transcript keeps every word and ends each paragrap
   assert.ok(out.every(c=>/[.!?]$/.test(c.text)));
   assert.ok(out.some(c=>c.text.includes("progress your career")));
   assert.ok(out.at(-1)?.text.endsWith("have a good day."));
+});
+
+test("new ingestion uses the sentence-aware chunker without a separate repair step",()=>{
+  const source=JSON.parse(readFileSync("tests/fixtures/chunking-native.json","utf8"));
+  const prepared=prepareTranscript(source,"en");
+  assert.deepEqual(prepared.chunks,chunk(source.content));
+  assert.ok(prepared.chunks.slice(0,-1).every(c=>/[.!?]$/.test(c.text)));
+  assert.ok(prepared.chunks.some(c=>c.text.includes("progress your career")));
 });

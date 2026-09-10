@@ -19,7 +19,7 @@ export async function getVideo(vid: string) {
   const [v, c, o] = await Promise.all([
     s.from("video").select("*").eq("id", vid).maybeSingle(),
     s.from("chunk").select("video_id,seq,t,t_end,text").eq("video_id", vid).order("seq"),
-    s.from("outline").select("*").eq("video_id", vid).order("t"),
+    s.from("outline").select("*").eq("video_id", vid).order("seq"),
   ]);
   if (v.error) throw v.error;
   if (c.error) throw c.error;

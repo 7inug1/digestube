@@ -26,7 +26,7 @@ export async function getVideo(vid: string) {
   return {
     ...v,
     chunks: d.chunk.filter((c) => c.video_id === vid).sort((a, b) => a.seq - b.seq),
-    outline: (d.outline ?? []).filter((o) => o.video_id === vid).sort((a, b) => a.t - b.t),
+    outline: (d.outline ?? []).filter((o) => o.video_id === vid).sort((a, b) => a.seq - b.seq),
   };
 }
 
