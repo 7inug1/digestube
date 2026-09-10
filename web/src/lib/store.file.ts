@@ -67,3 +67,11 @@ export async function chunksWithoutEmbedding() {
 export async function removeVideo() {
   throw new Error("파일 저장소는 읽기 전용이다.");
 }
+
+export const beginIngest = upsertVideo;
+export const setIngestJob = upsertVideo;
+export const cancelIngest = upsertVideo;
+export const finishIngest = upsertVideo;
+export const saveOutlineBatch = upsertVideo;
+export const saveEmbeddingBatch = upsertVideo;
+export const refreshVideoStatus = upsertVideo;

@@ -1,16 +1,6 @@
-/** Supadata 로 영상의 말을 글로 받아온다.
- *
- *  mode 는 셋인데 generate 만 쓴다.
- *    native    있는 자막을 가져온다. 사람이 만든 자막이면 좋지만
- *              기계가 만든 자막이 와도 응답만 봐서는 구분할 수 없다.
- *    generate  자막을 무시하고 소리를 직접 받아쓴다. 품질이 일정하다.
- *
- *  측정 기록: 사람 자막이 있는 영상에서는 native 가 나았고(12:4),
- *  기계 자막이면 generate 가 크게 나았다(16:4). 어느 쪽이 왔는지 알 수
- *  없으므로 일정한 쪽을 택했다.
- *
- *  서버리스는 한 요청이 5분을 넘을 수 없다. 그래서 전사를 두 번에 나눠
- *  부른다 — 시작(작업 번호를 받는다)과 조회(끝났는지 본다).
+/** Supadata 전사. 배포 기본값은 기존 자막(native).
+ * generate는 로컬 코퍼스 구축에 명시적으로 사용할 수 있다.
+ * 과거 측정에서 generate 시작 요청이 91.8초 걸려 당시 배포 60초 제한을 넘었다.
  */
 const BASE = "https://api.supadata.ai/v1";
 
@@ -27,11 +17,11 @@ function key(): string {
   return k.trim();
 }
 
-async function call(path: string, params?: Record<string, string>, retry = 3) {
+async function call(path: string, params?: Record<string, string>, retry = 1) {
   const k = key();
   const url = BASE + path + (params ? "?" + new URLSearchParams(params) : "");
   for (let i = 0; i <= retry; i++) {
-    const r = await fetch(url, { headers: { "x-api-key": k }, cache: "no-store" });
+    const r = await fetch(url, { headers: { "x-api-key": k }, cache: "no-store", signal: AbortSignal.timeout(params?.mode === "generate" ? 120000 : 15000) });
     const body = await r.text();
     if (r.ok) return JSON.parse(body);
 
@@ -55,27 +45,20 @@ async function call(path: string, params?: Record<string, string>, retry = 3) {
  *  native 는 자막을 가져오기만 해서 2~4초. 대신 그 자막이 사람이 만든 것인지
  *  기계가 만든 것인지 응답으로 구분할 수 없다.
  */
-const MODE = process.env.SUPADATA_MODE ?? "generate";
+export type Mode = "native" | "generate";
+export function settings(): { mode: Mode; lang: string | null } {
+  const mode = process.env.SUPADATA_MODE ?? "native";
+  if (mode !== "native" && mode !== "generate") throw new Error("SUPADATA_MODE는 native 또는 generate여야 합니다.");
+  return {mode, lang: mode === "native" ? process.env.SUPADATA_LANG ?? "ko" : null};
+}
 
-/** 어느 언어로 받아올지.
- *
- *  지정하지 않으면 그 영상에 달린 자막 중 아무거나 온다. 한국어 영상인데
- *  영어 자막이 붙어 있으면 영어가 왔다(byVgbqzYJrs 가 그랬다 — 한국어 강연인데
- *  "I said I ate kimchi stew, right?" 로 전사됐다). 다루는 영상이 한국어라
- *  한국어를 먼저 달라고 한다. 없으면 Supadata 가 있는 것으로 대신 준다.
- */
-const LANG = process.env.SUPADATA_LANG ?? "ko";
-
-/** 전사를 시작한다. 짧은 영상은 그 자리에서 결과가 오고, 긴 영상은 작업 번호만 온다. */
-export async function start(videoUrl: string): Promise<Started> {
-  // generate 는 소리를 직접 받아쓰므로 원어 그대로 나온다 — 언어를 지정하지 않는다.
-  // native 는 번역본 중 하나가 오므로 어느 것을 원하는지 말해야 한다.
-  const params: Record<string, string> =
-    MODE === "generate" ? { url: videoUrl, mode: MODE }
-                        : { url: videoUrl, mode: MODE, lang: LANG };
+/** 시작과 저장에 같은 설정을 전달해 실제 요청 방식을 기록한다. */
+export async function start(videoUrl: string, config = settings()): Promise<Started> {
+  const params: Record<string, string> = {url:videoUrl, mode:config.mode};
+  if (config.lang) params.lang = config.lang;
   const d = await call("/transcript", params);
-  if (d.jobId && !d.content) return { state: "working", job: d.jobId };
-  return { state: "done", result: d };
+  if (d.jobId && !d.content) return {state:"working",job:d.jobId};
+  return {state:"done",result:d};
 }
 
 export type Polled =

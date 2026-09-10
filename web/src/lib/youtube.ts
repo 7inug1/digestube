@@ -11,7 +11,7 @@ export async function meta(vid: string): Promise<Meta | null> {
   const url = `https://www.youtube.com/oembed?url=${target}&format=json`;
   try {
     // 제목은 거의 안 바뀐다. 하루에 한 번만 물어본다.
-    const r = await fetch(url, { next: { revalidate: 86400 } });
+    const r = await fetch(url, { signal: AbortSignal.timeout(5000), next: { revalidate: 86400 } });
     if (!r.ok) return null;
     const d = await r.json();
     return { title: d.title, channel: d.author_name };

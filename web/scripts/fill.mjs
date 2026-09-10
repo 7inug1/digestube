@@ -26,16 +26,15 @@ async function one(vid) {
   let d = await post("/api/ingest", { url: `https://www.youtube.com/watch?v=${vid}` });
   while (d.state === "working") {
     await new Promise((s) => setTimeout(s, 5000));
-    const r = await fetch(`${BASE}/api/ingest?job=${d.job}&vid=${d.vid}`);
+    const r = await fetch(`${BASE}/api/ingest?job=${encodeURIComponent(d.job)}&vid=${d.vid}&token=${encodeURIComponent(d.token)}`);
     const next = await r.json();
     if (!r.ok) throw new Error(next.error ?? `${r.status}`);
     d = next.state === "working" ? d : next;
   }
-  for (let i = 0; i < 10; i++) {
-    const e = await post("/api/embed", { vid });
-    if (!e.left) break;
-  }
-  const o = await post("/api/outline", { vid }).catch((e) => ({ error: e.message }));
+  let o;
+  do { o = await post("/api/outline", {vid}); } while (o.left);
+  let e;
+  do { e = await post("/api/embed", {vid}); } while (e.left);
   const sec = Math.round((Date.now() - t0) / 1000);
   return `${vid} · 문단 ${d.chunks} · ${d.chars}자 · 목차 ${o.kept ?? "실패"}/${o.n ?? "-"} · ${sec}초`;
 }

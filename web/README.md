@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Digestube v2 웹 데모
 
-## Getting Started
+Next.js·TypeScript·Supabase pgvector. 자막 등록 → 문단 분할 → 목차 → 전사문 읽기·의미 검색.
 
-First, run the development server:
+## 실행
 
-```bash
+Node 22 이상 권장. Node 20에서는 Supabase 클라이언트 때문에 `--experimental-websocket`이 필요하다.
+
+```sh
+npm ci
+cp .env.local.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+환경 파일에 실제 키를 입력한다. `.env.local`, `.vercel`, 로컬 `data/db.json`은 git에서 제외한다.
+배포 및 로컬 기본 전사 방식은 `SUPADATA_MODE=native`, 요청 언어는 `SUPADATA_LANG=ko`다.
+코퍼스를 별도로 받아쓸 때만 로컬에서 `SUPADATA_MODE=generate`를 명시한다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## DB 준비 / 업데이트
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 새 DB: `supabase/schema.sql` 실행 후 아래 migration 실행.
+- 기존 DB: `supabase/migrations/20260910_finish_v2.sql`을 Supabase SQL Editor에서 실행.
+- 코드 배포보다 DB migration을 먼저 적용한다. SQL은 반복 적용할 수 있다.
+- 기존 영상의 `mode`는 NULL로 남긴다. 확인되지 않은 출처를 추정해서 채우지 않는다.
 
-## Learn More
+신규 처리부터 실제 요청 mode, 요청 언어, 응답 lang, 처리 완료 시각을 기록한다.
+이미 등록된 영상은 `/api/ingest`에서 409를 반환한다. 화면에서 교체를 선택해야 `replace:true`가 전송된다.
+새 전사 결과를 검증한 뒤 트랜잭션에서 문단·목차를 교체한다. 실패 시 기존 내용은 유지한다.
+진행 중인 작업에는 토큰을 붙이고, 늦게 도착한 이전 전사의 결과가 새 데이터에 쓰이지 않게 한다.
 
-To learn more about Next.js, take a look at the following resources:
+## 목차와 검색 준비
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 목차 생성·길이·인용 검사 실패 시 한 번 재시도한다.
+- 재실패하면 첫 문장을 말줄임표 포함 25자 이내로 표시한다.
+- 대체 항목은 `source=fallback`, `quote=''`, 시도 수와 실패 사유로 기록한다. 인용 검증 성공으로 세지 않는다.
+- 목차는 요청당 4문단, 임베딩은 요청당 16문단을 처리한다. 응답의 `left`가 0이 될 때까지 클라이언트가 이어 호출한다.
+- 일부 저장 후 실패해도 등록 화면에서 같은 URL → ‘처리 이어하기’로 재개할 수 있다.
+- 목차와 임베딩이 모두 있는 경우에만 영상 상태가 ‘완료’가 된다.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 검증
 
-## Deploy on Vercel
+```sh
+npm test
+npm run lint
+npm run build
+npx playwright test
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`npm test`: 인용 재시도, 대체 제목 길이, 부적합 자막 거부, PostgreSQL 트랜잭션·동시 등록 보호·구버전 결과 거부.
+DB 테스트는 로컬 PGlite에서 실행한다. pgvector 거리 계산은 이 테스트 범위 밖이며 embedding은 텍스트 도메인으로 대체한다.
+브라우저 테스트는 로컬 데모를 사용한다. 쓰기 API는 가짜 응답으로 대체하며 실제 서비스 DB에 영상을 쓰지 않는다.
+라이브러리·상세 읽기는 현재 DB 데이터를 사용한다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 데모의 범위
+
+- native에는 한국어 번역 자막이 올 수 있다. 응답 언어가 요청 언어와 다르면 저장하지 않고 안내한다.
+- 사람이 만든 자막인지 자동 자막인지는 판별하지 않는다.
+- 청킹은 문장 끝과 길이를 기준으로 자른다. native에 구두점이 없으면 문장 중간이 잘릴 수 있다.
+- 인용 원문 대조는 제목 의미의 정확성을 보장하지 않는다. 사람 목차 평가는 보류 중이다.
+- 무관한 질문의 검색 임계치와 임베딩 품질은 아직 확정 평가 전이다.

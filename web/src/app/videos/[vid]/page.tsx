@@ -28,6 +28,7 @@ export default async function Video({ params }: { params: Promise<{ vid: string 
         channel: m?.channel ?? "채널 미확인",
         seconds: v.chunks.at(-1)?.t_end ?? 0,
         read: readTime(v.chars ?? 0),
+        mode: v.mode, lang: v.lang,
       }}
     />
   );

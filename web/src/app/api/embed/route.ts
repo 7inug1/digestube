@@ -1,25 +1,23 @@
 import { NextResponse } from "next/server";
 import { embed } from "@/lib/embed";
-import { chunksWithoutEmbedding, putEmbeddings, upsertVideo } from "@/lib/store";
+import { chunksWithoutEmbedding, getVideo, refreshVideoStatus, saveEmbeddingBatch } from "@/lib/store";
 
-/* 임베딩은 전사와 따로 부른다. 모델이 잠들면 첫 호출이 4.5초 걸리고 문단 수만큼
-   호출이 곱해져 서버리스 60초 제한을 넘는다. 넣기와 붙여 두면 전사까지 같이
-   실패하므로 여기서만 다룬다. 다시 불러도 이미 만든 문단은 건너뛴다. */
 export const maxDuration = 60;
-
 export async function POST(req: Request) {
   try {
-    const { vid } = await req.json();
-    const todo = await chunksWithoutEmbedding(vid);
-    if (!todo.length) return NextResponse.json({ vid, done: 0, left: 0 });
-
-    const vectors = await embed(todo.map((c) => c.text));
-    await putEmbeddings(vid, todo.map((c, i) => ({ seq: c.seq, vector: vectors[i] })));
-
+    const {vid} = await req.json();
+    if (typeof vid !== "string") return NextResponse.json({error:"영상 번호가 필요합니다."}, {status:400});
+    const v = await getVideo(vid);
+    if (!v) return NextResponse.json({error:"없는 영상입니다."}, {status:404});
+    const todo = (await chunksWithoutEmbedding(vid)).slice(0,16);
+    if (todo.length) {
+      const vectors = await embed(todo.map(c=>c.text));
+      await saveEmbeddingBatch(vid,v.revision ?? null,todo.map((c,i)=>({seq:c.seq,vector:vectors[i]})));
+    }
+    await refreshVideoStatus(vid,v.revision ?? null);
     const left = (await chunksWithoutEmbedding(vid)).length;
-    if (!left) await upsertVideo({ id: vid, status: "완료" });
-    return NextResponse.json({ vid, done: todo.length, left });
-  } catch (e) {
-    return NextResponse.json({ error: (e as Error).message }, { status: 502 });
+    return NextResponse.json({vid,done:todo.length,left});
+  } catch(e) {
+    return NextResponse.json({error:(e as Error).message}, {status:502});
   }
 }

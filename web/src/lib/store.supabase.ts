@@ -19,9 +19,11 @@ export async function getVideo(vid: string) {
   const [v, c, o] = await Promise.all([
     s.from("video").select("*").eq("id", vid).maybeSingle(),
     s.from("chunk").select("video_id,seq,t,t_end,text").eq("video_id", vid).order("seq"),
-    s.from("outline").select("video_id,seq,t,label,quote").eq("video_id", vid).order("t"),
+    s.from("outline").select("*").eq("video_id", vid).order("t"),
   ]);
   if (v.error) throw v.error;
+  if (c.error) throw c.error;
+  if (o.error) throw o.error;
   if (!v.data) return null;
   return {
     ...(v.data as Video),
@@ -110,4 +112,31 @@ export async function chunksWithoutEmbedding(vid: string) {
 export async function removeVideo(vid: string) {
   const { error } = await db().from("video").delete().eq("id", vid);
   if (error) throw error;
+}
+
+async function mutation(name: string, params: Record<string, unknown>) {
+  const { data, error } = await db().rpc(name, params);
+  if (error) throw error;
+  return data;
+}
+export async function beginIngest(vid: string, replace: boolean, token: string, mode: string, lang: string | null): Promise<"started" | "exists" | "busy"> {
+  return mutation("begin_ingest", {p_vid:vid,p_replace:replace,p_token:token,p_mode:mode,p_lang:lang});
+}
+export async function setIngestJob(vid: string, token: string, job: string) {
+  if (!await mutation("set_ingest_job", {p_vid:vid,p_token:token,p_job:job})) throw new Error("전사 작업이 변경됐다. 다시 확인해 주세요.");
+}
+export async function cancelIngest(vid: string, token: string) {
+  await mutation("cancel_ingest", {p_vid:vid,p_token:token});
+}
+export async function finishIngest(vid: string, token: string, meta: Video, chunks: NewChunk[]) {
+  if (!await mutation("finish_ingest", {p_vid:vid,p_token:token,p_meta:meta,p_chunks:chunks})) throw new Error("전사 작업이 변경됐다. 다시 확인해 주세요.");
+}
+export async function saveOutlineBatch(vid: string, revision: string | null, items: Omit<Outline,"video_id">[]) {
+  if (!await mutation("save_outline_batch", {p_vid:vid,p_revision:revision,p_items:items})) throw new Error("전사문이 교체됐다. 다시 시도해 주세요.");
+}
+export async function saveEmbeddingBatch(vid: string, revision: string | null, items: {seq:number;vector:number[]}[]) {
+  if (!await mutation("save_embedding_batch", {p_vid:vid,p_revision:revision,p_items:items})) throw new Error("전사문이 교체됐다. 다시 시도해 주세요.");
+}
+export async function refreshVideoStatus(vid: string, revision: string | null) {
+  if (!await mutation("refresh_video_status", {p_vid:vid,p_revision:revision})) throw new Error("전사문이 교체됐다. 다시 시도해 주세요.");
 }

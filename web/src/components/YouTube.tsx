@@ -2,9 +2,16 @@
 
 import { useEffect, useRef } from "react";
 
+type Player = {
+  loadVideoById(options: {videoId:string;startSeconds:number}): void;
+  seekTo(seconds:number,allowSeekAhead:boolean): void;
+  playVideo(): void;
+};
+type PlayerOptions = {videoId:string;playerVars:Record<string,number>;events:{onReady:()=>void}};
+
 declare global {
   interface Window {
-    YT?: any;
+    YT?: {Player: new (host:HTMLElement,options:PlayerOptions)=>Player};
     onYouTubeIframeAPIReady?: () => void;
   }
 }
@@ -32,13 +39,13 @@ export default function YouTube({ videoId, seek, nonce = 0, autoplay = true }: {
   autoplay?: boolean;
 }) {
   const host = useRef<HTMLDivElement>(null);
-  const player = useRef<any>(null);
+  const player = useRef<Player | null>(null);
   const loaded = useRef<string>("");
 
   useEffect(() => {
     let dead = false;
     loadApi().then(() => {
-      if (dead || !host.current || player.current) return;
+      if (dead || !host.current || player.current || !window.YT) return;
       player.current = new window.YT.Player(host.current, {
         videoId,
         playerVars: { rel: 0, modestbranding: 1, playsinline: 1, start: Math.floor(seek) },

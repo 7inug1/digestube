@@ -10,5 +10,5 @@ const impl = useSupabase
   ? await import("./store.supabase")
   : await import("./store.file");
 
-export const { listVideos, getVideo, statsOf, search, upsertVideo, putChunks, putOutline, putEmbeddings, chunksWithoutEmbedding, removeVideo } = impl;
+export const { listVideos, getVideo, statsOf, search, upsertVideo, putChunks, putOutline, putEmbeddings, chunksWithoutEmbedding, removeVideo, beginIngest, setIngestJob, cancelIngest, finishIngest, saveOutlineBatch, saveEmbeddingBatch, refreshVideoStatus } = impl;
 export type { Chunk, Hit, Outline, Video } from "./types";

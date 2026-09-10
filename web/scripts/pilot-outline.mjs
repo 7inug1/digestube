@@ -8,7 +8,6 @@ import { createClient } from "@supabase/supabase-js";
 import { mkdir, writeFile } from "node:fs/promises";
 
 const GAP_MS = 2500;        // Groq 무료 한도에 걸리지 않게 간격을 둔다
-const MAXLEN = 25;          // label 길이 상한
 
 const PROMPT = `다음은 영상 전사에서 잘라낸 문단이다. 목차에 걸 제목을 하나 만들어라.
 

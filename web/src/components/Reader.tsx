@@ -5,7 +5,7 @@ import YouTube from "./YouTube";
 
 type Chunk = { seq: number; t: number; t_end: number; text: string };
 type Outline = { seq: number; t: number; label: string };
-type Meta = { title: string; channel: string; seconds: number; read: string };
+type Meta = { title: string; channel: string; seconds: number; read: string; mode?: string | null; lang?: string | null };
 
 const mm = (s: number) =>
   `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -58,6 +58,11 @@ export default function Reader({ vid, chunks, outline, meta }: {
               </a>
             </div>
           </div>
+
+          <p className="text-[11.5px] text-mfg">
+            {meta.mode === "native" ? "기존 자막 · 번역 자막일 수 있음" : meta.mode === "generate" ? "음성 받아쓰기" : "자막 수집 방식 미기록"}
+            {meta.lang ? ` · ${meta.lang}` : ""}
+          </p>
 
           {outline.length > 0 && (
             <div className="rounded-xl bg-muted/60 p-4">

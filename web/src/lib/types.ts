@@ -3,6 +3,13 @@ export type Video = {
   title?: string | null;
   channel?: string | null;
   lang?: string | null;
+  mode?: "native" | "generate" | null;
+  requested_lang?: string | null;
+  transcribed_at?: string | null;
+  revision?: string | null;
+  ingest_token?: string | null;
+  pending_mode?: "native" | "generate" | null;
+  pending_lang?: string | null;
   status?: string | null;
   job?: string | null;
   chars?: number | null;
@@ -18,6 +25,7 @@ export type Chunk = {
 
 export type Outline = {
   video_id: string; seq: number; t: number; label: string; quote: string;
+  source?: "model" | "fallback"; attempts?: number; failure?: string | null;
 };
 
 export type Hit = Chunk & { score: number };
