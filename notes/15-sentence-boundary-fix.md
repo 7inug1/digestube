@@ -37,3 +37,13 @@ node --import tsx --test tests/*.test.ts
 - 기존 전사문 내용 보존, `progress your career`가 같은 문단에 있음, 모든 수정 문단이 문장 끝으로 끝남을 검증했다.
 - 이 영상은 기존 5문단에서 11문단이 된다. 11개 모두 종결 구두점으로 끝난다. 이는 이 사례의 경계 검사이며 일반적인 청킹 품질 점수가 아니다.
 - 전체 테스트 12개 및 production build 통과. lint 오류 없음, 기존 이미지 최적화 경고 2개.
+
+## 운영 반영 완료
+
+- 앱 커밋: `adc4f35`.
+- 배포: https://digestube-v2-l1yqa9wiw-7inug1s-projects.vercel.app
+- 운영 별칭: https://digestube-v2.vercel.app
+- 복구 영상: https://digestube-v2.vercel.app/videos/-Z11mZaJU0w
+- 운영 DB에서 복구 전후 전사문을 이어 붙인 결과의 완전 일치, 문단 11개 모두 문장 종결,
+  목차 11개 및 임베딩 저장, 원래 mode/전사 날짜 보존을 확인했다.
+- 운영 브라우저에서도 문단·목차 11개와 `progress your career`의 동일 문단 포함을 확인했다.
