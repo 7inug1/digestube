@@ -6,7 +6,7 @@
  * 제한이 없고 저장소는 같은 Supabase 라, 코퍼스는 여기서 채운다.
  * 한 편씩 돈다 — 동시에 걸면 Supadata 무료 플랜이 429 로 막는다.
  */
-const BASE = "http://127.0.0.1:3000";
+const BASE = process.env.DIGESTUBE_BASE_URL ?? "http://127.0.0.1:3000";
 // 무료 플랜은 동시 요청을 막는다(429 limit-exceeded). 한 편씩 돈다.
 const PAIR = 1;
 const GAP_MS = 15000;   // 편 사이 간격 — 429 를 덜 만나게

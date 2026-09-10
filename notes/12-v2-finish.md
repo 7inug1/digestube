@@ -19,13 +19,16 @@
 ## 운영 반영
 
 DB migration: `web/supabase/migrations/20260910_finish_v2.sql`.
-서비스 키만으로는 DDL을 실행할 수 없어 운영 DB의 SQL Editor 적용이 필요하다.
-운영 DB 변경 후 Vercel에 이 커밋의 코드를 배포해야 새 기능이 운영에 반영된다.
+2026-09-10 사용자가 SQL Editor에서 적용한 뒤, 컬럼 및 RPC 7개 노출을 확인했다.
+앱 커밋 `328200e`를 운영에 배포했다.
+- 운영: https://digestube-v2.vercel.app
+- 해당 배포: https://digestube-v2-4vh755eih-7inug1s-projects.vercel.app
+- Vercel deployment ID: `Cr2mmeyy76mgvLPeUhU4x5h4V5XJ`
 
 ## 이력서
 
-[Digestube 재작성안](13-digestube-resume.md). 운영 반영이 끝나기 전에는 데이터 보호와
-새 목차 처리까지 배포됐다고 표현하지 않는다.
+[Digestube 재작성안](13-digestube-resume.md). 구현·배포를 확인한 내용으로 정리했다.
+모델 품질 검증이나 사용자 효과 측정까지 완료했다고 표현하지 않는다.
 
 ## 검증 기록
 
@@ -34,5 +37,10 @@ DB migration: `web/supabase/migrations/20260910_finish_v2.sql`.
 - `npm run lint`: 오류 없음. 기존 이미지 태그에 대한 최적화 권고 경고 2개가 남는다.
 - TypeScript 검사 및 Next.js production build 통과.
 - 실제 로컬 API: 목록·영상 상세·검색 200, 중복 등록 409 확인. 재현: `web/scripts/smoke-readonly.mjs`.
-- 운영 DB migration과 신규 영상의 실제 외부 전사 → DB 저장 검증은 운영 반영 전 남은 단계다.
-  쓰기 보호는 로컬 PostgreSQL 테스트로, 화면 흐름은 가짜 쓰기 응답으로 검증했다.
+- 운영 DB migration 적용 및 신규 영상 `PlawByYfV8k`의 실제 native 전사 → DB 저장 → 목차 → 임베딩 준비까지 확인했다.
+  mode=native, requested_lang=ko, lang=ko, status=완료. 문단 4개, 목차 4개, fallback 0개.
+  이 영상은 작업 전 DB에 없음을 확인한 뒤 새로 추가했다. 기존 7개 영상은 교체하지 않았다.
+- 운영 목록·기존 상세·검색 응답 및 중복 등록 차단은 `scripts/smoke-readonly.mjs https://digestube-v2.vercel.app`로 확인했다.
+- 새 영상 처리 재현: `DIGESTUBE_BASE_URL=https://digestube-v2.vercel.app node scripts/fill.mjs <미등록 영상 ID>`.
+  이미 등록된 ID를 넣으면 409로 중단한다. 외부 API 사용량이 발생한다.
+- 실패 시 롤백 및 구버전 응답 방어는 PostgreSQL 테스트로 검증했다. 운영에서 의도적으로 기존 데이터를 교체하거나 실패를 유발하지 않았다.
