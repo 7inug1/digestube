@@ -34,3 +34,12 @@ node --experimental-websocket --env-file=.env.local --import tsx scripts/rechunk
 ## 검증
 
 전체 테스트 13개, production build 통과. 변경 파일 lint 확인.
+
+## 전체 운영 적용 확인
+
+- 전체 8편을 처리했다. 6편은 문단이 바뀌어 목차·임베딩을 재생성했고, 2편은 기존 결과가 동일함을 확인했다.
+- 운영 화면의 전체 84문단과 목차 개수 및 본문 순서를 DB와 대조했다.
+- 전체 영상 status=완료, 모든 문단의 임베딩 존재, 원문 및 전사 메타데이터 보존 검증을 통과했다.
+- 적용 보고서: `web/data/repairs/library-1789027864761/summary.json` (git 제외).
+- 신규 등록 경로는 prepareTranscript를 통해 동일한 chunk를 호출한다. 새 원본을 넣어 동일 결과가 나오는 테스트를 추가해 확인했다.
+- `.vercelignore`로 복구 백업과 테스트 산출물을 배포 업로드에서 제외한다.
