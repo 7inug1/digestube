@@ -1,0 +1,107 @@
+[
+  {
+    "id": "1-A",
+    "model": "claude-haiku-4-5-20251001",
+    "input": 0
+  },
+  {
+    "id": "1-B",
+    "model": "claude-sonnet-5",
+    "input": 0
+  },
+  {
+    "id": "1-C",
+    "model": "openai/gpt-oss-120b",
+    "input": 0
+  },
+  {
+    "id": "2-A",
+    "model": "claude-sonnet-5",
+    "input": 1
+  },
+  {
+    "id": "2-B",
+    "model": "openai/gpt-oss-120b",
+    "input": 1
+  },
+  {
+    "id": "2-C",
+    "model": "claude-haiku-4-5-20251001",
+    "input": 1
+  },
+  {
+    "id": "3-A",
+    "model": "openai/gpt-oss-120b",
+    "input": 2
+  },
+  {
+    "id": "3-B",
+    "model": "claude-haiku-4-5-20251001",
+    "input": 2
+  },
+  {
+    "id": "3-C",
+    "model": "claude-sonnet-5",
+    "input": 2
+  },
+  {
+    "id": "4-A",
+    "model": "claude-haiku-4-5-20251001",
+    "input": 3
+  },
+  {
+    "id": "4-B",
+    "model": "claude-sonnet-5",
+    "input": 3
+  },
+  {
+    "id": "4-C",
+    "model": "openai/gpt-oss-120b",
+    "input": 3
+  },
+  {
+    "id": "5-A",
+    "model": "claude-sonnet-5",
+    "input": 4
+  },
+  {
+    "id": "5-B",
+    "model": "openai/gpt-oss-120b",
+    "input": 4
+  },
+  {
+    "id": "5-C",
+    "model": "claude-haiku-4-5-20251001",
+    "input": 4
+  },
+  {
+    "id": "6-A",
+    "model": "openai/gpt-oss-120b",
+    "input": 5
+  },
+  {
+    "id": "6-B",
+    "model": "claude-haiku-4-5-20251001",
+    "input": 5
+  },
+  {
+    "id": "6-C",
+    "model": "claude-sonnet-5",
+    "input": 5
+  },
+  {
+    "id": "7-A",
+    "model": "claude-haiku-4-5-20251001",
+    "input": 6
+  },
+  {
+    "id": "7-B",
+    "model": "claude-sonnet-5",
+    "input": 6
+  },
+  {
+    "id": "7-C",
+    "model": "openai/gpt-oss-120b",
+    "input": 6
+  }
+]

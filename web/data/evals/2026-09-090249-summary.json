@@ -1,0 +1,16 @@
+[
+ {
+  "name": "Claude Sonnet 5",
+  "model": "claude-sonnet-5",
+  "vendor": "anthropic",
+  "n": 26,
+  "json": 25,
+  "len": 25,
+  "quote": 25,
+  "pass": 25,
+  "avg_ms": 1894,
+  "avg_out": 78,
+  "wobble": 11,
+  "total_s": 49
+ }
+]

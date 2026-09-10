@@ -1,0 +1,291 @@
+{
+ "candidate": {
+  "name": "gpt-oss-120b",
+  "vendor": "groq",
+  "model": "openai/gpt-oss-120b"
+ },
+ "prompt": "다음은 영상 전사에서 잘라낸 문단이다. 목차에 걸 제목을 하나 만들어라.\n\n규칙\n- 제목은 한국어로 25자 이내.\n- quote 는 이 문단에 **글자 그대로 들어 있는** 문장 하나를 옮긴다. 지어내지 않는다.\n- JSON 하나만 출력한다. 설명을 붙이지 않는다.\n\n{\"label\": \"제목\", \"quote\": \"원문에 그대로 있는 문장\"}\n\n문단:\n{text}",
+ "runs": 2,
+ "summary": {
+  "name": "gpt-oss-120b",
+  "model": "openai/gpt-oss-120b",
+  "vendor": "groq",
+  "n": 26,
+  "json": 8,
+  "len": 8,
+  "quote": 8,
+  "pass": 8,
+  "avg_ms": 734,
+  "avg_out": 220,
+  "total_s": 19
+ },
+ "rows": [
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 0,
+   "run": 0,
+   "ms": 2045,
+   "out": 637,
+   "label": "20년 된 차, 고장과 수리 고민",
+   "quote": "이제 그 차가 20년 된 차가 됐거든요.",
+   "json_ok": true,
+   "len_ok": true,
+   "quote_ok": true,
+   "pass": true
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 0,
+   "run": 1,
+   "ms": 1967,
+   "out": 644,
+   "label": "20년 된 차, 고속도로 사고",
+   "quote": "이제 그 차가 20년 된 차가 됐거든요.",
+   "json_ok": true,
+   "len_ok": true,
+   "quote_ok": true,
+   "pass": true
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 1,
+   "run": 0,
+   "ms": 1931,
+   "out": 800,
+   "json_ok": false,
+   "pass": false,
+   "error": "JSON 아님"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 1,
+   "run": 1,
+   "ms": 1623,
+   "out": 525,
+   "label": "타인의 시선과 자유로운 과거 회고",
+   "quote": "그 당시에 이제 제가 많이 만들었던 영상이 보통 혐오의 사회, 수족 게임의 은퇴자 이런 것들이니까 내가 잘라 보이고 못 나 보이고 그런 거에서는 많이 자유로워졌거든요.",
+   "json_ok": true,
+   "len_ok": true,
+   "quote_ok": true,
+   "pass": true
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 2,
+   "run": 0,
+   "ms": 1281,
+   "out": 428,
+   "label": "만삭 여성의 대중교통 에티켓 고민",
+   "quote": "이게 에티켓이야.",
+   "json_ok": true,
+   "len_ok": true,
+   "quote_ok": true,
+   "pass": true
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 2,
+   "run": 1,
+   "ms": 1898,
+   "out": 635,
+   "label": "대중교통에서 가방 매는 에티켓",
+   "quote": "이게 에티켓이야.",
+   "json_ok": true,
+   "len_ok": true,
+   "quote_ok": true,
+   "pass": true
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 3,
+   "run": 0,
+   "ms": 1900,
+   "out": 650,
+   "label": "미묘한 불친절과 그 해결법",
+   "quote": "왜 싫으냐면 우리가 뭐 다른 사람의 시선으로부터 자유로워주고자 하는게 사실 내가 마음이 좋기 위해서 그런 건데 그걸로 가는 길에 부정적인 마음이 필요하다.",
+   "json_ok": true,
+   "len_ok": true,
+   "quote_ok": true,
+   "pass": true
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 3,
+   "run": 1,
+   "ms": 2148,
+   "out": 783,
+   "label": "새침함과 불친절함 사이의 고민",
+   "quote": "그러니까 뭐 적대적이고 막 그런 건 아닌데 약간 새침함 정도.",
+   "json_ok": true,
+   "len_ok": true,
+   "quote_ok": true,
+   "pass": true
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 4,
+   "run": 0,
+   "ms": 1808,
+   "out": 614,
+   "label": "친절함과 아이케어에 대한 고민",
+   "quote": "그럼 나는 한번 쫓아가 볼 거거든요.",
+   "json_ok": true,
+   "len_ok": true,
+   "quote_ok": true,
+   "pass": true
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 4,
+   "run": 1,
+   "ms": 155,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 5,
+   "run": 0,
+   "ms": 184,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 5,
+   "run": 1,
+   "ms": 133,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 6,
+   "run": 0,
+   "ms": 153,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 6,
+   "run": 1,
+   "ms": 145,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 7,
+   "run": 0,
+   "ms": 135,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 7,
+   "run": 1,
+   "ms": 145,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 8,
+   "run": 0,
+   "ms": 140,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 8,
+   "run": 1,
+   "ms": 149,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 9,
+   "run": 0,
+   "ms": 139,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 9,
+   "run": 1,
+   "ms": 138,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 0,
+   "run": 0,
+   "ms": 139,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 0,
+   "run": 1,
+   "ms": 139,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 1,
+   "run": 0,
+   "ms": 134,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 1,
+   "run": 1,
+   "ms": 158,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 2,
+   "run": 0,
+   "ms": 152,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 2,
+   "run": 1,
+   "ms": 157,
+   "json_ok": false,
+   "pass": false,
+   "error": "429 {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kzfyrnjnec880vn9txg4b"
+  }
+ ]
+}

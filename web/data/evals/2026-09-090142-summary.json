@@ -1,0 +1,67 @@
+[
+ {
+  "name": "Claude Haiku 4.5",
+  "model": "claude-haiku-4-5-20251001",
+  "vendor": "anthropic",
+  "n": 26,
+  "json": 26,
+  "len": 26,
+  "quote": 26,
+  "pass": 26,
+  "avg_ms": 1271,
+  "avg_out": 70,
+  "total_s": 33
+ },
+ {
+  "name": "qwen3.8-27b",
+  "model": "qwen/qwen3.8-27b",
+  "vendor": "groq",
+  "n": 26,
+  "json": 26,
+  "len": 26,
+  "quote": 26,
+  "pass": 26,
+  "avg_ms": 456,
+  "avg_out": 35,
+  "total_s": 12
+ },
+ {
+  "name": "Claude Sonnet 5",
+  "model": "claude-sonnet-5",
+  "vendor": "anthropic",
+  "n": 26,
+  "json": 26,
+  "len": 26,
+  "quote": 25,
+  "pass": 25,
+  "avg_ms": 1878,
+  "avg_out": 78,
+  "total_s": 49
+ },
+ {
+  "name": "gpt-oss-120b",
+  "model": "openai/gpt-oss-120b",
+  "vendor": "groq",
+  "n": 26,
+  "json": 8,
+  "len": 8,
+  "quote": 8,
+  "pass": 8,
+  "avg_ms": 734,
+  "avg_out": 220,
+  "total_s": 19
+ },
+ {
+  "name": "gpt-oss-20b",
+  "model": "openai/gpt-oss-20b",
+  "vendor": "groq",
+  "n": 26,
+  "json": 6,
+  "len": 6,
+  "quote": 6,
+  "pass": 6,
+  "avg_ms": 475,
+  "avg_out": 205,
+  "total_s": 12
+ }
+]

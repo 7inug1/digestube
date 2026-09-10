@@ -1,0 +1,561 @@
+[
+  {
+    "input": 0,
+    "name": "Claude Haiku 4.5",
+    "vendor": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "raw": "```json\n{\"label\": \"시청자 피드백을 통한 콘텐츠 방향 결정\", \"quote\": \"This is to try to help gauge what I'm going to be creating for you and try to make this channel more geared towards the actual content that you want.\"}\n```",
+    "usage": {
+      "input_tokens": 334,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 75,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "ms": 1573,
+    "label": "시청자 피드백을 통한 콘텐츠 방향 결정",
+    "quote": "This is to try to help gauge what I'm going to be creating for you and try to make this channel more geared towards the actual content that you want.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 0,
+    "name": "Claude Sonnet 5",
+    "vendor": "anthropic",
+    "model": "claude-sonnet-5",
+    "raw": "{\"label\": \"채널 방향 설문조사 안내\", \"quote\": \"This quick survey is going to help me actually gauge what you're looking for and form the content that I'm going to create.\"}",
+    "usage": {
+      "input_tokens": 385,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 60,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    },
+    "ms": 1797,
+    "label": "채널 방향 설문조사 안내",
+    "quote": "This quick survey is going to help me actually gauge what you're looking for and form the content that I'm going to create.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 0,
+    "name": "gpt-oss-120b",
+    "vendor": "groq",
+    "model": "openai/gpt-oss-120b",
+    "raw": "{\"label\":\"시청자 설문으로 콘텐츠 방향 잡기\",\"quote\":\"This quick survey is going to help me actually gauge what you're looking for and form the content that I'm going to create.\"}",
+    "usage": {
+      "queue_time": 0.316428172,
+      "prompt_tokens": 321,
+      "prompt_time": 0.014730987,
+      "completion_tokens": 526,
+      "completion_time": 1.114775186,
+      "total_tokens": 847,
+      "total_time": 1.129506173,
+      "completion_tokens_details": {
+        "reasoning_tokens": 476
+      }
+    },
+    "ms": 1624,
+    "label": "시청자 설문으로 콘텐츠 방향 잡기",
+    "quote": "This quick survey is going to help me actually gauge what you're looking for and form the content that I'm going to create.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 1,
+    "name": "Claude Haiku 4.5",
+    "vendor": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "raw": "```json\n{\"label\": \"준비되지 않은 상태에서 도약하기\", \"quote\": \"And it wasn't pretty, and I wasn't ready, and I did think seriously back then about, well, maybe I should wait until the next late night slot opens up for a complete unknown.\"}\n```",
+    "usage": {
+      "input_tokens": 354,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 75,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "ms": 1352,
+    "label": "준비되지 않은 상태에서 도약하기",
+    "quote": "And it wasn't pretty, and I wasn't ready, and I did think seriously back then about, well, maybe I should wait until the next late night slot opens up for a complete unknown.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 1,
+    "name": "Claude Sonnet 5",
+    "vendor": "anthropic",
+    "model": "claude-sonnet-5",
+    "raw": "{\"label\": \"완벽하지 않아도 일단 뛰어들기\", \"quote\": \"And it wasn't pretty, and I wasn't ready, and I did think seriously back then about, well, maybe I should wait until the next late night slot opens up for a complete unknown.\"}",
+    "usage": {
+      "input_tokens": 420,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 90,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    },
+    "ms": 1877,
+    "label": "완벽하지 않아도 일단 뛰어들기",
+    "quote": "And it wasn't pretty, and I wasn't ready, and I did think seriously back then about, well, maybe I should wait until the next late night slot opens up for a complete unknown.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 1,
+    "name": "gpt-oss-120b",
+    "vendor": "groq",
+    "model": "openai/gpt-oss-120b",
+    "raw": "{\"label\":\"보트 위로 뛰어든 순간\",\"quote\":\"I got dragged along, looked like an idiot, pulled myself up, bleeding, but I got on the boat.\"}",
+    "usage": {
+      "queue_time": 0.214235559,
+      "prompt_tokens": 332,
+      "prompt_time": 0.01587368,
+      "completion_tokens": 616,
+      "completion_time": 1.299218717,
+      "total_tokens": 948,
+      "total_time": 1.315092397,
+      "completion_tokens_details": {
+        "reasoning_tokens": 569
+      }
+    },
+    "ms": 1715,
+    "label": "보트 위로 뛰어든 순간",
+    "quote": "I got dragged along, looked like an idiot, pulled myself up, bleeding, but I got on the boat.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 2,
+    "name": "Claude Haiku 4.5",
+    "vendor": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "raw": "```json\n{\"label\": \"에이전트 스타트업의 급성장과 우려\", \"quote\": \"각각의 구독을 관리할 필요도 없고 모든 에이전트가 서로 데이터를 공유하는지라 연계 작업도 쉽게 할 수 있다는 강점으로 빠른 성장가도를 달리고 있습니다.\"}\n```",
+    "usage": {
+      "input_tokens": 585,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 123,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "ms": 1627,
+    "label": "에이전트 스타트업의 급성장과 우려",
+    "quote": "각각의 구독을 관리할 필요도 없고 모든 에이전트가 서로 데이터를 공유하는지라 연계 작업도 쉽게 할 수 있다는 강점으로 빠른 성장가도를 달리고 있습니다.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 2,
+    "name": "Claude Sonnet 5",
+    "vendor": "anthropic",
+    "model": "claude-sonnet-5",
+    "raw": "{\"label\": \"AI 에이전트 스타트업의 급성장\", \"quote\": \"연 매출이 한 2억 5천만 달러.\"}",
+    "usage": {
+      "input_tokens": 592,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 49,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    },
+    "ms": 1545,
+    "label": "AI 에이전트 스타트업의 급성장",
+    "quote": "연 매출이 한 2억 5천만 달러.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 2,
+    "name": "gpt-oss-120b",
+    "vendor": "groq",
+    "model": "openai/gpt-oss-120b",
+    "raw": "{\"label\":\"에이전트 기반 서비스 급성장과 우려\",\"quote\":\"각각의 구독을 관리할 필요도 없고 모든 에이전트가 서로 데이터를 공유하는지라",
+    "usage": {
+      "queue_time": 0.318632763,
+      "prompt_tokens": 405,
+      "prompt_time": 0.024201886,
+      "completion_tokens": 800,
+      "completion_time": 1.695735686,
+      "total_tokens": 1205,
+      "total_time": 1.719937572,
+      "completion_tokens_details": {
+        "reasoning_tokens": 750
+      }
+    },
+    "ms": 2238,
+    "json_ok": false,
+    "pass": false
+  },
+  {
+    "input": 3,
+    "name": "Claude Haiku 4.5",
+    "vendor": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "raw": "```json\n{\"label\": \"만삭 상태에서 배운 친절함의 의미\", \"quote\": \"이렇게 친절한 마음이 나더라고.\"}\n```",
+    "usage": {
+      "input_tokens": 608,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 55,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "ms": 1325,
+    "label": "만삭 상태에서 배운 친절함의 의미",
+    "quote": "이렇게 친절한 마음이 나더라고.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 3,
+    "name": "Claude Sonnet 5",
+    "vendor": "anthropic",
+    "model": "claude-sonnet-5",
+    "raw": "{\"label\": \"만삭인 상태로 봐라\", \"quote\": \"만삭인 상태로 봐. 만삭인 상태로 봐.\"}",
+    "usage": {
+      "input_tokens": 612,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 194,
+      "output_tokens_details": {
+        "thinking_tokens": 143
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    },
+    "ms": 3313,
+    "label": "만삭인 상태로 봐라",
+    "quote": "만삭인 상태로 봐. 만삭인 상태로 봐.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 3,
+    "name": "gpt-oss-120b",
+    "vendor": "groq",
+    "model": "openai/gpt-oss-120b",
+    "raw": "",
+    "usage": {
+      "queue_time": 0.213726946,
+      "prompt_tokens": 409,
+      "prompt_time": 0.017976033,
+      "completion_tokens": 800,
+      "completion_time": 1.6826995519999999,
+      "total_tokens": 1209,
+      "total_time": 1.700675585,
+      "completion_tokens_details": {
+        "reasoning_tokens": 798
+      }
+    },
+    "ms": 2169,
+    "json_ok": false,
+    "pass": false
+  },
+  {
+    "input": 4,
+    "name": "Claude Haiku 4.5",
+    "vendor": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "raw": "```json\n{\"label\": \"세상의 선물을 감사하는 마음\", \"quote\": \"세상에 당연함은 없다. 감사만 있다.\"}\n```",
+    "usage": {
+      "input_tokens": 606,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 53,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "ms": 1192,
+    "label": "세상의 선물을 감사하는 마음",
+    "quote": "세상에 당연함은 없다. 감사만 있다.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": false,
+    "pass": false
+  },
+  {
+    "input": 4,
+    "name": "Claude Sonnet 5",
+    "vendor": "anthropic",
+    "model": "claude-sonnet-5",
+    "raw": "{\"label\": \"세상은 당연함이 아닌 선물이다\", \"quote\": \"세상에 당연함은 없다.\"}",
+    "usage": {
+      "input_tokens": 623,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 43,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    },
+    "ms": 1586,
+    "label": "세상은 당연함이 아닌 선물이다",
+    "quote": "세상에 당연함은 없다.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 4,
+    "name": "gpt-oss-120b",
+    "vendor": "groq",
+    "model": "openai/gpt-oss-120b",
+    "raw": "{\"label\":\"세상과 주인의 관계\",\"quote\":\"세상의 주인은 누구다?\"}",
+    "usage": {
+      "queue_time": 0.405990125,
+      "prompt_tokens": 425,
+      "prompt_time": 0.148157744,
+      "completion_tokens": 464,
+      "completion_time": 0.970922893,
+      "total_tokens": 889,
+      "total_time": 1.119080637,
+      "completion_tokens_details": {
+        "reasoning_tokens": 435
+      }
+    },
+    "ms": 1704,
+    "label": "세상과 주인의 관계",
+    "quote": "세상의 주인은 누구다?",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 5,
+    "name": "Claude Haiku 4.5",
+    "vendor": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "raw": "```json\n{\"label\": \"AI 이미지 생성으로 목표 시각화하기\", \"quote\": \"핀터레스트의 스티브 잡스의 얼굴을 내 사진의 여자 얼굴로 교체를 해줘.\"}\n```",
+    "usage": {
+      "input_tokens": 572,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 83,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "ms": 1250,
+    "label": "AI 이미지 생성으로 목표 시각화하기",
+    "quote": "핀터레스트의 스티브 잡스의 얼굴을 내 사진의 여자 얼굴로 교체를 해줘.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 5,
+    "name": "Claude Sonnet 5",
+    "vendor": "anthropic",
+    "model": "claude-sonnet-5",
+    "raw": "{\"label\": \"사진 속 얼굴로 원하는 장면 합성하기\", \"quote\": \"핀터레스트의 스티브 잡스의 얼굴을 내 사진의 여자 얼굴로 교체를 해줘.\"}",
+    "usage": {
+      "input_tokens": 576,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 82,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    },
+    "ms": 1833,
+    "label": "사진 속 얼굴로 원하는 장면 합성하기",
+    "quote": "핀터레스트의 스티브 잡스의 얼굴을 내 사진의 여자 얼굴로 교체를 해줘.",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 5,
+    "name": "gpt-oss-120b",
+    "vendor": "groq",
+    "model": "openai/gpt-oss-120b",
+    "raw": "{\"label\":\"테드 강연 이미지 프롬프트 활용법\",\"quote\":\"너무 재밌죠?\"}",
+    "usage": {
+      "queue_time": 0.327136886,
+      "prompt_tokens": 395,
+      "prompt_time": 0.149892113,
+      "completion_tokens": 482,
+      "completion_time": 1.014466157,
+      "total_tokens": 877,
+      "total_time": 1.16435827,
+      "completion_tokens_details": {
+        "reasoning_tokens": 448
+      }
+    },
+    "ms": 1663,
+    "label": "테드 강연 이미지 프롬프트 활용법",
+    "quote": "너무 재밌죠?",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 6,
+    "name": "Claude Haiku 4.5",
+    "vendor": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "raw": "```json\n{\"label\": \"수능을 앞두고 느끼는 긴장과 희망\", \"quote\": \"실패하더라도 다시 일어설 수 있는 단단한 마음은 이미 우리의 편이기를 바랍니다\"}\n```",
+    "usage": {
+      "input_tokens": 833,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 83,
+      "service_tier": "standard",
+      "inference_geo": "not_available"
+    },
+    "ms": 1210,
+    "label": "수능을 앞두고 느끼는 긴장과 희망",
+    "quote": "실패하더라도 다시 일어설 수 있는 단단한 마음은 이미 우리의 편이기를 바랍니다",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": false,
+    "pass": false
+  },
+  {
+    "input": 6,
+    "name": "Claude Sonnet 5",
+    "vendor": "anthropic",
+    "model": "claude-sonnet-5",
+    "raw": "{\"label\": \"고려대 합격을 향한 간절한 소원들\", \"quote\": \"저는 고려대 최초학이라고 썼습니다\"}",
+    "usage": {
+      "input_tokens": 838,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "output_tokens": 52,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    },
+    "ms": 1676,
+    "label": "고려대 합격을 향한 간절한 소원들",
+    "quote": "저는 고려대 최초학이라고 썼습니다",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  },
+  {
+    "input": 6,
+    "name": "gpt-oss-120b",
+    "vendor": "groq",
+    "model": "openai/gpt-oss-120b",
+    "raw": "{\"label\":\"대학 합격과 행복을 기원하는 청춘의 외침\",\"quote\":\"고려대 경영 고급하고 싶습니다\"}",
+    "usage": {
+      "queue_time": 0.396427137,
+      "prompt_tokens": 511,
+      "prompt_time": 0.022272012,
+      "completion_tokens": 766,
+      "completion_time": 1.6245389609999998,
+      "total_tokens": 1277,
+      "total_time": 1.646810973,
+      "completion_tokens_details": {
+        "reasoning_tokens": 725
+      }
+    },
+    "ms": 2331,
+    "label": "대학 합격과 행복을 기원하는 청춘의 외침",
+    "quote": "고려대 경영 고급하고 싶습니다",
+    "json_ok": true,
+    "len_ok": true,
+    "quote_ok": true,
+    "pass": true
+  }
+]

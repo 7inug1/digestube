@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* 색·활자 토큰은 v1 에서 그대로 가져왔다. 판단이 아니라 표현이라 다시 정할 게 없다. */
+@theme {
+  --color-bg: hsl(0 0% 100%);
+  --color-fg: hsl(240 8% 8%);
+  --color-muted: hsl(240 5% 96%);
+  --color-mfg: hsl(240 4% 46%);
+  --color-line: hsl(240 6% 90%);
+  --color-keep: hsl(47 94% 62%);
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-bg: hsl(240 8% 5%);
+    --color-fg: hsl(0 0% 96%);
+    --color-muted: hsl(240 4% 13%);
+    --color-mfg: hsl(240 5% 62%);
+    --color-line: hsl(240 4% 17%);
+    --color-keep: hsl(47 88% 58%);
+  }
+}
+
+/* 한국어는 기본값이 단어 중간을 끊는다. 어절 단위로 넘긴다. */
+body, input, button { word-break: keep-all; overflow-wrap: break-word; }
+/* Tailwind v4 는 버튼의 cursor:pointer 를 기본에서 뺐다. */
+button:not(:disabled), a[href], summary { cursor: pointer; }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  -webkit-font-smoothing: antialiased;
+}

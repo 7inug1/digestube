@@ -1,0 +1,259 @@
+{
+ "candidate": {
+  "name": "Claude Sonnet 5",
+  "vendor": "anthropic",
+  "model": "claude-sonnet-5"
+ },
+ "prompt": "다음은 영상 전사에서 잘라낸 문단이다. 목차에 걸 제목을 하나 만들어라.\n\n규칙\n- 제목은 한국어로 25자 이내.\n- quote 는 이 문단에 **글자 그대로 들어 있는** 문장 하나를 옮긴다. 지어내지 않는다.\n- JSON 하나만 출력한다. 설명을 붙이지 않는다.\n\n{\"label\": \"제목\", \"quote\": \"원문에 그대로 있는 문장\"}\n\n문단:\n{text}",
+ "runs": 2,
+ "summary": {
+  "name": "Claude Sonnet 5",
+  "model": "claude-sonnet-5",
+  "vendor": "anthropic",
+  "n": 26,
+  "json": 0,
+  "len": 0,
+  "quote": 0,
+  "pass": 0,
+  "avg_ms": 338,
+  "avg_out": 0,
+  "wobble": 0,
+  "total_s": 9
+ },
+ "rows": [
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 0,
+   "run": 0,
+   "ms": 400,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 0,
+   "run": 1,
+   "ms": 286,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 1,
+   "run": 0,
+   "ms": 365,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 1,
+   "run": 1,
+   "ms": 291,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 2,
+   "run": 0,
+   "ms": 294,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 2,
+   "run": 1,
+   "ms": 319,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 3,
+   "run": 0,
+   "ms": 409,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 3,
+   "run": 1,
+   "ms": 306,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 4,
+   "run": 0,
+   "ms": 487,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 4,
+   "run": 1,
+   "ms": 426,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 5,
+   "run": 0,
+   "ms": 297,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 5,
+   "run": 1,
+   "ms": 428,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 6,
+   "run": 0,
+   "ms": 321,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 6,
+   "run": 1,
+   "ms": 370,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 7,
+   "run": 0,
+   "ms": 291,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 7,
+   "run": 1,
+   "ms": 297,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 8,
+   "run": 0,
+   "ms": 296,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 8,
+   "run": 1,
+   "ms": 292,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 9,
+   "run": 0,
+   "ms": 352,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "seq": 9,
+   "run": 1,
+   "ms": 300,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 0,
+   "run": 0,
+   "ms": 375,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 0,
+   "run": 1,
+   "ms": 297,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 1,
+   "run": 0,
+   "ms": 284,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 1,
+   "run": 1,
+   "ms": 383,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 2,
+   "run": 0,
+   "ms": 302,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "seq": 2,
+   "run": 1,
+   "ms": 310,
+   "json_ok": false,
+   "pass": false,
+   "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"`temperature` is deprecated for this model.\"},\"re"
+  }
+ ]
+}
