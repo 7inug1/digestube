@@ -1,0 +1,6 @@
+# Keep local recovery snapshots and test artifacts out of deployment uploads.
+data/repairs/
+test-results/
+playwright-report/
+.env*
+!.env.local.example
