@@ -22,7 +22,7 @@ export function validateHits(value:unknown):asserts value is ResultHit[]{
  if(!Array.isArray(value)||value.length>3)throw new Error('검색 응답은 상위 3개 이내 배열이어야 합니다.');
  const ids=new Set<string>();
  for(const h of value){
-  if(!h||typeof h.video_id!=='string'||!Number.isInteger(h.seq)||typeof h.text!=='string'||![h.t,h.t_end,h.score].every(Number.isFinite)||h.t<0||h.t_end<h.t)throw new Error('검색 결과 필드 오류');
+  if(!h||typeof h.video_id!=='string'||!Number.isInteger(h.seq)||typeof h.text!=='string'||![h.t,h.t_end,h.score].every(Number.isFinite)||h.t<0||h.t_end<=h.t)throw new Error('검색 결과 필드 오류');
   const id=`${h.video_id}:${h.seq}`;if(ids.has(id))throw new Error('검색 결과 중복');ids.add(id);
  }
 }

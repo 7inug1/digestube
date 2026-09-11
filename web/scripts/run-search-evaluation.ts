@@ -9,6 +9,7 @@ import {createClient} from '@supabase/supabase-js';
 import {validateDataset,requireReviewed,validateHits,score,summarize,type Dataset,type Row,type ResultHit} from './search-evaluation';
 const hash=(text:string)=>createHash('sha256').update(text).digest('hex');
 async function main(){
+ if(process.argv.slice(3).some(arg=>!['--run','--holdout'].includes(arg)))throw new Error('알 수 없는 실행 옵션입니다.');
  const path=process.argv[2];if(!path)throw new Error('평가셋 파일 경로가 필요합니다.');
  const raw=await readFile(path,'utf8');const dataset=JSON.parse(raw) as Dataset;validateDataset(dataset);
  const run=process.argv.includes('--run');const split=process.argv.includes('--holdout')?'holdout':'dev';
@@ -31,9 +32,9 @@ async function main(){
   return out;
  }
  const before=await snapshot();
- const folder=`data/evals/search/runs/${new Date().toISOString().replace(/[:.]/g,'-')}-${split}`;await mkdir(folder,{recursive:true});
+ const folder=`${process.env.EVAL_OUTPUT_DIR ?? "data/evals/search/runs"}/${new Date().toISOString().replace(/[:.]/g,'-')}-${split}`;await mkdir(folder,{recursive:true});
  const records:(Row&{question:string;ms:number;http_status:number|null;hits:ResultHit[];raw_response:string;manual_relevance:'pending'})[]=[];
- const report={started_at:new Date().toISOString(),completed_at:null as string|null,dataset_sha256:hash(raw),dataset,split,top_k:3,base:url.origin,deployment_declared:deployment,model_declared:process.env.EVAL_MODEL??'nlpai-lab/KURE-v1',threshold_declared:process.env.EVAL_THRESHOLD??'none',runner_commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),runner_dirty:!!execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim(),corpus:before,corpus_stable:null as boolean|null,records,summary:summarize(records),limitations:['Time overlap is not semantic relevance.','Errors stay in denominators and never count as correct rejections.','Latency includes HTTP and highlighting; no cold/warm claim.','Deployment/model/threshold are caller declarations, not remotely attested.']};
+ const report={protocol_version:"search-time-overlap-v1",started_at:new Date().toISOString(),completed_at:null as string|null,dataset_sha256:hash(raw),dataset,split,top_k:3,base:url.origin,deployment_declared:deployment,model_declared:process.env.EVAL_MODEL??'nlpai-lab/KURE-v1',threshold_declared:process.env.EVAL_THRESHOLD??'none',runner_commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),runner_dirty:!!execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim(),corpus:before,corpus_stable:null as boolean|null,records,summary:summarize(records),limitations:['Time overlap is not semantic relevance.','Errors stay in denominators and never count as correct rejections.','Latency includes HTTP and highlighting; no cold/warm claim.','Deployment/model/threshold are caller declarations, not remotely attested.']};
  const save=()=>writeFile(`${folder}/results.json`,JSON.stringify(report,null,2)+'\n');await save();
  for(const q of questions){
   const start=performance.now();let rawResponse='',status:number|null=null,hits:ResultHit[]=[],error:string|null=null;

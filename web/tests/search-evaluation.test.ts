@@ -21,6 +21,16 @@ test('unreviewed data cannot run; holdout is excluded by default selection',()=>
  assert.throws(()=>requireReviewed({...d,questions:[{...q,review_status:'pending'}]},'dev'));
 });
 test('malformed API responses are errors, not empty results',()=>{
- assert.throws(()=>validateHits({error:'failed'}));assert.throws(()=>validateHits([{...hit,score:NaN}]));assert.throws(()=>validateHits([hit,hit]));
+ assert.throws(()=>validateHits({error:'failed'}));assert.throws(()=>validateHits([{...hit,score:NaN}]));assert.throws(()=>validateHits([hit,hit]));assert.throws(()=>validateHits([{...hit,t_end:hit.t}]));
  assert.equal(summarize([]).answer_hit_at_3.rate,null);
+});
+
+import {compare,type Report} from '../scripts/compare-search-evaluations';
+test('comparison detects changed outcomes but refuses different data or mixed question splits',()=>{
+ const report:Report={protocol_version:'v1',dataset_sha256:'same',split:'dev',top_k:3,corpus_stable:true,completed_at:'done',records:[score(q,[])],corpus:[]};
+ const after={...report,records:[score(q,[hit])]};
+ assert.deepEqual(compare(report,after).changes,[{id:'q',before:'과잉 거절',after:'성공'}]);
+ assert.throws(()=>compare(report,{...after,split:'holdout'}));
+ assert.throws(()=>compare(report,{...after,dataset_sha256:'changed'}));
+ assert.throws(()=>compare(report,{...after,corpus_stable:false}));
 });
