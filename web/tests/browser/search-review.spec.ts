@@ -4,7 +4,7 @@ import {pathToFileURL} from 'node:url';
 import {readFile} from 'node:fs/promises';
 test('review decisions persist and partial export does not freeze the questions',async({page})=>{
  await page.goto(pathToFileURL(resolve('../notes/search-review.html')).href);
- await expect(page.locator('#question')).toContainText('외면하는 대신');
+ await expect(page.locator('#question')).toContainText('아이를 데리러');
  await expect(page.locator('#progress-text')).toContainText('6 / 10');
  await page.getByRole('button',{name:'괜찮음',exact:true}).click();
  await page.locator('#next').click();
