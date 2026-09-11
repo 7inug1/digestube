@@ -41,3 +41,4 @@ PLAYWRIGHT_BASE_URL=https://digestube-v2.vercel.app npx playwright test tests/br
 - 별칭 `https://digestube-v2.vercel.app`에 적용 완료.
 - 최종 DB 검증: 8편·89문단. 원문 보존, 원본 시각 대응, 목차·벡터·완료 상태, 비공개 원본 보관 확인.
 - 신규 원본 저장 함수로 생성한 테스트 자료의 업로드·다운로드·시각 보존 확인 후 테스트 자료 삭제.
+- 운영 주소의 Playwright 클릭 테스트 통과. 별도의 실제 YouTube iframe 검사에서도 두 번째 문단 클릭 후 HTMLVideoElement의 `currentTime=31.36`, `readyState=4`, `paused=false` 확인. 음성을 직접 듣고 문장 시작을 채점한 검증은 아니다.
