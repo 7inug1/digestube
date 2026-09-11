@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Player = {
   loadVideoById(options: {videoId:string;startSeconds:number}): void;
   seekTo(seconds:number,allowSeekAhead:boolean): void;
   playVideo(): void;
+  destroy(): void;
 };
-type PlayerOptions = {videoId:string;playerVars:Record<string,number>;events:{onReady:()=>void}};
+type PlayerOptions = {width:string;height:string;videoId:string;playerVars:Record<string,number>;events:{onReady:()=>void}};
 
 declare global {
   interface Window {
@@ -41,26 +42,29 @@ export default function YouTube({ videoId, seek, nonce = 0, autoplay = true }: {
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<Player | null>(null);
   const loaded = useRef<string>("");
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let dead = false;
     loadApi().then(() => {
       if (dead || !host.current || player.current || !window.YT) return;
-      player.current = new window.YT.Player(host.current, {
-        videoId,
+      const mount = document.createElement("div");
+      host.current.appendChild(mount);
+      player.current = new window.YT.Player(mount, {
+        width: "100%", height: "100%", videoId,
         playerVars: { rel: 0, modestbranding: 1, playsinline: 1, start: Math.floor(seek) },
-        events: { onReady: () => (loaded.current = videoId) },
+        events: { onReady: () => { if (!dead) { loaded.current = videoId; setReady(true); } } },
       });
     });
-    return () => { dead = true; };
+    return () => { dead = true; player.current?.destroy(); player.current = null; };
     // 처음 한 번만 만든다. 이후 이동은 아래 effect 가 맡는다.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const p = player.current;
-    if (!p?.loadVideoById) return;
-    const t = Math.floor(seek);
+    if (!ready || !p?.loadVideoById) return;
+    const t = Math.max(0, seek);
     if (loaded.current !== videoId) {
       loaded.current = videoId;
       p.loadVideoById({ videoId, startSeconds: t });
@@ -68,7 +72,7 @@ export default function YouTube({ videoId, seek, nonce = 0, autoplay = true }: {
       p.seekTo(t, true);
       if (autoplay) p.playVideo?.();
     }
-  }, [videoId, seek, nonce, autoplay]);
+  }, [videoId, seek, nonce, autoplay, ready]);
 
   return (
     <div className="aspect-video w-full overflow-hidden bg-black md:rounded-xl">

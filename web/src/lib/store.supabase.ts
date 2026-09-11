@@ -140,3 +140,17 @@ export async function saveEmbeddingBatch(vid: string, revision: string | null, i
 export async function refreshVideoStatus(vid: string, revision: string | null) {
   if (!await mutation("refresh_video_status", {p_vid:vid,p_revision:revision})) throw new Error("전사문이 교체됐다. 다시 시도해 주세요.");
 }
+
+/** 저장해 둔 전사 원본 조각. 문단을 다시 나눌 때 쓴다. */
+export async function getRaw(vid: string) {
+  const { data, error } = await db().from("video").select("raw").eq("id", vid).maybeSingle();
+  if (error) throw error;
+  return (data?.raw ?? null) as { text: string; offset: number; duration: number }[] | null;
+}
+
+/** 원본으로 문단만 다시 나눈다. 목차·벡터는 무효라 같이 지워진다. */
+export async function rechunk(vid: string, revision: string, chunks: NewChunk[]) {
+  if (!await mutation("rechunk", { p_vid: vid, p_revision: revision, p_chunks: chunks })) {
+    throw new Error("영상을 찾지 못했다");
+  }
+}

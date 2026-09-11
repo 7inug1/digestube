@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { beginIngest, cancelIngest, finishIngest, getVideo, setIngestJob } from "@/lib/store";
 import { poll, start, videoId, settings, type Result } from "@/lib/supadata";
 import { prepareTranscript } from "@/lib/transcript";
+import { saveTranscriptSource } from "@/lib/transcript-source";
 import { meta } from "@/lib/youtube";
 
 export const maxDuration = 60;
@@ -9,9 +10,10 @@ export const maxDuration = 60;
 async function save(vid: string, token: string, r: Result, lang: string | null) {
   const prepared = prepareTranscript(r, lang);
   const m = await meta(vid);
+  await saveTranscriptSource(vid, token, r, lang);
   await finishIngest(vid, token, {
     id:vid, title:m?.title ?? null, channel:m?.channel ?? null, lang:r.lang ?? null,
-    pieces:prepared.pieces, chars:prepared.chars,
+    pieces:prepared.pieces, chars:prepared.chars, raw:prepared.raw,
   }, prepared.chunks);
   return {vid, chunks:prepared.chunks.length, chars:prepared.chars};
 }

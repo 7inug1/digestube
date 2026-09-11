@@ -75,3 +75,10 @@ export const finishIngest = upsertVideo;
 export const saveOutlineBatch = upsertVideo;
 export const saveEmbeddingBatch = upsertVideo;
 export const refreshVideoStatus = upsertVideo;
+
+export async function getRaw() {
+  return null as { text: string; offset: number; duration: number }[] | null;
+}
+export async function rechunk() {
+  throw new Error("파일 저장소는 읽기 전용이다.");
+}

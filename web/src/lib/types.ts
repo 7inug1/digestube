@@ -14,6 +14,8 @@ export type Video = {
   job?: string | null;
   chars?: number | null;
   pieces?: number | null;
+  /** 전사 원본 조각 — 재청킹용 */
+  raw?: unknown;
 };
 
 /** 아직 저장되기 전의 문단 — chunker 가 만든 모양 */

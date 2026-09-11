@@ -17,5 +17,6 @@ export function prepareTranscript(result: Result, requestedLang: string | null) 
   if (pieces.some((p, i) => i > 0 && p.offset < pieces[i-1].offset)) throw new Error("자막의 시간 순서가 올바르지 않습니다.");
   const chunks = chunk(pieces);
   if (!chunks.length) throw new Error("자막이 비어 있습니다. 기존 내용은 유지됩니다.");
-  return {chunks, pieces:pieces.length, chars:pieces.map(p=>p.text.trim()).join(" ").length};
+  // 원본 조각도 돌려준다 — 나중에 다시 전사하지 않고 문단만 새로 나누려면 필요하다
+  return {chunks, raw:pieces, pieces:pieces.length, chars:pieces.map(p=>p.text.trim()).join(" ").length};
 }

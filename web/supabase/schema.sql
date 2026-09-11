@@ -16,6 +16,9 @@ create table if not exists video (
   job         text,                      -- Supadata 작업 번호(전사 중일 때만)
   pieces      int,                       -- 전사 조각 수
   chars       int,                       -- 전사 글자 수
+  -- 전사 원본 조각 [{text, offset, duration}]. 문단 나누는 방식을 바꿔도
+  -- 다시 전사하지 않고 나눌 수 있어야 한다 — 전사는 크레딧이 드는 일이다.
+  raw         jsonb,
   created_at  timestamptz not null default now()
 );
 
