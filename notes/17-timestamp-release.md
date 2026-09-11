@@ -34,3 +34,10 @@ PLAYWRIGHT_BASE_URL=https://digestube-v2.vercel.app npx playwright test tests/br
 ## 작업 분리
 
 원래 작업 폴더에 별도의 raw 컬럼·rechunk API·침묵 기반 분할 변경이 남아 있어, 이를 덮어쓰거나 미적용 DB 스키마에 의존하는 코드를 함께 배포하지 않도록 `fix/timestamp-release` 브랜치에서 검증·배포한다. main의 미커밋 작업은 유지한다. 다음 배포는 이 브랜치를 기준으로 합쳐야 이번 수정이 되돌아가지 않는다.
+
+## 배포
+
+- 앱 커밋 `d7c0b77`, 운영 배포 `https://digestube-v2-49uen1hsv-7inug1s-projects.vercel.app`.
+- 별칭 `https://digestube-v2.vercel.app`에 적용 완료.
+- 최종 DB 검증: 8편·89문단. 원문 보존, 원본 시각 대응, 목차·벡터·완료 상태, 비공개 원본 보관 확인.
+- 신규 원본 저장 함수로 생성한 테스트 자료의 업로드·다운로드·시각 보존 확인 후 테스트 자료 삭제.
