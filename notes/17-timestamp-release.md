@@ -52,3 +52,5 @@ PLAYWRIGHT_BASE_URL=https://digestube-v2.vercel.app npx playwright test tests/br
 - API 스크립트 로드 실패 후 재시도할 수 있고, 준비 또는 버퍼링이 20초를 넘으면 지연 안내를 표시한다. 자동 재생 차단은 영상 자체의 오류로 취급하지 않고 재생 버튼을 누르도록 안내한다.
 - 브라우저 테스트 5개로 기존 31.36초 이동, 외부 재생 제한, 삭제·비공개, 스크립트 실패 후 재시도, 늦은 콜백 무시, 로딩·버퍼링 지연, 자동 재생 차단을 확인했다. 단위·DB·평가 도구 테스트 21개와 프로덕션 빌드도 통과했다.
 - 모바일 390px 화면에서 안내와 버튼이 영상 영역 안에 보이는 것을 확인했다. 실제 오류 영상은 삭제·비공개 상태가 바뀔 수 있으므로 IFrame API 이벤트를 모사해 재현했다.
+- 앱 커밋 `b6259f8`, 운영 배포 `https://digestube-v2-5wz09wrvm-7inug1s-projects.vercel.app`; 별칭 `https://digestube-v2.vercel.app`에 반영했다.
+- 운영 배포를 대상으로 오류·재시도 브라우저 테스트 5개가 통과했다. 실제 YouTube iframe에서도 두 번째 문단 클릭 후 `currentTime=31.79` 부근, `readyState=4`, 재생 중, 오류 안내 없음으로 기존 정상 재생이 유지됨을 확인했다.
