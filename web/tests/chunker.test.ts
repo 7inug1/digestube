@@ -67,3 +67,16 @@ test("new ingestion uses the sentence-aware chunker without a separate repair st
   assert.ok(prepared.chunks.slice(0,-1).every(c=>/[.!?]$/.test(c.text)));
   assert.ok(prepared.chunks.some(c=>c.text.includes("progress your career")));
 });
+
+ test("unpunctuated Korean captions prefer polite sentence endings to a word-count cut",()=>{
+  const sentences=["오늘은 우리가 조급함을 느끼는 이유를 이야기하려고 해요", "계속 노력해도 결과가 보이지 않으면 불안해지거든요", "하지만 그동안 배운 것은 결국 도움이 됩니다", "그래서 천천히 자신의 속도로 나아가면 좋겠어요"];
+  const text=sentences.join(" ");
+  const out=chunk([{text,offset:1230,duration:10000}],35,65);
+  assert.equal(out.map(c=>c.text).join(" "),text);
+  assert.ok(out.slice(0,-1).every(c=>/(해요|거든요|됩니다|겠어요)$/.test(c.text)));
+  assert.ok(out.every(c=>c.t===1.23));
+ });
+ test("a pause or caption gap does not split a punctuated sentence",()=>{
+  const out=chunk([{text:"We want to help you progress your",offset:0,duration:1000},{text:"career in whatever stage you are in.",offset:5000,duration:1000}],30,100);
+  assert.equal(out.length,1);assert.ok(out[0].text.includes("your career"));
+ });

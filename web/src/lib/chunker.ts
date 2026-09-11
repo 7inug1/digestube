@@ -41,7 +41,22 @@ export function chunk(pieces: Piece[], target = TARGET, maxlen = MAXLEN): Chunk[
       previous.segment += part.segment;
     } else sentences.push({index:part.index,segment:part.segment});
   }
-  for (const sentence of sentences) {
+  // Unpunctuated Korean captions: use conservative polite sentence endings only.
+  // This is a boundary heuristic, not a grammatical or semantic guarantee.
+  const bounded = sentences.flatMap(sentence => {
+    if (sentence.segment.length <= maxlen || /[.!?。？！]/u.test(sentence.segment)) return [sentence];
+    const out: {index:number;segment:string}[] = [];
+    let at = 0;
+    const endings = /[가-힣]+(?:니다|거든요|잖아요|는데요|어요|아요|해요|예요|에요|네요|군요|죠)(?=\s|$)/gu;
+    for (const match of sentence.segment.matchAll(endings)) {
+      const end = match.index! + match[0].length;
+      out.push({index:sentence.index+at,segment:sentence.segment.slice(at,end)});
+      at = end;
+    }
+    if (at < sentence.segment.length) out.push({index:sentence.index+at,segment:sentence.segment.slice(at)});
+    return out;
+  });
+  for (const sentence of bounded) {
     let start = sentence.index;
     let end = start + sentence.segment.length;
     while (start < end && /\s/u.test(text[start])) start++;
