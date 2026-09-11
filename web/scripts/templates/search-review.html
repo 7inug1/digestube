@@ -16,7 +16,8 @@ try{decisions=JSON.parse(localStorage.getItem(key)||'{}')}catch{}
 const $=s=>document.querySelector(s);
 const time=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
 function persist(){try{localStorage.setItem(key,JSON.stringify(decisions))}catch{$('#notice').textContent='브라우저 임시 저장이 안 돼. 검수 내용 저장 버튼으로 파일을 받아줘.'}}
-function state(q){return decisions[q.id]||{status:'pending',memo:''}}
+function state(q){return decisions[q.id]||{status:q.review_status||'pending',memo:q.reviewer_notes||'',reviewed_at:q.reviewed_at||null}}
+index=Math.max(0,original.questions.findIndex(q=>state(q).status!=='approved'));
 function render(){
  const q=original.questions[index],d=state(q);
  const completed=original.questions.filter(q=>state(q).status!=='pending').length;
