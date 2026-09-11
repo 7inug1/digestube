@@ -1,5 +1,5 @@
 {
-  "version": "draft-20260911-v1",
+  "version": "draft-20260911-v2-10",
   "status": "pending_human_review",
   "search_executed": false,
   "scope": "all_corpus",
@@ -65,27 +65,6 @@
   "questions": [
     {
       "id": "Q01",
-      "question": "프로그래밍 교육 유튜버가 최근 영상 만들 의욕을 잃은 이유가 뭐야?",
-      "category": "answerable",
-      "split": "dev",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "AI로 바로 앱을 만들려 하고 프로그래밍 자체를 배우려는 관심이 줄었다고 느꼈기 때문이라고 말한다.",
-      "targets": [
-        {
-          "video_id": "-Z11mZaJU0w",
-          "start": 28.64,
-          "end": 40.64,
-          "quote": "They just want to skip straight to building applications with AI and completely gloss over the actual learning part",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "care about learning programming anymore\nat all. They just want to skip straight"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q02",
       "question": "그 개발 유튜버가 시청자 설문을 받는 목적이 뭐야?",
       "category": "answerable",
       "split": "dev",
@@ -98,7 +77,7 @@
           "start": 64.479,
           "end": 73.2,
           "quote": "it's just a way for me to gauge what actual content you want on this channel",
-          "alignment_coverage": 1.0,
+          "alignment_coverage": 1,
           "timing_precision": "caption_segment",
           "caption_start_text": "even optional. But essentially, it's\njust a way for me to gauge what actual"
         }
@@ -106,28 +85,7 @@
       "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
     },
     {
-      "id": "Q03",
-      "question": "그 설문 결과는 유튜브 영상에만 반영하는 거야?",
-      "category": "answerable",
-      "split": "holdout",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "메인·보조 채널뿐 아니라 뉴스레터와 강의 등에도 반영한다고 말한다.",
-      "targets": [
-        {
-          "video_id": "-Z11mZaJU0w",
-          "start": 74.56,
-          "end": 82.24,
-          "quote": "This is going to go for my main channel, my secondary channel, my newsletter, any content that I create, even courses.",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "actual content that you want. This is\ngoing to go for my main channel, my"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q04",
+      "id": "Q02",
       "question": "아직 실력이 부족한데 큰 기회가 왔을 때 어떻게 하라는 얘기였지?",
       "category": "answerable",
       "split": "dev",
@@ -140,7 +98,7 @@
           "start": 78.64,
           "end": 90.96,
           "quote": "when your moment comes, you may not be ready, but you have to. take it and then figure it out on the way.",
-          "alignment_coverage": 1.0,
+          "alignment_coverage": 1,
           "timing_precision": "caption_segment",
           "caption_start_text": "when your moment comes"
         }
@@ -148,28 +106,7 @@
       "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
     },
     {
-      "id": "Q05",
-      "question": "코난은 처음부터 스탠드업 코미디언이 자신에게 맞는다고 생각했어?",
-      "category": "answerable",
-      "split": "holdout",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "자신이 스탠드업 코미디언은 아니라는 것을 알고 있었다고 말한다.",
-      "targets": [
-        {
-          "video_id": "3KtrlNyd1ec",
-          "start": 14.0,
-          "end": 17.96,
-          "quote": "I knew I was not a stand -up.",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "way. But I knew what I wasn't. I knew I"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q06",
+      "id": "Q03",
       "question": "질문에 답하는 챗봇이랑 알아서 일을 처리하는 AI는 뭐가 달라?",
       "category": "answerable",
       "split": "dev",
@@ -182,7 +119,7 @@
           "start": 58.48,
           "end": 64.559,
           "quote": "사람의 개입 없이도 알아서 계획을 세우고 문제를 해결하기 때문에",
-          "alignment_coverage": 1.0,
+          "alignment_coverage": 1,
           "timing_precision": "caption_segment",
           "caption_start_text": "사람의 개입 없이도 알아서 계획을"
         }
@@ -190,49 +127,7 @@
       "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
     },
     {
-      "id": "Q07",
-      "question": "여러 AI를 따로 결제하고 골라 쓰는 번거로움을 줄여주는 서비스 얘기가 어디야?",
-      "category": "answerable",
-      "split": "dev",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "여러 모델을 모으고 작업별 모델 선정과 데이터 공유를 지원하는 젠스파크 설명이다.",
-      "targets": [
-        {
-          "video_id": "55eFm5tPCQY",
-          "start": 253.12,
-          "end": 263.8,
-          "quote": "각각의 구독을 관리할 필요도 없고 모든 에이전트가 서로 데이터를 공유하는지라 연계 작업도 쉽게 할 수 있다는",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "해결할 수 있다는데요. 각각의 구독을"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q08",
-      "question": "AI가 매번 설명하지 않아도 내 말투와 일하는 방식을 알게 하려면 어떤 정보가 필요해?",
-      "category": "answerable",
-      "split": "holdout",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "메일·일정·메신저·회의·문서 등의 맥락을 모아 개인화하는 시스템을 설명한다.",
-      "targets": [
-        {
-          "video_id": "55eFm5tPCQY",
-          "start": 317.919,
-          "end": 328.0,
-          "quote": "메일, 캘린더, 메신저, 미팅, 문서 등에 흩어져 있는 사용자의 모든 흔적을 모으는 세컨드 브레인 시스템",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "젠스파크 역시 최근 메일, 캘린더,"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q09",
+      "id": "Q04",
       "question": "남 눈치를 덜 보고 싶은데 다른 사람한테 차갑게 굴고 싶진 않아. 어떻게 했대?",
       "category": "answerable",
       "split": "dev",
@@ -245,7 +140,7 @@
           "start": 347.319,
           "end": 357.759,
           "quote": "친절한 마음을 갖자 그러고 근데 둘러 보는 거예요. 그렇게 친절한 마음이지만 구해받지는 않을 수 있다.",
-          "alignment_coverage": 1.0,
+          "alignment_coverage": 1,
           "timing_precision": "caption_segment",
           "caption_start_text": "하지만 나는 친절한 마음을 갖자"
         }
@@ -253,49 +148,7 @@
       "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
     },
     {
-      "id": "Q10",
-      "question": "시끄럽게 떠드는 학생들의 얼굴만 보면 괜찮다던 교수님 이야기가 어디 나와?",
-      "category": "answerable",
-      "split": "dev",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "옆 연구실 교수님이 소음을 내는 학생들의 얼굴을 보면 괜찮다고 했던 경험이다.",
-      "targets": [
-        {
-          "video_id": "8cp0YvSpDA8",
-          "start": 264.36,
-          "end": 270.88,
-          "quote": "너희들 얼굴만 내가 보면은 너네가 떠들어도 괜찮아.",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "그럴 필요 없어. 너희들 얼굴만 내가"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q11",
-      "question": "학교에 아이 데리러 갈 때 차를 눈에 안 띄는 곳에 세우려던 이유가 뭐였지?",
-      "category": "answerable",
-      "split": "holdout",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "좋은 차가 모이는 등하교 장소에서 낡은 차가 눈에 띄는 것이 신경 쓰였던 상황이다.",
-      "targets": [
-        {
-          "video_id": "8cp0YvSpDA8",
-          "start": 36.68,
-          "end": 53.64,
-          "quote": "좋은 차들도 많더라고요. 그게 상황이 그렇게 되다 보니까 저희 안에도 그런 거 되게 신경 안 쓰는 사람인데 저기 저 애 태우러 갈 때는 좀 차를 저기 좀 구속쟁에다가 좀 안 보이는 데다 세우고 자기가 좀 걸어갔다 오겠다 그러더라고요.",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "좋은 차들도 많더라고요."
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q12",
+      "id": "Q05",
       "question": "싫어하는 사람을 어쩔 수 없이 계속 만나야 하면 어떻게 대하라는 거야?",
       "category": "answerable",
       "split": "dev",
@@ -308,7 +161,7 @@
           "start": 237.12,
           "end": 244.76,
           "quote": "이 사람이 바뀌기를 기대하지 말고 어 그냥 곁에 있어 주는가",
-          "alignment_coverage": 1.0,
+          "alignment_coverage": 1,
           "timing_precision": "caption_segment",
           "caption_start_text": "있겠구나. 어이 사람이 바뀌기를"
         }
@@ -316,49 +169,7 @@
       "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
     },
     {
-      "id": "Q13",
-      "question": "상대를 고치려는 조언이 오히려 관계를 망칠 수 있다는 이유가 뭐야?",
-      "category": "answerable",
-      "split": "dev",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "변화를 기대하면 실망과 미움이 쌓이고 자신이 먼저 상처받을 수 있다고 설명한다.",
-      "targets": [
-        {
-          "video_id": "byVgbqzYJrs",
-          "start": 211.799,
-          "end": 219.68,
-          "quote": "기대가 생기면 그 사람에 대한 실망이 생기고 실망이 쌓이다 보면 미움이 생기게 되고",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": ">> 그 사람에 대한 기대가 생기면 그"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q14",
-      "question": "상대의 좋은 점만 누리고 싫은 점은 없애려는 게 왜 어렵다는 거야?",
-      "category": "answerable",
-      "split": "holdout",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "장단점이 함께 한 사람을 구성하므로 장점을 누리려면 단점도 허용해야 한다고 말한다.",
-      "targets": [
-        {
-          "video_id": "byVgbqzYJrs",
-          "start": 581.24,
-          "end": 591.68,
-          "quote": "한 사람의 장점을 >> 즐기고 싶으면 그 사람의 단점을 기꺼이 허용해야 돼.",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": ">> 그렇지. 그래서 한 사람의 장점을"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q15",
+      "id": "Q06",
       "question": "이루고 싶은 모습을 상상하기만 하면 오히려 행동을 안 하게 된다는 대목이 어디야?",
       "category": "answerable",
       "split": "dev",
@@ -379,49 +190,7 @@
       "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
     },
     {
-      "id": "Q16",
-      "question": "꿈을 적어두는 데서 끝내지 않고 이번 주 할 일로 바꾸는 방법이 뭐야?",
-      "category": "answerable",
-      "split": "dev",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "앞서 만든 과제를 매주 반복할 루틴과 이번 주 체크리스트로 바꾸도록 요청한다.",
-      "targets": [
-        {
-          "video_id": "JRJd1ZrHmgg",
-          "start": 381.039,
-          "end": 392.16,
-          "quote": "이 과제들을 매주 반복 가능한 루틴 3개와 이번 주 할 일 체크리스트로 만들어줘.",
-          "alignment_coverage": 0.969,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "루틴으로 만들어 달라고 해 볼게요.이"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q17",
-      "question": "목표 이미지 속 인물이 남이 아니라 나처럼 보이게 하려면 어떻게 해?",
-      "category": "answerable",
-      "split": "holdout",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "자기 사진을 첨부하고 얼굴과 특징을 유지하며 목표 장면을 만들도록 요청한다.",
-      "targets": [
-        {
-          "video_id": "JRJd1ZrHmgg",
-          "start": 220.72,
-          "end": 234.239,
-          "quote": "첨부한 사진 속 인물의 얼굴과 특징을 유지한 채 100명 앞에서 자신감 있게 테드 강연하는 모습을 사실적인 사진 스타일로 만들어줘.",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "씁니다. 첨부한 사진 속 인물의"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q18",
+      "id": "Q07",
       "question": "큰 시험을 앞둔 학생들이 떨리는 것 말고 어떤 기분도 든다고 했어?",
       "category": "answerable",
       "split": "dev",
@@ -434,7 +203,7 @@
           "start": 126.711,
           "end": 134.027,
           "quote": "3년 동안 준비한게 이제 끝나니까 떨리기도 하고 뿌듯하기도 한 것 같아요",
-          "alignment_coverage": 1.0,
+          "alignment_coverage": 1,
           "timing_precision": "caption_segment",
           "caption_start_text": "3년 동안 준비한 게"
         }
@@ -442,28 +211,7 @@
       "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
     },
     {
-      "id": "Q19",
-      "question": "잘될지 몰라 이것저것 대비만 하다가 정작 일을 못 한다는 이야기가 어디야?",
-      "category": "answerable",
-      "split": "dev",
-      "author": "AI",
-      "review_status": "pending",
-      "expected_answer": "가능한 결과를 예측하고 대비하는 데 매달리다 해야 할 일을 못 하는 상황을 말한다.",
-      "targets": [
-        {
-          "video_id": "PlawByYfV8k",
-          "start": 115.71,
-          "end": 131.28,
-          "quote": "모든 것에 대비 하느라 정작 해야 할 일을 못해요",
-          "alignment_coverage": 1.0,
-          "timing_precision": "caption_segment",
-          "caption_start_text": "이 세가지를 우리가 합니다 그런데 결과가 어떻냐 모든 것에 대비 하느라"
-        }
-      ],
-      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
-    },
-    {
-      "id": "Q20",
+      "id": "Q08",
       "question": "딴짓처럼 느껴졌던 드라마 시청이 나중에 일에 도움 됐다는 사례가 뭐였지?",
       "category": "answerable",
       "split": "dev",
@@ -476,7 +224,7 @@
           "start": 295.76,
           "end": 311.45,
           "quote": "미드가 일에 도움이 되는거 를 경험했어요 브랜드 디자인 에서 특히나 스토리를 생각하거나 캐릭터를 만드는 게 중요하거든요",
-          "alignment_coverage": 1.0,
+          "alignment_coverage": 1,
           "timing_precision": "caption_segment",
           "caption_start_text": "들어갔는데 미드가 일에 도움이 되는거 를 경험했어요 브랜드 디자인 에서"
         }
@@ -484,7 +232,7 @@
       "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함."
     },
     {
-      "id": "Q21",
+      "id": "Q09",
       "question": "김치찌개 2인분을 만들려면 재료를 각각 얼마나 넣어야 해?",
       "category": "no_answer",
       "split": "dev",
@@ -496,51 +244,15 @@
       "review_notes": "전체 8편의 저장 전사문을 AI가 읽고 부재를 판단한 초안. 사람이 최종 확인해야 함."
     },
     {
-      "id": "Q22",
-      "question": "젠스파크 유료 요금제는 월 얼마고 무료 버전과 사용 한도가 얼마나 달라?",
-      "category": "no_answer",
-      "split": "dev",
-      "author": "AI",
-      "review_status": "pending",
-      "targets": [],
-      "expected_answer": null,
-      "absence_reason": "서비스의 기능과 성장 이야기는 있으나 요금표·무료/유료 한도 비교는 없다.",
-      "review_notes": "전체 8편의 저장 전사문을 AI가 읽고 부재를 판단한 초안. 사람이 최종 확인해야 함."
-    },
-    {
-      "id": "Q23",
-      "question": "코난이 진행자 오디션에서 실제로 받은 질문과 답변을 알려줘.",
-      "category": "no_answer",
-      "split": "holdout",
-      "author": "AI",
-      "review_status": "pending",
-      "targets": [],
-      "expected_answer": null,
-      "absence_reason": "진행 기회를 얻은 배경과 준비되지 않았던 경험은 있으나 오디션 문답은 없다.",
-      "review_notes": "전체 8편의 저장 전사문을 AI가 읽고 부재를 판단한 초안. 사람이 최종 확인해야 함."
-    },
-    {
-      "id": "Q24",
+      "id": "Q10",
       "question": "노션에서 만든 비전보드를 휴대폰 잠금화면에 자동으로 동기화하는 설정 방법은?",
       "category": "no_answer",
-      "split": "holdout",
+      "split": "dev",
       "author": "AI",
       "review_status": "pending",
       "targets": [],
       "expected_answer": null,
       "absence_reason": "노션 배치와 잠금화면에 두라는 제안은 있으나 자동 동기화 설정 방법은 없다.",
-      "review_notes": "전체 8편의 저장 전사문을 AI가 읽고 부재를 판단한 초안. 사람이 최종 확인해야 함."
-    },
-    {
-      "id": "Q25",
-      "question": "파이썬으로 이진 탐색을 구현하는 코드를 보여줘.",
-      "category": "no_answer",
-      "split": "dev",
-      "author": "AI",
-      "review_status": "pending",
-      "targets": [],
-      "expected_answer": null,
-      "absence_reason": "프로그래밍 교육에 대한 의견은 있으나 파이썬 이진 탐색 구현은 없다.",
       "review_notes": "전체 8편의 저장 전사문을 AI가 읽고 부재를 판단한 초안. 사람이 최종 확인해야 함."
     }
   ]

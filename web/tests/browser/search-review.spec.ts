@@ -4,13 +4,13 @@ import {pathToFileURL} from 'node:url';
 import {readFile} from 'node:fs/promises';
 test('review decisions persist and partial export does not freeze the questions',async({page})=>{
  await page.goto(pathToFileURL(resolve('../notes/search-review.html')).href);
- await expect(page.locator('#question')).toContainText('의욕');
- await expect(page.locator('#progress-text')).toContainText('0 / 25');
+ await expect(page.locator('#question')).toContainText('설문');
+ await expect(page.locator('#progress-text')).toContainText('0 / 10');
  await page.getByRole('button',{name:'괜찮음',exact:true}).click();
  await page.locator('#next').click();
  await page.locator('#memo').fill('질문을 더 짧게');
  await page.getByRole('button',{name:'수정 필요',exact:true}).click();
- await page.reload();await expect(page.locator('#progress-text')).toContainText('2 / 25');
+ await page.reload();await expect(page.locator('#progress-text')).toContainText('2 / 10');
  const pending=page.waitForEvent('download');await page.locator('#download').click();const download=await pending;
  const data=JSON.parse(await readFile((await download.path())!,'utf8'));
  expect(data.status).toBe('pending_human_review');expect(data.search_executed).toBe(false);
@@ -18,8 +18,8 @@ test('review decisions persist and partial export does not freeze the questions'
 });
 test('only individual approval of every question yields a frozen export',async({page})=>{
  await page.goto(pathToFileURL(resolve('../notes/search-review.html')).href);
- for(let i=0;i<25;i++){
-  await page.getByRole('button',{name:'괜찮음',exact:true}).click();if(i<24)await page.locator('#next').click();
+ for(let i=0;i<10;i++){
+  await page.getByRole('button',{name:'괜찮음',exact:true}).click();if(i<9)await page.locator('#next').click();
  }
  const pending=page.waitForEvent('download');await page.locator('#download').click();const download=await pending;
  const data=JSON.parse(await readFile((await download.path())!,'utf8'));
