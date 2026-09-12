@@ -34,3 +34,9 @@ body {
   color: var(--color-fg);
   -webkit-font-smoothing: antialiased;
 }
+
+/* 전사는 남은 양을 알 수 없어 막대를 흐르게만 둔다. 퍼센트를 지어내지 않는다. */
+@keyframes ingest-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}

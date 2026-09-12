@@ -18,7 +18,7 @@ function seconds(v: string): number {
 /** C 조건: 문장 경계를 무시하고 목표 길이마다 자른다. v2 초기 동작의 재현이다. */
 function byLength(pieces: Piece[], target = TARGET) {
   const out: {t: number; t_end: number; text: string}[] = [];
-  let buf = '', t = pieces[0]?.offset / 1000 ?? 0, end = t;
+  let buf = "", t = (pieces[0]?.offset ?? 0) / 1000, end = t;
   for (const p of pieces) {
     const value = p.text.replace(/\s+/gu, ' ').trim();
     if (!value) continue;

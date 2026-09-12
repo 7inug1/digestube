@@ -23,6 +23,20 @@ const PROMPT = `이 영상의 음성을 그대로 받아쓴다.
 
 {"segments":[{"start":"MM:SS","end":"MM:SS","text":"받아쓴 말"}]}`;
 
+/** 화면 글자를 따로 받는 조건. 본문에 섞지 않는다 — native 의 `[음악]` 혼입을 우리 손으로 만들지 않으려는 것이다. */
+const PROMPT_SCREEN = `이 영상의 음성을 그대로 받아쓴다.
+
+규칙
+- 들리는 말을 빠짐없이 옮긴다. 요약하거나 생략하지 않는다.
+- 한국어 구두점을 정상적으로 찍는다.
+- 발화 단위로 끊고 각 단위의 시작·끝 시각을 MM:SS 로 적는다.
+- 화면에 **읽을 수 있는 글자**(슬라이드·자막·표지판·차트 숫자)가 있으면 screen 에 따로 적는다.
+- 화면 글자는 segments 의 text 에 섞지 않는다.
+- 읽을 글자가 없으면 screen 은 빈 배열로 둔다. 없는 것을 지어내지 않는다.
+- JSON 하나만 출력한다. 설명을 붙이지 않는다.
+
+{"segments":[{"start":"MM:SS","end":"MM:SS","text":"받아쓴 말"}],"screen":[{"start":"MM:SS","text":"화면에 뜬 글자"}]}`;
+
 function key(): string {
   const k = process.env.GEMINI_API_KEY;
   if (!k) throw new Error('GEMINI_API_KEY 가 없다');
@@ -109,7 +123,8 @@ async function main() {
   if (process.argv[2] === '--models') return listModels();
   const vid = process.argv[2];
   if (!vid) throw new Error('영상 id 를 인자로 준다');
-  const model = process.argv[3] ?? 'gemini-3-pro-preview';
+  const useScreen = process.argv.includes('--screen');
+  const model = process.argv.filter(a => !a.startsWith('--'))[3] ?? 'gemini-3.5-flash';
   const url = `https://www.youtube.com/watch?v=${vid}`;
 
   // 기존 전사문(운영 DB, 읽기 전용)
@@ -123,7 +138,7 @@ async function main() {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify({
-      contents: [{parts: [{text: PROMPT}, {fileData: {fileUri: url}}]}],
+      contents: [{parts: [{text: useScreen ? PROMPT_SCREEN : PROMPT}, {fileData: {fileUri: url}}]}],
       generationConfig: {responseMimeType: 'application/json', maxOutputTokens: 65536, temperature: 0},
     }),
     signal: AbortSignal.timeout(900000),
@@ -135,7 +150,12 @@ async function main() {
   const d = JSON.parse(body) as {candidates?: {content?: {parts?: {text?: string}[]}; finishReason?: string}[]; usageMetadata?: Usage};
   const raw = d.candidates?.[0]?.content?.parts?.map(p => p.text ?? '').join('') ?? '';
   let segments: Seg[] = [];
-  try { segments = (JSON.parse(raw) as {segments?: Seg[]}).segments ?? []; } catch { /* 원문은 아래에 저장한다 */ }
+  let screen: {start: string; text: string}[] = [];
+  try {
+    const parsed = JSON.parse(raw) as {segments?: Seg[]; screen?: {start: string; text: string}[]};
+    segments = parsed.segments ?? [];
+    screen = parsed.screen ?? [];
+  } catch { /* 원문은 아래에 저장한다 */ }
 
   const text = segments.map(s => s.text).join(' ').replace(/\s+/gu, ' ').trim();
   const g = words(text), n = words(native);
@@ -166,7 +186,8 @@ async function main() {
 
   const out = {
     measured_at: new Date(started).toISOString(),
-    video_id: vid, model, url,
+    video_id: vid, model, url, prompt: useScreen ? 'speech+screen' : 'speech',
+    screen: {items: screen.length, chars: screen.map(s => s.text).join(' ').length},
     elapsed_ms, elapsed_sec: +(elapsed_ms / 1000).toFixed(1),
     finish_reason: d.candidates?.[0]?.finishReason ?? null,
     usage: d.usageMetadata ?? null,
@@ -201,7 +222,7 @@ async function main() {
   const dir = `data/evals/transcription/${new Date(started).toISOString().replace(/[:.]/g, '-')}-${vid}`;
   mkdirSync(dir, {recursive: true});
   writeFileSync(`${dir}/summary.json`, JSON.stringify(out, null, 2));
-  writeFileSync(`${dir}/gemini.json`, JSON.stringify({prompt: PROMPT, model, segments, raw}, null, 2));
+  writeFileSync(`${dir}/gemini.json`, JSON.stringify({prompt: useScreen ? PROMPT_SCREEN : PROMPT, prompt_kind: useScreen ? 'speech+screen' : 'speech', model, segments, screen, raw}, null, 2));
   writeFileSync(`${dir}/native.txt`, native);
   writeFileSync(`${dir}/gemini.txt`, text);
 

@@ -1,0 +1,78 @@
+[
+  {
+    "video_id": "55eFm5tPCQY",
+    "model": "gemini-3.6-flash",
+    "A 음성만": {
+      "sec": 68.7,
+      "prompt_tokens": 45827,
+      "output_tokens": 4802,
+      "thoughts": 6903,
+      "total_tokens": 57532,
+      "finish": "STOP",
+      "segments": 74,
+      "speech_chars": 4575,
+      "screen_items": 0,
+      "screen_chars": 0,
+      "has_screen_text": null,
+      "screen_sample": []
+    },
+    "B 음성+화면": {
+      "sec": 68.1,
+      "prompt_tokens": 45951,
+      "output_tokens": 8230,
+      "thoughts": 7822,
+      "total_tokens": 62003,
+      "finish": "STOP",
+      "segments": 56,
+      "speech_chars": 4598,
+      "screen_items": 214,
+      "screen_chars": 5000,
+      "has_screen_text": true,
+      "screen_sample": [
+        "00:00 사업 방향 전환 후 월 매출 50% 급증",
+        "00:00 '이' 서비스 출시 후 매출 50% 증가",
+        "00:03 ARR 2억 달러 돌파",
+        "00:03 연간 구독 매출 약 3,000억 원",
+        "00:05 창업 2년 만에 유니콘 등극"
+      ]
+    }
+  },
+  {
+    "video_id": "8cp0YvSpDA8",
+    "model": "gemini-3.6-flash",
+    "A 음성만": {
+      "sec": 65.7,
+      "prompt_tokens": 37003,
+      "output_tokens": 5125,
+      "thoughts": 4557,
+      "total_tokens": 46685,
+      "finish": "STOP",
+      "segments": 87,
+      "speech_chars": 3686,
+      "screen_items": 0,
+      "screen_chars": 0,
+      "has_screen_text": null,
+      "screen_sample": []
+    },
+    "B 음성+화면": {
+      "sec": 57.4,
+      "prompt_tokens": 37127,
+      "output_tokens": 5294,
+      "thoughts": 4059,
+      "total_tokens": 46480,
+      "finish": "STOP",
+      "segments": 81,
+      "speech_chars": 3695,
+      "screen_items": 12,
+      "screen_chars": 90,
+      "has_screen_text": true,
+      "screen_sample": [
+        "00:01 감동인테리어",
+        "00:12 강동부동산",
+        "00:13 동원익스프레스",
+        "00:17 김영헤어두피크리닉",
+        "00:20 얼음왕국"
+      ]
+    }
+  }
+]
