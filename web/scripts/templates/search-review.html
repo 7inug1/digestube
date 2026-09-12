@@ -1,0 +1,47 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Digestube 검색 질문 검수</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f4ef;color:#202722;font:17px/1.7 system-ui,sans-serif}main{max-width:860px;margin:40px auto;padding:24px}h1{font-size:30px;margin:0}h2{font-size:24px;line-height:1.5}p{margin:10px 0}small,.muted{color:#58635b}article{background:white;border:1px solid #dce0d8;border-radius:18px;padding:30px;margin:24px 0}button,a{font:inherit}button{cursor:pointer;border:1px solid #bcc8bd;background:white;border-radius:9px;padding:9px 15px;color:inherit}button[aria-pressed=true],.primary{background:#245c40;color:white}button:disabled{opacity:.45;cursor:default}a{color:#235e48}nav,.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}nav{justify-content:space-between}blockquote{margin:14px 0;padding:12px 18px;background:#f6f7f2;border-left:3px solid #bdcbbd}textarea{width:100%;min-height:90px;font:inherit;padding:12px;border:1px solid #c4cdc5;border-radius:8px}progress{width:100%;accent-color:#245c40;height:12px}.tag{font-size:14px;color:#58635b}.actions{margin-top:20px}#notice{min-height:28px}footer{margin-top:24px;font-size:14px}button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid #bc7a16;outline-offset:3px}@media(max-width:600px){main{margin:0;padding:18px}article{padding:20px}h2{font-size:21px}}
+</style>
+<main><h1>검색 질문, 마지막 확인</h1><p>질문이 자연스럽고 근거가 맞으면 <b>괜찮음</b>. 바꿀 부분은 <b>수정 필요</b>를 누르고 메모를 남겨줘.</p><p class="muted">전사문으로 만든 초안이야. 검색 결과는 아직 보지 않았어. 영상 링크에서 해당 대목도 확인할 수 있어.</p>
+<p id="progress-text" aria-live="polite"></p><progress id="progress" max="25" value="0"></progress>
+<nav><button id="prev">← 이전</button><span id="position"></span><button id="next">다음 →</button></nav>
+<article><div id="tag" class="tag"></div><h2 id="question"></h2><p id="answer"></p><div id="evidence"></div><label for="memo">메모 <small>수정할 내용이나 빠진 정답 구간</small></label><textarea id="memo" placeholder="예: 실제로는 이렇게 검색할 것 같아 / 이 구간에도 답이 있어"></textarea><div class="actions"><button data-choice="approved">괜찮음</button><button data-choice="needs_changes">수정 필요</button><button data-choice="pending">나중에 보기</button></div></article>
+<div class="actions"><button id="download" class="primary">검수 내용 저장</button><button id="unreviewed">미검토 질문으로 이동</button></div><p id="notice" role="status"></p>
+<footer>누른 내용은 이 브라우저에 임시 저장돼. 마칠 때 ‘검수 내용 저장’을 눌러 파일로 보관해줘. 저장 버튼은 다운로드만 하며 검색을 실행하지 않아.</footer></main>
+<script id="dataset" type="application/json">__DATASET__</script>
+<script>
+const original=JSON.parse(document.querySelector('#dataset').textContent);
+const key='digestube-review-__HASH__';let decisions={},index=0;
+try{decisions=JSON.parse(localStorage.getItem(key)||'{}')}catch{}
+const $=s=>document.querySelector(s);
+const time=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+function persist(){try{localStorage.setItem(key,JSON.stringify(decisions))}catch{$('#notice').textContent='브라우저 임시 저장이 안 돼. 검수 내용 저장 버튼으로 파일을 받아줘.'}}
+function state(q){return decisions[q.id]||{status:q.review_status||'pending',memo:q.reviewer_notes||'',reviewed_at:q.reviewed_at||null}}
+index=Math.max(0,original.questions.findIndex(q=>state(q).status!=='approved'));
+function render(){
+ const q=original.questions[index],d=state(q);
+ const completed=original.questions.filter(q=>state(q).status!=='pending').length;
+ const approved=original.questions.filter(q=>state(q).status==='approved').length;
+ $('#progress-text').textContent=`${completed} / ${original.questions.length}개 확인 · 괜찮음 ${approved}개 · 수정 필요 ${completed-approved}개`;
+ $('#progress').max=original.questions.length;$('#progress').value=completed;
+ $('#position').textContent=`${index+1} / ${original.questions.length}`;
+ $('#prev').disabled=index===0;$('#next').disabled=index===original.questions.length-1;
+ $('#tag').textContent=q.id+' · '+(q.category==='answerable'?'영상에 답이 있는 질문':'영상에 답이 없는 질문');
+ $('#question').textContent=q.question;
+ $('#answer').textContent=q.category==='answerable'?'예상 답: '+q.expected_answer:'답 없다고 본 이유: '+q.absence_reason;
+ const box=$('#evidence');box.replaceChildren();
+ for(const t of q.targets){const v=original.corpus.find(v=>v.video_id===t.video_id);const p=document.createElement('p'),a=document.createElement('a');a.href='https://www.youtube.com/watch?v='+encodeURIComponent(t.video_id)+'&t='+Math.floor(t.start)+'s';a.target='_blank';a.rel='noopener noreferrer';a.textContent=v.title+' · '+time(t.start)+'–'+time(t.end)+' 재생';p.append(a);const quote=document.createElement('blockquote');quote.textContent=t.quote;box.append(p,quote)}
+ $('#memo').value=d.memo;
+ document.querySelectorAll('[data-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.choice===d.status)));
+}
+$('#prev').onclick=()=>{index--;render()};$('#next').onclick=()=>{index++;render()};
+$('#memo').oninput=()=>{const q=original.questions[index];decisions[q.id]={...state(q),memo:$('#memo').value};persist()};
+for(const button of document.querySelectorAll('[data-choice]'))button.onclick=()=>{const q=original.questions[index];decisions[q.id]={...state(q),status:button.dataset.choice,reviewed_at:new Date().toISOString()};persist();render()};
+$('#unreviewed').onclick=()=>{const next=original.questions.findIndex(q=>state(q).status==='pending');if(next<0){$('#notice').textContent='미검토 질문이 없어. 수정 필요 항목을 확인하거나 파일로 저장해줘.';return}index=next;render()};
+$('#download').onclick=()=>{
+ const reviewed=structuredClone(original);reviewed.questions=reviewed.questions.map(q=>({...q,review_status:state(q).status,reviewer_notes:state(q).memo,reviewed_at:state(q).reviewed_at||null}));
+ const complete=reviewed.questions.every(q=>q.review_status==='approved');reviewed.status=complete?'frozen':'pending_human_review';reviewed.source_version=original.version;reviewed.version=original.version+'-review-'+new Date().toISOString();reviewed.exported_at=new Date().toISOString();reviewed.search_executed=false;
+ const blob=new Blob([JSON.stringify(reviewed,null,2)+'\n'],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=complete?'questions.reviewed.json':'questions.review-progress.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ $('#notice').textContent=complete?'전부 확인한 파일을 저장했어. 이 파일로 평가를 시작할 수 있어.':'진행 내용을 저장했어. 미검토·수정 필요 질문은 아직 확정되지 않았어.';
+};render();
+</script></html>

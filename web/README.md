@@ -64,3 +64,11 @@ DB 테스트는 로컬 PGlite에서 실행한다. pgvector 거리 계산은 이 
 
 새 영상은 등록 시 현재 청킹 코드를 자동으로 사용한다. 기존 영상은 `scripts/rechunk-library.ts`로
 전체 조회·적용할 수 있다. 실행 절차와 한계는 `../notes/16-library-rechunk.md` 참고.
+
+### 원본 자막과 시각 복구
+
+신규 전사 원본은 비공개 Supabase Storage `transcript-sources` 버킷에
+`<video_id>/<revision>.json`으로 저장한다. 배포 전에 해당 버킷을 비공개로 만들고
+서비스 역할 키의 접근을 확인해야 한다. 원본 보관 실패 시 기존 전사문을 교체하지 않는다.
+시각은 단어별 시간이 아니라 문단 시작을 포함하는 자막 조각의 시작 시간이다.
+전체 라이브러리 복구·검증 기록: `../notes/17-timestamp-release.md`.

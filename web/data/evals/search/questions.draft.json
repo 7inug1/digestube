@@ -1,0 +1,279 @@
+{
+  "version": "draft-20260911-v3-10-review-in-progress",
+  "status": "pending_human_review",
+  "search_executed": false,
+  "scope": "all_corpus",
+  "question_language": "ko",
+  "corpus": [
+    {
+      "video_id": "-Z11mZaJU0w",
+      "title": "Please… I Need Your Help",
+      "lang": "en",
+      "revision": "cb04af3f-d14d-4f99-a906-2b5cef4bf671",
+      "transcript_sha256": "1fa9e74025ac2268d51fd0f9db90c5816625e15cb267ee16b5e8c6ec132b1561"
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "title": "코난 오브라이언 \"네가 준비됐을 땐 절대 안 와.\"",
+      "lang": "en",
+      "revision": "e56a6d65-7fd1-48c8-887e-bb464b566947",
+      "transcript_sha256": "bf11cbd60d39cb7330cb6d89dc7218d53c5ba604e8dc046abf0f286856768426"
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "title": "요즘 일잘러는 다 쓴다는 AI 에이전트 근황 / 스브스뉴스",
+      "lang": "ko",
+      "revision": "7b3a1ad1-82c5-4307-bd7a-2ac6f2f99d2b",
+      "transcript_sha256": "dc68e69f7e36f2566bc665444c51ab0599527b842afe6afc6b8ad9a286b422c5"
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "title": "타인들로부터 자유롭지만 그들에게 친절한 사람",
+      "lang": "ko",
+      "revision": "9374904c-7b57-43e7-b248-3e384fd42678",
+      "transcript_sha256": "5f4f7741853fbe41d279ebbd42096e76783c6c9437088bbd184fce5a4bbdf356"
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "title": "인간관계에서 스트레스 받지 않는 사람의 특징",
+      "lang": "ko",
+      "revision": "70a8b224-7c7f-4c50-9c20-9c0530e6ba1d",
+      "transcript_sha256": "5ec26bf642b5a14472947fb0abc707eda29ba54d0fb7a8bbc4d1b81cbc729687"
+    },
+    {
+      "video_id": "JRJd1ZrHmgg",
+      "title": "내가 살고 싶은 인생 설계하는 방법 | 업그레이드 비전보드 무료 공유",
+      "lang": "ko",
+      "revision": "e2e38bea-d1a1-4d70-a59a-dbd458e6ea6f",
+      "transcript_sha256": "c34d816802c6aa2b2f0b04d7029e67147d4a87d508b51343ce763c933f04543f"
+    },
+    {
+      "video_id": "NtHSSWC04Do",
+      "title": "[ENG CC] 스쿨어택: 당신의 소원을 이뤄드리KU✨🔮",
+      "lang": "ko",
+      "revision": "289b7f09-2ecb-47d7-8a51-9fbcadf24782",
+      "transcript_sha256": "9d21f3f894704c24dbc914c5897ed49b1df30c7c6dba1822c97ec80144d7390a"
+    },
+    {
+      "video_id": "PlawByYfV8k",
+      "title": "조바심에 관한 한 가지 깨달음☕️",
+      "lang": "ko",
+      "revision": "71dd18f8-20ec-4ffc-bf6a-6624cec29b1f",
+      "transcript_sha256": "24a16bc32d3cb9865c66ecbb7f8a0dfad4814c54370e5e6def60d9d5ef1e0018"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "그 개발 유튜버가 시청자 설문을 받는 목적이 뭐야?",
+      "category": "answerable",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": "시청자가 원하는 콘텐츠를 알아보고 앞으로 만들 콘텐츠의 방향에 반영하려는 목적이다.",
+      "targets": [
+        {
+          "video_id": "-Z11mZaJU0w",
+          "start": 64.479,
+          "end": 73.2,
+          "quote": "it's just a way for me to gauge what actual content you want on this channel",
+          "alignment_coverage": 1,
+          "timing_precision": "caption_segment",
+          "caption_start_text": "even optional. But essentially, it's\njust a way for me to gauge what actual"
+        }
+      ],
+      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함.",
+      "reviewer_notes": "Now, this has left me a bit directionless because I don't really care for that whole vibe coding kind of nature of things. It's not at all interesting to me, and I don't want to teach that, but I still want to teach things that are important and relevant to you.",
+      "reviewed_at": "2026-09-11T07:24:06.027Z"
+    },
+    {
+      "id": "Q02",
+      "question": "아직 실력이 부족한데 큰 기회가 왔을 때 어떻게 하라는 얘기였지?",
+      "category": "answerable",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": "준비가 덜 되었더라도 기회를 잡고 해나가면서 방법을 알아가라는 조언이다.",
+      "targets": [
+        {
+          "video_id": "3KtrlNyd1ec",
+          "start": 78.64,
+          "end": 90.96,
+          "quote": "when your moment comes, you may not be ready, but you have to. take it and then figure it out on the way.",
+          "alignment_coverage": 1,
+          "timing_precision": "caption_segment",
+          "caption_start_text": "when your moment comes"
+        }
+      ],
+      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함.",
+      "reviewer_notes": "",
+      "reviewed_at": "2026-09-11T07:27:30.433Z"
+    },
+    {
+      "id": "Q03",
+      "question": "질문에 답하는 챗봇이랑 알아서 일을 처리하는 AI는 뭐가 달라?",
+      "category": "answerable",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": "영상에서는 에이전트를 스스로 계획하고 문제를 해결하는 개인 비서 같은 AI로 설명한다.",
+      "targets": [
+        {
+          "video_id": "55eFm5tPCQY",
+          "start": 58.48,
+          "end": 64.559,
+          "quote": "사람의 개입 없이도 알아서 계획을 세우고 문제를 해결하기 때문에",
+          "alignment_coverage": 1,
+          "timing_precision": "caption_segment",
+          "caption_start_text": "사람의 개입 없이도 알아서 계획을"
+        }
+      ],
+      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함.",
+      "reviewer_notes": "바로 AI 에이전트. 쉽게 말해 개인 비서 같은 AI로 묻는 말에 대답만 하는 과거의 AI와 달리 쉽게 말해 개인 비서 같은 AI로 묻는.\n사람의 개입 없이도 알아서 계획을 세우고 문제를 해결하기 때문에 우리를 하기 싫은 일로부터 해방시켜줄 수 있는 AI 서비스인데요",
+      "reviewed_at": "2026-09-11T07:30:43.902Z"
+    },
+    {
+      "id": "Q04",
+      "question": "학교에 아이를 데리러 갈 때 차를 눈에 안 띄는 곳에 세우려던 이유가 뭐였지?",
+      "category": "answerable",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "pending",
+      "expected_answer": "좋은 차가 많이 모이는 곳에서 낡고 긁힌 차가 눈에 띄는 것이 신경 쓰였기 때문이다.",
+      "targets": [
+        {
+          "video_id": "8cp0YvSpDA8",
+          "start": 36.68,
+          "end": 53.64,
+          "quote": "좋은 차들도 많더라고요. 그게 상황이 그렇게 되다 보니까 저희 안에도 그런 거 되게 신경 안 쓰는 사람인데 저기 저 애 태우러 갈 때는 좀 차를 저기 좀 구속쟁에다가 좀 안 보이는 데다 세우고 자기가 좀 걸어갔다 오겠다 그러더라고요.",
+          "alignment_coverage": 1,
+          "timing_precision": "caption_segment",
+          "caption_start_text": "좋은 차들도 많더라고요."
+        }
+      ],
+      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함.",
+      "reviewer_notes": "기존 질문이 계속 불명확하다는 사용자 의견에 따라 같은 영상의 낡은 차 사례를 묻는 질문으로 완전히 교체함. 확인 필요.",
+      "reviewed_at": "2026-09-11T07:56:03.859Z"
+    },
+    {
+      "id": "Q05",
+      "question": "싫어하는 사람을 어쩔 수 없이 계속 만나야 하면 어떻게 대하라는 거야?",
+      "category": "answerable",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "pending",
+      "expected_answer": "상대가 바뀌길 기대하기보다 그렇게 생각할 수도 있음을 인정하고 곁에서 지켜보라고 말한다.",
+      "targets": [
+        {
+          "video_id": "byVgbqzYJrs",
+          "start": 237.12,
+          "end": 244.76,
+          "quote": "이 사람이 바뀌기를 기대하지 말고 어 그냥 곁에 있어 주는가",
+          "alignment_coverage": 1,
+          "timing_precision": "caption_segment",
+          "caption_start_text": "있겠구나. 어이 사람이 바뀌기를"
+        }
+      ],
+      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함.",
+      "reviewer_notes": "만날 수밖에 없다 그러면 비켜서 >> 잠시 있어 주는 거야. 어떻게 하면서 아 저 사람은 저렇게 생각할 수 있겠구나.\n\n어이 사람이 바뀌기를 기대하지 말고 어 그냥 곁에 있어 주는가 >> 그냥 3글을 하면서 옆에 그냥 같이 있을 뿐이 뭔가를 막 계속해서 내가 반응을 하거나 어떻게 하려고 하지가 않 그렇지.",
+      "reviewed_at": null
+    },
+    {
+      "id": "Q06",
+      "question": "이루고 싶은 모습을 상상하기만 하면 오히려 행동을 안 하게 된다는 대목이 어디야?",
+      "category": "answerable",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "pending",
+      "expected_answer": "영상에서는 이미 이룬 듯한 만족감 때문에 실제 행동에 에너지를 쓰지 않게 될 수 있다고 설명한다.",
+      "targets": [
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "start": 103.52,
+          "end": 111.96,
+          "quote": "이미 이룬 것 같은 만족감을 느껴버려서 잊어버려서 정작 움직일 에너지를 안 쓰는 거예요.",
+          "alignment_coverage": 0.833,
+          "timing_precision": "caption_segment",
+          "caption_start_text": "하거든요. 이미 이런 것 같은"
+        }
+      ],
+      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함.",
+      "reviewer_notes": "심리학자 가브리엘 웨팅겐의 연구에 따르면 성공한 모습을 그냥 상상만 하면 동기와 실행력이 오히려 떨어진다고 해요. 왜냐? 뇌가 착각을 하거든요.\n\n이미 이룬 것 같은 만족감을 느껴버려서 잊어버려서 정작 움직일 에너지를 안 쓰는 거예요.",
+      "reviewed_at": null
+    },
+    {
+      "id": "Q07",
+      "question": "큰 시험을 앞둔 학생들이 떨리는 것 말고 어떤 기분도 든다고 했어?",
+      "category": "answerable",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "pending",
+      "expected_answer": "오랫동안 준비한 일이 마무리되어 뿌듯하기도 하다고 말한다.",
+      "targets": [
+        {
+          "video_id": "NtHSSWC04Do",
+          "start": 126.711,
+          "end": 134.027,
+          "quote": "3년 동안 준비한게 이제 끝나니까 떨리기도 하고 뿌듯하기도 한 것 같아요",
+          "alignment_coverage": 1,
+          "timing_precision": "caption_segment",
+          "caption_start_text": "3년 동안 준비한 게"
+        }
+      ],
+      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함.",
+      "reviewer_notes": "3년 동안 준비한게 이제 끝나니까 떨리기도 하고 뿌듯하기도 한 것 같아요\n뭔가 이제 3년 동안 준비한게 끝난다고 생각하니까 좀 후련한 것 같아요\n",
+      "reviewed_at": null
+    },
+    {
+      "id": "Q08",
+      "question": "딴짓처럼 느껴졌던 드라마 시청이 나중에 일에 도움 됐다는 사례가 뭐였지?",
+      "category": "answerable",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": "드라마를 보며 쌓은 경험이 브랜드 디자인의 스토리·캐릭터 구상에 도움이 되었다는 사례다.",
+      "targets": [
+        {
+          "video_id": "PlawByYfV8k",
+          "start": 295.76,
+          "end": 311.45,
+          "quote": "미드가 일에 도움이 되는거 를 경험했어요 브랜드 디자인 에서 특히나 스토리를 생각하거나 캐릭터를 만드는 게 중요하거든요",
+          "alignment_coverage": 1,
+          "timing_precision": "caption_segment",
+          "caption_start_text": "들어갔는데 미드가 일에 도움이 되는거 를 경험했어요 브랜드 디자인 에서"
+        }
+      ],
+      "review_notes": "원음 미청취. 전사문과 원본 자막 조각으로 지정한 구간을 검수해야 함.",
+      "reviewer_notes": "디자인 회사에 들어갔는데 미드가 일에 도움이 되는거 를 경험했어요 브랜드 디자인 에서 특히나 스토리를 생각하거나 캐릭터를 만드는 게 중요하거든요",
+      "reviewed_at": "2026-09-11T07:54:29.258Z"
+    },
+    {
+      "id": "Q09",
+      "question": "김치찌개 2인분을 만들려면 재료를 각각 얼마나 넣어야 해?",
+      "category": "no_answer",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "targets": [],
+      "expected_answer": null,
+      "absence_reason": "김치찌개가 비유로 등장하지만 조리법·인분별 재료량은 설명하지 않는다.",
+      "review_notes": "전체 8편의 저장 전사문을 AI가 읽고 부재를 판단한 초안. 사람이 최종 확인해야 함.",
+      "reviewer_notes": "",
+      "reviewed_at": "2026-09-11T07:54:43.775Z"
+    },
+    {
+      "id": "Q10",
+      "question": "노션에서 만든 비전보드를 휴대폰 잠금화면에 자동으로 동기화하는 설정 방법은?",
+      "category": "no_answer",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "targets": [],
+      "expected_answer": null,
+      "absence_reason": "노션 배치와 잠금화면에 두라는 제안은 있으나 자동 동기화 설정 방법은 없다.",
+      "review_notes": "전체 8편의 저장 전사문을 AI가 읽고 부재를 판단한 초안. 사람이 최종 확인해야 함.",
+      "reviewer_notes": "",
+      "reviewed_at": "2026-09-11T07:55:33.324Z"
+    }
+  ]
+}
