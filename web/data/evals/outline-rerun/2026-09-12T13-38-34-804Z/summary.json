@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Claude Sonnet 5",
+    "model": "claude-sonnet-5",
+    "attempts": 56,
+    "passed": 0,
+    "pass_rate": 0,
+    "errors": 56,
+    "wobble": 0,
+    "wobble_rate": 0,
+    "avg_ms": 0,
+    "avg_out_tokens": 0
+  },
+  {
+    "name": "Claude Haiku 4.5",
+    "model": "claude-haiku-4-5-20251001",
+    "attempts": 56,
+    "passed": 0,
+    "pass_rate": 0,
+    "errors": 56,
+    "wobble": 0,
+    "wobble_rate": 0,
+    "avg_ms": 0,
+    "avg_out_tokens": 0
+  },
+  {
+    "name": "qwen3.8-27b",
+    "model": "qwen/qwen3.8-27b",
+    "attempts": 56,
+    "passed": 48,
+    "pass_rate": 85.7,
+    "errors": 0,
+    "wobble": 25,
+    "wobble_rate": 89.3,
+    "avg_ms": 1504,
+    "avg_out_tokens": 36
+  }
+]

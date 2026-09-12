@@ -32,13 +32,16 @@ export async function POST(req: Request) {
   try {
     // Preflight avoids a paid request and gives a useful link even before replacement.
     const existing = await getVideo(vid);
-    if (existing && body.replace !== true) return NextResponse.json({
-      code:"VIDEO_EXISTS", error:"이미 등록된 영상입니다.", vid, title:existing.title,
+    // 전사가 실패해 껍데기만 남은 행은 '이미 등록된 영상'이 아니다.
+    // 이게 없으면 실패한 주소를 다시 넣을 때 replace 없이는 409 로 막힌다.
+    const usable = existing && existing.status !== "실패";
+    if (usable && body.replace !== true) return NextResponse.json({
+      code:"VIDEO_EXISTS", error:"이미 등록된 영상입니다.", vid, title:existing!.title,
     }, {status:409});
     const source = provider();
     // Gemini 는 언어를 고르지 않는다 — 영상의 언어 그대로 받아쓴다.
     const config = source === "gemini" ? {mode: "gemini" as const, lang: null} : settings();
-    const state = await beginIngest(vid, body.replace === true, token, config.mode, config.lang);
+    const state = await beginIngest(vid, body.replace === true || existing?.status === "실패", token, config.mode, config.lang);
     if (state !== "started") return NextResponse.json({code:state === "busy" ? "INGEST_BUSY" : "VIDEO_EXISTS",
       error:state === "busy" ? "이미 처리 중입니다. 잠시 후 다시 확인해 주세요." : "이미 등록된 영상입니다.", vid}, {status:409});
     reserved = true;

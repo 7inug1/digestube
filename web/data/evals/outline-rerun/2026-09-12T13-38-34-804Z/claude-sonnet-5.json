@@ -1,0 +1,401 @@
+{
+  "candidate": {
+    "name": "Claude Sonnet 5",
+    "vendor": "anthropic",
+    "model": "claude-sonnet-5"
+  },
+  "rows": [
+    {
+      "video_id": "-Z11mZaJU0w",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "-Z11mZaJU0w",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "-Z11mZaJU0w",
+      "seq": 5,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "-Z11mZaJU0w",
+      "seq": 5,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "-Z11mZaJU0w",
+      "seq": 10,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "-Z11mZaJU0w",
+      "seq": 10,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "seq": 5,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "seq": 5,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "seq": 10,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "seq": 10,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "seq": 6,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "seq": 6,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "seq": 12,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "seq": 12,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "5VaT8n1jxEA",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "5VaT8n1jxEA",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "5VaT8n1jxEA",
+      "seq": 9,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "5VaT8n1jxEA",
+      "seq": 9,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "5VaT8n1jxEA",
+      "seq": 18,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "5VaT8n1jxEA",
+      "seq": 18,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "seq": 5,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "seq": 5,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "seq": 11,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "seq": 11,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "JRJd1ZrHmgg",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "JRJd1ZrHmgg",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "JRJd1ZrHmgg",
+      "seq": 6,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "JRJd1ZrHmgg",
+      "seq": 6,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "JRJd1ZrHmgg",
+      "seq": 13,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "JRJd1ZrHmgg",
+      "seq": 13,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "NtHSSWC04Do",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "NtHSSWC04Do",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "PlawByYfV8k",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "PlawByYfV8k",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "PlawByYfV8k",
+      "seq": 4,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "PlawByYfV8k",
+      "seq": 4,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "PlawByYfV8k",
+      "seq": 9,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "PlawByYfV8k",
+      "seq": 9,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 1,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 1,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 3,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 3,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "seq": 0,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "seq": 0,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "seq": 8,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "seq": 8,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "seq": 16,
+      "run": 0,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "seq": 16,
+      "run": 1,
+      "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropi",
+      "pass": false
+    }
+  ]
+}
