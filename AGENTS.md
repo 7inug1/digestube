@@ -46,7 +46,7 @@ v1(`../digestube`)을 **다시 만드는 것**이다. 기능을 옮겨오는 게
 
 ## 2. 지금 상태
 
-**배포됨: https://digestube-v2.vercel.app**
+**배포됨: https://digestube.vercel.app**
 **코퍼스: 영상 7편 · 문단 57개.** Supadata 무료 크레딧 100 을 다 썼다. 더 넣으려면 결제.
 
 파이썬 구현은 `_old/web/` 로 치웠다. 지금 코드는 **Next.js 16 + TypeScript**(`web/`).

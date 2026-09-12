@@ -46,7 +46,7 @@ async function main() {
   } catch(e) {
     await db.rpc("cancel_ingest",{p_vid:vid,p_token:token});throw e;
   }
-  const base=process.env.DIGESTUBE_BASE_URL ?? "https://digestube-v2.vercel.app";
+  const base=process.env.DIGESTUBE_BASE_URL ?? "https://digestube.vercel.app";
   for(const phase of ["outline","embed"]) {
     let left;
     do {

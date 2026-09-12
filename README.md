@@ -3,7 +3,7 @@
 유튜브 영상을 목차와 전사문으로 읽고 관련 구간을 의미 검색하는 개인 웹 데모.
 현재 앱은 `web/`의 Next.js + TypeScript 구현이다.
 
-- 배포: https://digestube-v2.vercel.app
+- 배포: https://digestube.vercel.app
 - 개발·DB 변경·검증 안내: [web/README.md](web/README.md)
 - 판단 기록: [notes](notes/)
 - 2026-09-10 마무리: [notes/12-v2-finish.md](notes/12-v2-finish.md)
