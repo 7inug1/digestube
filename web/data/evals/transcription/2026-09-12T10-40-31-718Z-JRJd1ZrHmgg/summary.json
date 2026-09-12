@@ -1,0 +1,55 @@
+{
+  "measured_at": "2026-09-12T10:40:31.718Z",
+  "video_id": "JRJd1ZrHmgg",
+  "model": "gemini-3.5-flash",
+  "url": "https://www.youtube.com/watch?v=JRJd1ZrHmgg",
+  "elapsed_ms": 49585,
+  "elapsed_sec": 49.6,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 41170,
+    "candidatesTokenCount": 5693,
+    "totalTokenCount": 54199,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 41044
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      }
+    ],
+    "thoughtsTokenCount": 7336,
+    "serviceTier": "standard"
+  },
+  "segments": 103,
+  "chars": {
+    "gemini": 3689,
+    "native": 3870
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 117,
+    "native_sentence_marks": 103
+  },
+  "bracketed": {
+    "gemini": [
+      "(핀터레스트)"
+    ],
+    "native": []
+  },
+  "word_overlap": {
+    "gemini_words": 887,
+    "native_words": 949,
+    "shared": 810,
+    "only_in_gemini": 77,
+    "only_in_native": 139
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 438,
+    "native_last_end_sec": 439,
+    "tail_gap_sec": 1.1
+  }
+}

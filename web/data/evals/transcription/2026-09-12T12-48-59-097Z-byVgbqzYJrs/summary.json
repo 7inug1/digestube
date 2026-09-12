@@ -1,0 +1,80 @@
+{
+  "measured_at": "2026-09-12T12:48:59.097Z",
+  "video_id": "byVgbqzYJrs",
+  "model": "gemini-3.5-flash",
+  "url": "https://www.youtube.com/watch?v=byVgbqzYJrs",
+  "elapsed_ms": 69521,
+  "elapsed_sec": 69.5,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 59926,
+    "candidatesTokenCount": 7820,
+    "totalTokenCount": 76725,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 59800
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      }
+    ],
+    "thoughtsTokenCount": 8979,
+    "serviceTier": "standard"
+  },
+  "segments": 148,
+  "chars": {
+    "gemini": 4785,
+    "native": 5188
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 202,
+    "native_sentence_marks": 223
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": [
+      "[웃음]",
+      "[웃음]",
+      "[한숨]",
+      "[웃음]",
+      "[웃음]"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 1253,
+    "native_words": 1260,
+    "shared": 1073,
+    "only_in_gemini": 180,
+    "only_in_native": 187
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 148,
+    "matched": 84,
+    "coverage": 0.57,
+    "median_gap_sec": 2.8,
+    "p90_gap_sec": 9.9
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 651,
+    "native_last_end_sec": 652,
+    "tail_gap_sec": 1.4
+  }
+}

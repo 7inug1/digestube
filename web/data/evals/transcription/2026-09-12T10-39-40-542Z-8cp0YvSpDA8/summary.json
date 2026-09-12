@@ -1,0 +1,53 @@
+{
+  "measured_at": "2026-09-12T10:39:40.542Z",
+  "video_id": "8cp0YvSpDA8",
+  "model": "gemini-3.5-flash",
+  "url": "https://www.youtube.com/watch?v=8cp0YvSpDA8",
+  "elapsed_ms": 50436,
+  "elapsed_sec": 50.4,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 36980,
+    "candidatesTokenCount": 5252,
+    "totalTokenCount": 49013,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 36854
+      }
+    ],
+    "thoughtsTokenCount": 6781,
+    "serviceTier": "standard"
+  },
+  "segments": 90,
+  "chars": {
+    "gemini": 3698,
+    "native": 3633
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 132,
+    "native_sentence_marks": 134
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": []
+  },
+  "word_overlap": {
+    "gemini_words": 975,
+    "native_words": 978,
+    "shared": 818,
+    "only_in_gemini": 157,
+    "only_in_native": 160
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 405,
+    "native_last_end_sec": 407,
+    "tail_gap_sec": 1.9
+  }
+}

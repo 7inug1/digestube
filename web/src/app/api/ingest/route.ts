@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { beginIngest, cancelIngest, finishIngest, getVideo, setIngestJob } from "@/lib/store";
 import { poll, start, videoId, settings, type Result } from "@/lib/supadata";
+import { transcribe } from "@/lib/gemini";
+import { provider } from "@/lib/transcript-provider";
 import { prepareTranscript } from "@/lib/transcript";
 import { saveTranscriptSource } from "@/lib/transcript-source";
 import { meta } from "@/lib/youtube";
 
-export const maxDuration = 60;
+// Gemini 전사는 영상 길이의 10~15% 가 걸린다(실측: 10.9분 영상 96초).
+// fluid compute 가 켜진 Hobby 플랜의 상한이 300초다.
+export const maxDuration = 300;
 
 async function save(vid: string, token: string, r: Result, lang: string | null) {
   const prepared = prepareTranscript(r, lang);
@@ -31,12 +35,18 @@ export async function POST(req: Request) {
     if (existing && body.replace !== true) return NextResponse.json({
       code:"VIDEO_EXISTS", error:"이미 등록된 영상입니다.", vid, title:existing.title,
     }, {status:409});
-    const config = settings();
+    const source = provider();
+    // Gemini 는 언어를 고르지 않는다 — 영상의 언어 그대로 받아쓴다.
+    const config = source === "gemini" ? {mode: "gemini" as const, lang: null} : settings();
     const state = await beginIngest(vid, body.replace === true, token, config.mode, config.lang);
     if (state !== "started") return NextResponse.json({code:state === "busy" ? "INGEST_BUSY" : "VIDEO_EXISTS",
       error:state === "busy" ? "이미 처리 중입니다. 잠시 후 다시 확인해 주세요." : "이미 등록된 영상입니다.", vid}, {status:409});
     reserved = true;
-    const r = await start(`https://www.youtube.com/watch?v=${vid}`, config);
+    const url = `https://www.youtube.com/watch?v=${vid}`;
+    if (source === "gemini") {
+      return NextResponse.json({state:"done",...(await save(vid,token,await transcribe(url),null))});
+    }
+    const r = await start(url, settings());
     if (r.state === "working") {
       await setIngestJob(vid, token, r.job);
       return NextResponse.json({state:"working",vid,job:r.job,token});
