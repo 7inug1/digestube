@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const u = new URL(req.url);
   const q = u.searchParams.get("q") ?? "";
   const vid = u.searchParams.get("vid") ?? undefined;
-  const k = Number(u.searchParams.get("k") ?? 5);
+  const k = Number(u.searchParams.get("k") ?? 3);
   try {
     return NextResponse.json(await find(q, vid, k));
   } catch (e) {

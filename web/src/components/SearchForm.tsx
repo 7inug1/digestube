@@ -11,6 +11,7 @@ export default function SearchForm({ q }: { q: string }) {
   return (
     <div className="flex gap-2">
       <input
+        aria-label="검색어"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && go()}

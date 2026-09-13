@@ -35,7 +35,7 @@ export default async function Search({
   }
 
   return (
-    <div className="mx-auto max-w-[680px]">
+    <div className="mx-auto max-w-[720px]">
       <SearchForm q={q} />
 
       {!q && (
@@ -46,11 +46,11 @@ export default async function Search({
       {failed && <p className="mt-6 text-[13px] text-mfg">검색에 실패했습니다 — {failed}</p>}
       {q && !failed && (
         <p className="mt-6 text-[13px] text-mfg">
-          “{q}” — {hits.length}개{vid ? " (이 영상 안에서)" : ""}
+          “{q}”와 가장 가까운 대목 {hits.length}개{vid ? " · 이 영상 안에서" : ""}
         </p>
       )}
 
-      <div className="mt-4">
+      <div className="mt-5 grid gap-3">
         {hits.map((h) => <Found key={`${h.video_id}:${h.seq}`} hit={h} />)}
       </div>
     </div>

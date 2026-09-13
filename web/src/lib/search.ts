@@ -70,8 +70,8 @@ async function highlight(qv: number[], hits: Found[], topN = 3, perChunk = 10) {
   }
 }
 
-/** 가까운 문단 k개. vid 를 주면 그 영상 안에서만 찾는다. */
-export async function find(q: string, vid?: string, k = 5): Promise<Found[]> {
+/** 가까운 문단 k개. 기본은 판단하기 쉬운 세 대목만 보여준다. */
+export async function find(q: string, vid?: string, k = 3): Promise<Found[]> {
   const query = (q ?? "").trim();
   if (!query) return [];
   const qv = await embedOne(query);
