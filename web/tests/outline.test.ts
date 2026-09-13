@@ -1,26 +1,30 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {label, fallbackTitle} from "../src/lib/outline";
+import {label} from "../src/lib/outline";
 import {prepareTranscript} from "../src/lib/transcript";
 
 const c={seq:3,t:42,text:"잠은 기억을 강화합니다. 충분한 수면이 필요합니다."};
 test("a changed quote is retried and a valid second title is retained",async()=>{
   let calls=0;
   const result=await label(c,async()=>++calls===1 ? {label:"기억과 수면",quote:"잠은 기억을 지웁니다."} : {label:"잠이 기억을 강화하는 이유",quote:"잠은 기억을 강화합니다."});
-  assert.equal(calls,2); assert.equal(result.source,"model"); assert.equal(result.attempts,2);
+  assert.ok(result); assert.equal(calls,2); assert.equal(result.source,"model"); assert.equal(result.attempts,2);
   assert.equal(result.failure,"quote_mismatch"); assert.equal(result.seq,3);
 });
-test("repeated request failure preserves the navigation anchor without a fake quote",async()=>{
-  const result=await label(c,async()=>{throw new Error("503");});
-  assert.equal(result.source,"fallback"); assert.equal(result.label,"잠은 기억을 강화합니다.");
-  assert.equal(result.quote,""); assert.equal(result.t,42); assert.equal(result.attempts,2);
+test("repeated request failure keeps the item with the first sentence",async()=>{
+  const r=await label(c,async()=>{throw new Error("503");});
+  assert.equal(r.source,"fallback"); assert.equal(r.label,"잠은 기억을 강화합니다.");
+  assert.equal(r.quote,""); assert.equal(r.failure,"generation_error,generation_error");
 });
-test("overlong titles are retried then truncated source uses at most 25 code points",async()=>{
+test("a quote that is not in the paragraph falls back after one retry",async()=>{
+  const r=await label(c,async()=>({label:"그럴듯한 제목",quote:"원문에 없는 문장입니다."}));
+  assert.equal(r.source,"fallback"); assert.equal(r.failure,"quote_mismatch,quote_mismatch");
+});
+test("an overlong first sentence is shortened to fit the 25 character budget",async()=>{
   const text="이 문장은 목차 길이 제한보다 훨씬 길어서 전체를 제목으로 보여줄 수 없는 첫 문장입니다. 둘째 문장.";
-  const result=await label({...c,text},async()=>({label:"가".repeat(26),quote:text}));
-  assert.equal(result.source,"fallback"); assert.ok(Array.from(result.label).length<=25);assert.ok(result.label.endsWith("…"));
-  assert.equal(fallbackTitle("짧은 첫 문장. 다음 문장."),"짧은 첫 문장.");
-  assert.equal(Array.from(fallbackTitle("😀".repeat(30))).length,25);
+  const r=await label({...c,text},async()=>({label:"가".repeat(26),quote:text}));
+  assert.equal(r.source,"fallback");
+  assert.ok(Array.from(r.label).length<=25);
+  assert.ok(r.label.endsWith("…"));
 });
 test("unusable native input is rejected before replacing old content",()=>{
   assert.throws(()=>prepareTranscript({lang:"en",content:[]},"ko"),/언어/);

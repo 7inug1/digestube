@@ -1,0 +1,76 @@
+{
+  "sample": [
+    {
+      "video_id": "-Z11mZaJU0w",
+      "seq": 5
+    },
+    {
+      "video_id": "-Z11mZaJU0w",
+      "seq": 2
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "seq": 5
+    },
+    {
+      "video_id": "3KtrlNyd1ec",
+      "seq": 2
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "seq": 6
+    },
+    {
+      "video_id": "55eFm5tPCQY",
+      "seq": 3
+    },
+    {
+      "video_id": "5VaT8n1jxEA",
+      "seq": 9
+    },
+    {
+      "video_id": "5VaT8n1jxEA",
+      "seq": 4
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "seq": 6
+    },
+    {
+      "video_id": "8cp0YvSpDA8",
+      "seq": 3
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "seq": 8
+    },
+    {
+      "video_id": "byVgbqzYJrs",
+      "seq": 4
+    }
+  ],
+  "summary": [
+    {
+      "model": "claude-sonnet-5",
+      "attempts": 24,
+      "passed": 24,
+      "pass_rate": 100,
+      "errors": 0,
+      "wobble": 11,
+      "avg_ms": 1710,
+      "cost_usd": 0.0402,
+      "per_chunk_usd": 0.00168
+    },
+    {
+      "model": "gemini-3.8-flash",
+      "attempts": 24,
+      "passed": 24,
+      "pass_rate": 100,
+      "errors": 0,
+      "wobble": 10,
+      "avg_ms": 2960,
+      "cost_usd": 0.036,
+      "per_chunk_usd": 0.0015
+    }
+  ]
+}

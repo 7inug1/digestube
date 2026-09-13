@@ -1,0 +1,107 @@
+{
+  "id": "SFpqFHJ5Ujw",
+  "title": "25년 전 '은밀한 문건' 공개...뉴욕시가 숨겨온 비밀 [자막뉴스] / YTN",
+  "channel": " YTN",
+  "lang": "ko",
+  "status": "문단완료",
+  "job": null,
+  "pieces": 11,
+  "chars": 903,
+  "created_at": "2026-09-12T13:27:18.996046+00:00",
+  "mode": "gemini",
+  "requested_lang": null,
+  "transcribed_at": "2026-09-12T13:27:39.9354+00:00",
+  "revision": "b1d32451-267c-4d28-bf88-edc9fd1612a9",
+  "ingest_token": null,
+  "ingest_started_at": null,
+  "pending_mode": null,
+  "pending_lang": null,
+  "raw": [
+    {
+      "text": "9·11 테러로 무너진 뉴욕 세계무역센터 부지 주변, 거대한 먼지 구름 속에서 구조대원들이 필사의 작업을 벌입니다.",
+      "offset": 0,
+      "duration": 8000
+    },
+    {
+      "text": "테러 이후 뉴욕시는 무역센터 주변 공기가 안전하다는 메시지를 냈지만, 25년 만에 공개된 내부 문건 내용은 달랐습니다.",
+      "offset": 8000,
+      "duration": 8000
+    },
+    {
+      "text": "9·11 직후 뉴욕시가 최대 수만 건의 피해소송 가능성을 검토한 이른바 '하딩 메모'.",
+      "offset": 16000,
+      "duration": 6000
+    },
+    {
+      "text": "보건당국이 시민들에게 너무 일찍 복귀하도록 안내해 독성물질에 노출됐을 가능성과 구조대원들에게 호흡기 보호장비가 제공되지 않았을 가능성을 검토한 것으로 드러났습니다.",
+      "offset": 22000,
+      "duration": 13000
+    },
+    {
+      "text": "These are documents that show what the city knew about the toxic air around Ground Zero, when they knew it, and how they acted to limit liability.",
+      "offset": 35000,
+      "duration": 9000
+    },
+    {
+      "text": "조란 맘다니 뉴욕시장은 테러 25주기를 맞아 부지 주변의 대기 질과 오염상황, 시 당국 대응 등이 담긴 17만 쪽 이상의 문건을 공개했습니다.",
+      "offset": 44000,
+      "duration": 10000
+    },
+    {
+      "text": "테러 두 달 뒤 작성된 감사보고서에는 센터 인근에서 발암물질인 벤젠 농도가 계속 급증했고,",
+      "offset": 54000,
+      "duration": 7000
+    },
+    {
+      "text": "10개월 뒤에도 최대 800m 떨어진 곳에서 석면 흔적이 발견됐습니다.",
+      "offset": 61000,
+      "duration": 6000
+    },
+    {
+      "text": "who live in downtown Manhattan is that there was poison in the air, and on the ground, and in the window sills, and in your air conditioners",
+      "offset": 67000,
+      "duration": 11000
+    },
+    {
+      "text": "미 일간 뉴욕타임스 등은 9·11 당일 숨진 사람은 2,977명이지만 이후 테러 관련 질병으로 사망한 사람이 더 많은 것으로 추정된다고 전했습니다.",
+      "offset": 78000,
+      "duration": 10000
+    },
+    {
+      "text": "뉴욕시는 앞으로 1년 동안 문건을 추가로 공개할 예정인데, 생존자와 구조인력 등의 피해보상 신청에 활용될 수 있을 전망입니다. 워싱턴에서 YTN 신윤정입니다.",
+      "offset": 88000,
+      "duration": 13000
+    }
+  ],
+  "chunks": [
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 0,
+      "t": 0,
+      "t_end": 35,
+      "text": "9·11 테러로 무너진 뉴욕 세계무역센터 부지 주변, 거대한 먼지 구름 속에서 구조대원들이 필사의 작업을 벌입니다. 테러 이후 뉴욕시는 무역센터 주변 공기가 안전하다는 메시지를 냈지만, 25년 만에 공개된 내부 문건 내용은 달랐습니다. 9·11 직후 뉴욕시가 최대 수만 건의 피해소송 가능성을 검토한 이른바 '하딩 메모'. 보건당국이 시민들에게 너무 일찍 복귀하도록 안내해 독성물질에 노출됐을 가능성과 구조대원들에게 호흡기 보호장비가 제공되지 않았을 가능성을 검토한 것으로 드러났습니다."
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 1,
+      "t": 35,
+      "t_end": 54,
+      "text": "These are documents that show what the city knew about the toxic air around Ground Zero, when they knew it, and how they acted to limit liability. 조란 맘다니 뉴욕시장은 테러 25주기를 맞아 부지 주변의 대기 질과 오염상황, 시 당국 대응 등이 담긴 17만 쪽 이상의 문건을 공개했습니다."
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 2,
+      "t": 54,
+      "t_end": 88,
+      "text": "테러 두 달 뒤 작성된 감사보고서에는 센터 인근에서 발암물질인 벤젠 농도가 계속 급증했고, 10개월 뒤에도 최대 800m 떨어진 곳에서 석면 흔적이 발견됐습니다. who live in downtown Manhattan is that there was poison in the air, and on the ground, and in the window sills, and in your air conditioners 미 일간 뉴욕타임스 등은 9·11 당일 숨진 사람은 2,977명이지만 이후 테러 관련 질병으로 사망한 사람이 더 많은 것으로 추정된다고 전했습니다."
+    },
+    {
+      "video_id": "SFpqFHJ5Ujw",
+      "seq": 3,
+      "t": 88,
+      "t_end": 101,
+      "text": "뉴욕시는 앞으로 1년 동안 문건을 추가로 공개할 예정인데, 생존자와 구조인력 등의 피해보상 신청에 활용될 수 있을 전망입니다. 워싱턴에서 YTN 신윤정입니다."
+    }
+  ],
+  "outline": []
+}

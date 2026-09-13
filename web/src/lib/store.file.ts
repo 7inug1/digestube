@@ -15,8 +15,13 @@ type Raw = {
 
 const read = async () => JSON.parse(await readFile(DB, "utf8")) as Raw;
 
+/** Supabase 쪽과 같은 규칙 — Gemini 전사 영상만 낸다(LIBRARY_ALL=1 로 끔). */
 export async function listVideos(): Promise<Video[]> {
-  return Object.values((await read()).video);
+  const d = await read();
+  const all = Object.values(d.video);
+  if (process.env.LIBRARY_ALL === "1") return all;
+  const withOutline = new Set((d.outline ?? []).map(o => o.video_id));
+  return all.filter(v => v.mode === "gemini" && withOutline.has(v.id));
 }
 
 export async function getVideo(vid: string) {
@@ -28,6 +33,17 @@ export async function getVideo(vid: string) {
     chunks: d.chunk.filter((c) => c.video_id === vid).sort((a, b) => a.seq - b.seq),
     outline: (d.outline ?? []).filter((o) => o.video_id === vid).sort((a, b) => a.seq - b.seq),
   };
+}
+
+/** 목차가 몇 개 붙어 있는지 — 랜딩에서 "읽을 준비가 끝난" 영상만 고르려고 센다. */
+export async function outlineCounts(vids: string[]) {
+  const d = await read();
+  const out: Record<string, number> = {};
+  for (const o of d.outline ?? []) {
+    if (!vids.includes(o.video_id)) continue;
+    out[o.video_id] = (out[o.video_id] ?? 0) + 1;
+  }
+  return out;
 }
 
 export async function statsOf(vids: string[]) {

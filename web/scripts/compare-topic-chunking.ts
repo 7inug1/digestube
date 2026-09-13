@@ -11,10 +11,14 @@
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {chunk, MAXLEN, type Chunk, type Piece} from '../src/lib/chunker';
 
-const VIDEO = 'JRJd1ZrHmgg';
+const DIALOGUE = process.argv.includes('--dialogue');
+const VIDEO = DIALOGUE ? 'byVgbqzYJrs' : 'JRJd1ZrHmgg';
 /** 입력을 하나로 고정한다 — 전사문이 바뀌면 경계 비교가 성립하지 않는다. */
-const SOURCE = 'data/evals/transcription/2026-09-13T05-35-40-595Z-JRJd1ZrHmgg/gemini.json';
-const OUT = 'data/evals/chunking/topic';
+const SOURCE = DIALOGUE ? 'data/evals/chunking/dialogue-source.json' : 'data/evals/transcription/2026-09-13T05-35-40-595Z-JRJd1ZrHmgg/gemini.json';
+const READABLE = process.argv.includes('--sonnet-readable');
+const BALANCED = READABLE || process.argv.includes('--sonnet-balanced');
+const REFINED = BALANCED || process.argv.includes('--sonnet-refined');
+const OUT = READABLE ? 'data/evals/chunking/topic-readable' : DIALOGUE ? 'data/evals/chunking/topic-dialogue' : BALANCED ? 'data/evals/chunking/topic-balanced' : REFINED ? 'data/evals/chunking/topic-refined' : 'data/evals/chunking/topic';
 
 /** 후보마다 1회. 온도는 0 으로 맞춘다 — 같은 입력에 같은 답이 나와야 다시 잴 수 있다.
  *
@@ -139,7 +143,8 @@ function verify(chunks: Chunk[], pieces: Piece[]): Checks {
 async function askAnthropic(model: string, prompt: string, temperature: boolean) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error('ANTHROPIC_API_KEY 가 없다');
-  const config = temperature ? {model, max_tokens: 2000, temperature: 0} : {model, max_tokens: 2000};
+  const max_tokens = READABLE ? 16000 : REFINED ? 8000 : 2000;
+  const config = temperature ? {model, max_tokens, temperature: 0} : {model, max_tokens};
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json'},
@@ -202,7 +207,27 @@ async function main() {
   const dir = `${OUT}/${stamp}-${VIDEO}`;
   mkdirSync(dir, {recursive: true});
 
-  const prompt = PROMPT.replace('{lines}', numbered(pieces));
+  let instructions = REFINED ? PROMPT.replace(
+    '- 같은 논점의 설명과 사례는 한 문단에 묶는다.\n- 새로운 논점으로 넘어가는 자리에서만 나눈다.',
+    '- 새로운 논점으로 넘어가면 나눈다. 같은 큰 주제 안에서도 읽기 쉬운 세부 문단을 만든다.\n' +
+    '- 첫째·둘째·셋째처럼 독립적으로 설명하는 나열 항목은 각각 별도 문단으로 나눈다.\n' +
+    '- 같은 단계 안에서도 설명에서 구체적인 방법, 별도의 예시, 팁으로 역할이 바뀌면 문단을 나눈다.\n' +
+    '- 단, 짧은 보충 설명을 무조건 분리하지 않는다. 각 문단은 앞뒤 문장을 함께 읽어 뜻이 완성되게 한다.'
+  ) : PROMPT;
+  if (BALANCED) instructions = PROMPT.replace(
+    '- 같은 논점의 설명과 사례는 한 문단에 묶는다.\n- 새로운 논점으로 넘어가는 자리에서만 나눈다.',
+    '- 기본은 같은 논점의 설명과 바로 이어지는 사례를 한 문단에 묶는 것이다. 새로운 논점으로 넘어가면 나눈다.\n' +
+    '- 첫째·둘째·셋째 또는 단계처럼 각각 독립적으로 설명하는 나열 항목은 분리한다. 한 문장 안에서 목록을 언급하는 것만으로 나누지는 않는다.\n' +
+    '- 설명에서 예시나 팁으로 바뀌었다는 이유만으로 분리하지 않는다. 설명·예시·짧은 보충은 함께 유지한다.\n' +
+    '- 같은 항목이 길게 이어질 때만 세부 내용의 전환점에서 추가로 나눈다. 긴 항목은 가능하면 2~3개 문단으로 묶고, 모든 예시를 따로 떼지 않는다.\n' +
+    '- 짧은 도입·연결·마무리 발화는 관련된 앞뒤 문단에 묶는다. 문단 수를 늘리는 것 자체가 목표가 아니다.'
+  );
+  if (READABLE) instructions = instructions.replace(
+    '\n\n{"starts":[1]}',
+    '\n- 한 문단은 280~360자 정도를 권장한다. 정확한 글자 수보다 의미가 자연스럽게 완결되는 위치를 우선하고, 필요하면 범위를 벗어나도 된다.\n' +
+    '- 긴 주제는 설명의 초점이 바뀌는 위치에서 2~3개 문단으로 나누되, 예시 하나마다 기계적으로 분리하지 않는다.\n\n{"starts":[1]}'
+  );
+  const prompt = instructions.replace('{lines}', numbered(pieces));
   const records: Record_[] = [];
 
   // 기준선 — 지금 서비스가 쓰는 길이 기반 방식. 모델을 부르지 않는다.
@@ -217,6 +242,7 @@ async function main() {
   }
 
   for (const c of CANDIDATES) {
+    if (REFINED && c.key !== 'sonnet') continue;
     const t0 = Date.now();
     const rec: Record_ = {
       key: c.key, provider: c.provider, model: c.model, config: {}, prompt,

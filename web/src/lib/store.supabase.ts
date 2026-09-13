@@ -7,11 +7,28 @@ import { db } from "./supabase";
 
 import type { Chunk, Hit, NewChunk, Outline, Video } from "./types";
 
+/** 라이브러리에 내보낼 영상.
+ *
+ *  2026-09-13: Gemini 전사·모델 청킹·목차가 모두 끝난 8편만 남기고 나머지는
+ *  DB 에서 뺐다(백업은 data/evals/removed-2026-09-13/). 그래서 목록에 거르는
+ *  조건은 "목차가 있는가" 하나면 된다.
+ *
+ *  전에 있던 길이 추정(최장 문단 340자 초과 = 모델 청킹)은 지웠다.
+ *  짧은 영상은 모델이 나눠도 문단이 짧아서 NtHSSWC04Do(최장 227자)가
+ *  코드 청킹으로 잘못 걸러졌다. 길이로 출처를 맞히는 건 성립하지 않는다.
+ *
+ *  검색은 이 필터를 보지 않고 DB 의 모든 문단을 뒤진다. 목록과 검색이 같은
+ *  영상을 보게 하려면 DB 자체를 정리해야 한다 — 그래서 위처럼 뺐다.
+ */
 export async function listVideos(): Promise<Video[]> {
   const { data, error } = await db()
     .from("video").select("*").order("created_at", { ascending: false });
   if (error) throw error;
-  return data ?? [];
+  const rows = data ?? [];
+  if (process.env.LIBRARY_ALL === "1") return rows;
+  // 목차가 없으면 열어도 볼 것이 반쯤 비어 있다.
+  const counts = await outlineCounts(rows.map(v => v.id));
+  return rows.filter(v => (counts[v.id] ?? 0) > 0);
 }
 
 export async function getVideo(vid: string) {
@@ -30,6 +47,16 @@ export async function getVideo(vid: string) {
     chunks: (c.data ?? []) as Chunk[],
     outline: (o.data ?? []) as Outline[],
   };
+}
+
+/** 목차가 몇 개 붙어 있는지 — 랜딩에서 "읽을 준비가 끝난" 영상만 고르려고 센다. */
+export async function outlineCounts(vids: string[]) {
+  const { data, error } = await db()
+    .from("outline").select("video_id").in("video_id", vids);
+  if (error) throw error;
+  const out: Record<string, number> = {};
+  for (const r of data ?? []) out[r.video_id] = (out[r.video_id] ?? 0) + 1;
+  return out;
 }
 
 /** 문단 수와 영상 길이 — 목록에서 쓰려고 한 번에 센다. */

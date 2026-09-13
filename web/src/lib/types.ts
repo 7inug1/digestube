@@ -3,12 +3,12 @@ export type Video = {
   title?: string | null;
   channel?: string | null;
   lang?: string | null;
-  mode?: "native" | "generate" | null;
+  mode?: "native" | "generate" | "gemini" | null;
   requested_lang?: string | null;
   transcribed_at?: string | null;
   revision?: string | null;
   ingest_token?: string | null;
-  pending_mode?: "native" | "generate" | null;
+  pending_mode?: "native" | "generate" | "gemini" | null;
   pending_lang?: string | null;
   status?: string | null;
   job?: string | null;

@@ -10,8 +10,10 @@
 import type {Piece, Result} from "./supadata";
 
 const API = "https://generativelanguage.googleapis.com/v1beta";
-/** 측정에 쓴 모델을 고정한다. 바꾸면 다시 재야 한다. */
-export const MODEL = process.env.GEMINI_TRANSCRIBE_MODEL ?? "gemini-3.5-flash";
+/** 모델을 고정한다. 바꾸면 다시 재야 한다 — 근거는 notes/26-transcription-model-compare.md.
+ *  3.5-flash 로 6/6 을 확인했지만 단가가 두 배($1.50/$9.00 대 $0.75/$3.75)라 3.8 로 옮겼다.
+ *  3.8 은 아직 2편만 확인했다. 나머지는 채우는 중이다. */
+export const MODEL = process.env.GEMINI_TRANSCRIBE_MODEL ?? "gemini-3.8-flash";
 
 const PROMPT = `이 영상의 음성을 그대로 받아쓴다.
 
@@ -60,7 +62,14 @@ function toPieces(segments: Segment[]): Piece[] {
   return out;
 }
 
+export type Usage = {promptTokenCount?: number; candidatesTokenCount?: number; thoughtsTokenCount?: number};
+
 export async function transcribe(videoUrl: string): Promise<Result> {
+  return (await transcribeWithUsage(videoUrl)).result;
+}
+
+/** 토큰 사용량까지 필요한 곳(재전사 스크립트·측정)에서 쓴다. */
+export async function transcribeWithUsage(videoUrl: string): Promise<{result: Result; usage: Usage}> {
   const r = await fetch(`${API}/models/${MODEL}:generateContent?key=${key()}`, {
     method: "POST",
     headers: {"content-type": "application/json"},
@@ -77,6 +86,7 @@ export async function transcribe(videoUrl: string): Promise<Result> {
 
   const data = JSON.parse(body) as {
     candidates?: {content?: {parts?: {text?: string}[]}; finishReason?: string}[];
+    usageMetadata?: Usage;
   };
   const candidate = data.candidates?.[0];
   if (candidate?.finishReason && candidate.finishReason !== "STOP") {
@@ -90,5 +100,5 @@ export async function transcribe(videoUrl: string): Promise<Result> {
   const content = toPieces(parsed.segments ?? []);
   if (!content.length) throw new Error("전사 결과가 비어 있습니다. 기존 내용은 유지됩니다.");
   const lang = typeof parsed.lang === "string" && /^[a-z]{2}$/i.test(parsed.lang) ? parsed.lang.toLowerCase() : undefined;
-  return {lang, content};
+  return {result: {lang, content}, usage: data.usageMetadata ?? {}};
 }

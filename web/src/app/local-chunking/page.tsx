@@ -26,6 +26,8 @@ const TABS = [
   { key: "current", label: "현재 방식" },
   { key: "gemini", label: "Gemini Flash" },
   { key: "sonnet", label: "Sonnet" },
+  { key: "sonnet-refined", label: "Sonnet 수정 후" },
+  { key: "sonnet-balanced", label: "Sonnet 재조정" },
   { key: "haiku", label: "Haiku" },
   { key: "codex", label: "Codex 수동 시안" },
 ];
@@ -68,8 +70,18 @@ export default async function Preview({ searchParams }: {
     checks: null,
   };
 
+  const refinedRoot = path.join(process.cwd(), "data/evals/chunking/topic-refined");
+  const refinedRuns = (await readdir(refinedRoot).catch(() => [])).sort();
+  const balancedRoot = path.join(process.cwd(), "data/evals/chunking/topic-balanced");
+  const balancedRuns = (await readdir(balancedRoot).catch(() => [])).sort();
   const load = async (key: string): Promise<Record_ | null> =>
     key === "codex" ? codex
+      : key === "sonnet-balanced" ? (balancedRuns.length
+        ? readFile(path.join(balancedRoot, balancedRuns.at(-1)!, "sonnet.json"), "utf8")
+          .then(s => JSON.parse(s) as Record_).catch(() => null) : null)
+      : key === "sonnet-refined" ? (refinedRuns.length
+        ? readFile(path.join(refinedRoot, refinedRuns.at(-1)!, "sonnet.json"), "utf8")
+          .then(s => JSON.parse(s) as Record_).catch(() => null) : null)
       : readFile(path.join(dir, `${key}.json`), "utf8").then(s => JSON.parse(s) as Record_).catch(() => null);
 
   const shown = await load(mode);
@@ -85,7 +97,7 @@ export default async function Preview({ searchParams }: {
         문단 나누기 비교 · 준비 실험 1편 — 최종 모델 선정 근거가 아닙니다
       </p>
       <p className="mt-1 text-[13px] text-mfg">
-        같은 전사문({run.transcriptModel} · 발화 {run.segments}개) 하나에 같은 분할 지시를 넣었습니다.
+        같은 전사문({run.transcriptModel} · 발화 {run.segments}개)을 사용합니다. Sonnet 수정 후·재조정은 사용자 피드백을 반영한 별도 프롬프트입니다.
         번호 붙이는 방식과 긴 문단 보정({MAXLEN}자)은 후보 전체에 똑같이 적용했습니다.
         실행 {new Date(run.ranAt).toLocaleString("ko-KR")}.
       </p>
