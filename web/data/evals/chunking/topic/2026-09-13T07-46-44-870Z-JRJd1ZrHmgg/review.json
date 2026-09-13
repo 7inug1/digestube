@@ -1,0 +1,110 @@
+{
+  "note": "초안이다. 판정이 아니다. 최종 검수는 사람이 한다.",
+  "caveat": "검토자(gemini-3.8-flash)가 후보 중 하나와 같은 모델이다. 자기 답에 후할 수 있다.",
+  "reviewer": "gemini-3.8-flash",
+  "prompt": "아래는 영상 전사를 문단으로 나눈 결과다. 나눈 자리가 의미상 옳은지 본다.\n\n찾을 것\n- 초과 분할: 같은 논점의 설명이나 사례가 서로 다른 문단으로 갈라진 자리.\n- 누락 경계: 서로 다른 논점이 한 문단에 섞인 자리.\n- 미완성 문장 분할: 문장이 끝나지 않았는데 문단이 바뀐 자리.\n\n규칙\n- 문단 내용을 고쳐 쓰지 않는다. 자리만 지적한다.\n- 확실하지 않으면 적지 않는다. 억지로 개수를 채우지 않는다.\n- 문제가 없으면 빈 배열을 반환한다.\n- JSON 하나만 출력한다. 설명을 붙이지 않는다.\n\n{\"findings\":[{\"between\":\"3→4\",\"type\":\"초과 분할\",\"why\":\"한 문장으로 이유를 적는다\"}]}\n\n문단:\n{body}",
+  "reviewedAt": "2026-09-13T07:49:12.897Z",
+  "reviews": {
+    "current": {
+      "model": "문장 경계 + 목표 340자/최대 700자",
+      "findings": [
+        {
+          "between": "2→3",
+          "type": "초과 분할",
+          "why": "비전보드가 효과적인 세 번째 이유인 '시각적 앵커'와 그에 대한 설명이 서로 다른 문단으로 나뉘었습니다."
+        },
+        {
+          "between": "8→9",
+          "type": "초과 분할",
+          "why": "4단계에서 웹용 파워포인트를 활용해 비전보드를 제작하는 동일한 과정에 대한 설명이 서로 다른 문단으로 나뉘었습니다."
+        }
+      ],
+      "raw": "```json\n{\n  \"findings\": [\n    {\n      \"between\": \"2→3\",\n      \"type\": \"초과 분할\",\n      \"why\": \"비전보드가 효과적인 세 번째 이유인 '시각적 앵커'와 그에 대한 설명이 서로 다른 문단으로 나뉘었습니다.\"\n    },\n    {\n      \"between\": \"8→9\",\n      \"type\": \"초과 분할\",\n      \"why\": \"4단계에서 웹용 파워포인트를 활용해 비전보드를 제작하는 동일한 과정에 대한 설명이 서로 다른 문단으로 나뉘었습니다.\"\n    }\n  ]\n}\n```",
+      "usage": {
+        "promptTokenCount": 2197,
+        "candidatesTokenCount": 150,
+        "totalTokenCount": 4070,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2197
+          }
+        ],
+        "thoughtsTokenCount": 1723,
+        "serviceTier": "standard"
+      }
+    },
+    "sonnet": {
+      "model": "claude-sonnet-5",
+      "findings": [
+        {
+          "between": "8→9",
+          "type": "초과 분할",
+          "why": "3단계 이미지 생성 시 표정과 분위기를 지정하라는 팁의 구체적인 부연 설명이 앞 문단에서 그대로 이어집니다."
+        }
+      ],
+      "raw": "```json\n{\n  \"findings\": [\n    {\n      \"between\": \"8→9\",\n      \"type\": \"초과 분할\",\n      \"why\": \"3단계 이미지 생성 시 표정과 분위기를 지정하라는 팁의 구체적인 부연 설명이 앞 문단에서 그대로 이어집니다.\"\n    }\n  ]\n}\n```",
+      "usage": {
+        "promptTokenCount": 2212,
+        "candidatesTokenCount": 81,
+        "totalTokenCount": 3074,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2212
+          }
+        ],
+        "thoughtsTokenCount": 781,
+        "serviceTier": "standard"
+      }
+    },
+    "haiku": {
+      "model": "claude-haiku-4-5",
+      "findings": [
+        {
+          "between": "9→10",
+          "type": "초과 분할",
+          "why": "3단계 이미지 생성 팁에 대한 설명과 부연 내용이 서로 다른 문단으로 갈라져 있습니다."
+        }
+      ],
+      "raw": "```json\n{\n  \"findings\": [\n    {\n      \"between\": \"9→10\",\n      \"type\": \"초과 분할\",\n      \"why\": \"3단계 이미지 생성 팁에 대한 설명과 부연 내용이 서로 다른 문단으로 갈라져 있습니다.\"\n    }\n  ]\n}\n```",
+      "usage": {
+        "promptTokenCount": 2207,
+        "candidatesTokenCount": 75,
+        "totalTokenCount": 3103,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2207
+          }
+        ],
+        "thoughtsTokenCount": 821,
+        "serviceTier": "standard"
+      }
+    },
+    "gemini": {
+      "model": "gemini-3.8-flash",
+      "findings": [
+        {
+          "between": "7→8",
+          "type": "초과 분할",
+          "why": "3단계 이미지 생성 프롬프트에 대한 팁과 그에 대한 구체적인 설명이 서로 다른 문단으로 나뉘어 있습니다."
+        }
+      ],
+      "raw": "```json\n{\n  \"findings\": [\n    {\n      \"between\": \"7→8\",\n      \"type\": \"초과 분할\",\n      \"why\": \"3단계 이미지 생성 프롬프트에 대한 팁과 그에 대한 구체적인 설명이 서로 다른 문단으로 나뉘어 있습니다.\"\n    }\n  ]\n}\n```",
+      "usage": {
+        "promptTokenCount": 2197,
+        "candidatesTokenCount": 80,
+        "totalTokenCount": 2879,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2197
+          }
+        ],
+        "thoughtsTokenCount": 602,
+        "serviceTier": "standard"
+      }
+    }
+  }
+}
