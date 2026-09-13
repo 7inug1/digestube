@@ -1,0 +1,81 @@
+{
+  "measured_at": "2026-09-13T05:03:47.886Z",
+  "video_id": "JRJd1ZrHmgg",
+  "model": "gemini-3.5-flash",
+  "url": "https://www.youtube.com/watch?v=JRJd1ZrHmgg",
+  "prompt": "speech",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 47362,
+  "elapsed_sec": 47.4,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 41170,
+    "candidatesTokenCount": 4520,
+    "totalTokenCount": 51878,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 41044
+      }
+    ],
+    "thoughtsTokenCount": 6188,
+    "serviceTier": "standard"
+  },
+  "segments": 71,
+  "chars": {
+    "gemini": 3668,
+    "native": 3870
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 112,
+    "native_sentence_marks": 103
+  },
+  "bracketed": {
+    "gemini": [
+      "(핀터레스트)"
+    ],
+    "native": []
+  },
+  "word_overlap": {
+    "gemini_words": 882,
+    "native_words": 949,
+    "shared": 810,
+    "only_in_gemini": 72,
+    "only_in_native": 139
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 71,
+    "matched": 57,
+    "coverage": 0.8,
+    "median_gap_sec": 1.3,
+    "p90_gap_sec": 4.5
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 440,
+    "native_last_end_sec": 439,
+    "tail_gap_sec": -0.9
+  }
+}

@@ -1,0 +1,564 @@
+{
+ "version": "draft-v2-2026-09-13T11:59:24.410Z",
+ "status": "draft",
+ "note": "사람 검수 전이다. review_status 가 전부 draft 다. 이 초안은 현재 문단 경계를 모델에 보여주고 생성해 현재 청킹에 유리할 수 있다.",
+ "design": {
+  "answerable": 22,
+  "no_answer": 8,
+  "split": "dev 15 / test 15",
+  "rule": "dev 로 커트라인을 고르고 test 로 한 번만 확인한다"
+ },
+ "question_language": "ko",
+ "generator": {
+  "model": "claude-sonnet-5",
+  "verified_by_code": "인용문이 해당 문단에 글자 그대로 있는지 대조",
+  "generation_input": "현재 청크 경계를 포함한 전사문 — 확정본에서는 경계를 제거할 예정"
+ },
+ "corpus": [
+  {
+   "video_id": "PlawByYfV8k",
+   "title": "조바심에 관한 한 가지 깨달음☕️",
+   "lang": "ko",
+   "revision": "a0324b50-43dd-4b74-a666-bb8eab21169b",
+   "chunks": 12
+  },
+  {
+   "video_id": "JRJd1ZrHmgg",
+   "title": "내가 살고 싶은 인생 설계하는 방법 | 업그레이드 비전보드 무료 공유",
+   "lang": "ko",
+   "revision": "5fab40b2-7c09-4271-b4b4-3b058ba09e7e",
+   "chunks": 17
+  },
+  {
+   "video_id": "3KtrlNyd1ec",
+   "title": "코난 오브라이언 \"네가 준비됐을 땐 절대 안 와.\"",
+   "lang": "en",
+   "revision": "c15adbc5-3613-4892-8727-6b00e25cc399",
+   "chunks": 7
+  },
+  {
+   "video_id": "55eFm5tPCQY",
+   "title": "요즘 일잘러는 다 쓴다는 AI 에이전트 근황 / 스브스뉴스",
+   "lang": "ko",
+   "revision": "39a08c2f-f65e-4c8a-bbf8-cf7096dc72df",
+   "chunks": 15
+  },
+  {
+   "video_id": "-Z11mZaJU0w",
+   "title": "Please… I Need Your Help",
+   "lang": "en",
+   "revision": "f3aee3d5-9e4f-425e-972e-3df4e8ad5036",
+   "chunks": 7
+  },
+  {
+   "video_id": "byVgbqzYJrs",
+   "title": "인간관계에서 스트레스 받지 않는 사람의 특징",
+   "lang": "ko",
+   "revision": "4d5c48a6-9a06-4f5b-9b58-d32e2c715ecd",
+   "chunks": 15
+  },
+  {
+   "video_id": "8cp0YvSpDA8",
+   "title": "타인들로부터 자유롭지만 그들에게 친절한 사람",
+   "lang": "ko",
+   "revision": "fcdd052a-0ff8-4f96-b0d8-8bc6d4ce3545",
+   "chunks": 12
+  },
+  {
+   "video_id": "NtHSSWC04Do",
+   "title": "[ENG CC] 스쿨어택: 당신의 소원을 이뤄드리KU✨🔮",
+   "lang": "ko",
+   "revision": "d266a947-6c52-4ebc-9837-16feefd77e9d",
+   "chunks": 4
+  }
+ ],
+ "questions": [
+  {
+   "id": "Q01",
+   "question": "조바심 날 때 사람들이 흔히 보이는 반응 세 가지가 뭐예요?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "모든 결과를 미리 예측해보고, 여러 우물을 동시에 파고, 전문가나 권위자에게 조언을 구하는 것이다.",
+   "targets": [
+    {
+     "video_id": "PlawByYfV8k",
+     "start": 89,
+     "end": 134,
+     "quote": "첫 번째, 백만 가지 시나리오 예측하기.",
+     "seq": 3
+    }
+   ]
+  },
+  {
+   "id": "Q02",
+   "question": "책을 내고 원하는 결과를 얻었는데도 왜 힘들었대요?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "대안 없이 우물 하나만 남긴 상태에서 생활비도 없다는 압박감 때문에 스스로를 너무 몰아붙였기 때문이다.",
+   "targets": [
+    {
+     "video_id": "PlawByYfV8k",
+     "start": 156,
+     "end": 196,
+     "quote": "우물이 하나밖에 없다는 압박감, 나한테 아무런 보험도 책을 내고 나서 당장 쓸 생활비도 없다는 압박감 때문에 책을 만드는 과정 내내 저를 너무 많이 몰아붙인 거예요.",
+     "seq": 5
+    }
+   ]
+  },
+  {
+   "id": "Q03",
+   "question": "휴학 기간 동안 시간 낭비했다고 느낀 일이 뭐였대요?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "휴학하고 일 년 내내 각국 드라마를 몰아본 것이다.",
+   "targets": [
+    {
+     "video_id": "PlawByYfV8k",
+     "start": 273,
+     "end": 300,
+     "quote": "대학교 휴학하고 일 년 내내 미드만 봤던 적이 있어요.",
+     "seq": 8
+    }
+   ]
+  },
+  {
+   "id": "Q04",
+   "question": "성공한 모습을 상상만 하면 오히려 실행력이 떨어진다는 연구를 한 학자가 누구인가요?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "가브리엘 웨팅겐",
+   "targets": [
+    {
+     "video_id": "JRJd1ZrHmgg",
+     "start": 89,
+     "end": 114,
+     "quote": "심리학자 가브리엘 웨팅겐의 연구에 따르면 성공한 모습을 그냥 상상만 하면 동기와 실행력이 오히려 떨어진다고 해요.",
+     "seq": 5
+    }
+   ]
+  },
+  {
+   "id": "Q05",
+   "question": "비전보드에 남의 사진 말고 내 얼굴을 넣어야 하는 이유가 뭔가요?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "남의 사진은 남 일 같아서 와닿지 않기 때문에, 내가 직접 등장하는 사진이 훨씬 더 강력하게 느껴지기 때문이다",
+   "targets": [
+    {
+     "video_id": "JRJd1ZrHmgg",
+     "start": 189,
+     "end": 216,
+     "quote": "남이 페라리를 모는 사진보다 내가 페라리 타는 사진이 100배 더 강력하거든요.",
+     "seq": 9
+    }
+   ]
+  },
+  {
+   "id": "Q06",
+   "question": "클로드한테 목표를 구체적인 과제로 뽑아달라고 할 때 프로젝트랑 과제를 몇 개씩 요청하면 되나요?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "프로젝트 3~5개, 각 프로젝트당 과제 5개",
+   "targets": [
+    {
+     "video_id": "JRJd1ZrHmgg",
+     "start": 333,
+     "end": 404,
+     "quote": "각 목표를 실현하려면 지금부터 해야 할 프로젝트를 3~5개와 프로젝트에 속한 과제를 5개 뽑아줘.",
+     "seq": 14
+    }
+   ]
+  },
+  {
+   "id": "Q07",
+   "question": "코난은 자신이 어떤 종류의 코미디언은 아니라고 생각했나요?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "스탠드업 코미디언은 아니라고 생각했다.",
+   "targets": [
+    {
+     "video_id": "3KtrlNyd1ec",
+     "start": 11,
+     "end": 32,
+     "quote": "I knew I was not a stand-up. Right, I knew that I had something to offer, but I didn't know where it fit into the firmament",
+     "seq": 1
+    }
+   ]
+  },
+  {
+   "id": "Q08",
+   "question": "요즘 같으면 자기가 절대 캐스팅 안 됐을 거라고 말하는 이유가 뭐야?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "요즘은 유튜브 등에서 활동하는 재능 있는 사람들이 너무 많아서 선택지가 많지만, 예전에는 그런 상황이 아니어서 우연히 기회가 온 것이라고 설명함",
+   "targets": [
+    {
+     "video_id": "3KtrlNyd1ec",
+     "start": 32,
+     "end": 75,
+     "quote": "They would have said, 'Okay, you know, the world is filled with hilarious people who've been making things on YouTube for years,' and there's so many possibilities.",
+     "seq": 2
+    }
+   ]
+  },
+  {
+   "id": "Q09",
+   "question": "기회가 왔을 때 준비가 안 된 상태로 뛰어드는 걸 뭐에 비유했어?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "항구를 떠나는 철제 배에 뛰어오르는 것에 비유함",
+   "targets": [
+    {
+     "video_id": "3KtrlNyd1ec",
+     "start": 86,
+     "end": 126,
+     "quote": "And my analogy is a boat, a steel boat is leaving the port, and it's leaving, leaving, leaving, and you know you have to be on that boat. Leap.",
+     "seq": 4
+    }
+   ]
+  },
+  {
+   "id": "Q10",
+   "question": "AI 에이전트 시장이 2030년까지 얼마나 커질 걸로 예상돼?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "2025년 15억 달러에서 2030년 418억 달러로 약 28배 성장할 것으로 전망됨",
+   "targets": [
+    {
+     "video_id": "55eFm5tPCQY",
+     "start": 66,
+     "end": 111,
+     "quote": "2025년 15억 달러에서 한 2030년에 보면 418억 달러, 한 5년 만에 한 28배 정도 커질 것으로 전망을 했습니다.",
+     "seq": 3
+    }
+   ]
+  },
+  {
+   "id": "Q11",
+   "question": "월마트가 쇼핑 에이전트 도입하고 나서 매출에 어떤 변화가 있었어?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "에이전트를 쓰는 고객이 안 쓰는 고객보다 평균 주문 금액이 35% 정도 높았음",
+   "targets": [
+    {
+     "video_id": "55eFm5tPCQY",
+     "start": 138,
+     "end": 172,
+     "quote": "월마트 같은 경우에는 고객용 쇼핑 에이전트를 발표를 해서 에이전트를 쓰는 고객이 안 쓰는 고객에 비해서 평균 주문 금액이 35% 정도 높다 이런 발표가 나오기도 했죠.",
+     "seq": 5
+    }
+   ]
+  },
+  {
+   "id": "Q12",
+   "question": "젠스파크는 몇 개나 되는 AI 모델을 한곳에 모아놓은 거야?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "70개 이상의 AI 모델이 탑재되어 있음",
+   "targets": [
+    {
+     "video_id": "55eFm5tPCQY",
+     "start": 219,
+     "end": 263,
+     "quote": "현재 서비스에 탑재된 인공지능 모델은 70개 이상으로 다양한 작업을 한곳에서 손쉽게 해결할 수 있다는데요.",
+     "seq": 8
+    }
+   ]
+  },
+  {
+   "id": "Q13",
+   "question": "이 유튜버가 요즘 영상 만들기에 지치고 의욕을 잃은 진짜 이유가 뭐야?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "사람들이 프로그래밍을 제대로 배우려 하지 않고 곧바로 AI로 바이브 코딩하며 앱을 만들려고만 해서 의욕을 잃었다.",
+   "targets": [
+    {
+     "video_id": "-Z11mZaJU0w",
+     "start": 18,
+     "end": 42,
+     "quote": "They just want to skip straight to building applications with AI and completely gloss over the actual learning part of understanding how to actually build applications before they just jump in the deep end and start vibe coding stuff from scratch.",
+     "seq": 1
+    }
+   ]
+  },
+  {
+   "id": "Q14",
+   "question": "설명란에 있는 설문조사 작성하는데 시간 얼마나 걸려?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "보통 5분, 자세히 답하면 최대 10분 정도 걸린다.",
+   "targets": [
+    {
+     "video_id": "-Z11mZaJU0w",
+     "start": 53,
+     "end": 81,
+     "quote": "should just take you 5, maybe 10 minutes if you're really in-depth",
+     "seq": 3
+    }
+   ]
+  },
+  {
+   "id": "Q15",
+   "question": "AI 시대에 채널 콘텐츠 방향을 왜 바꾸려는 거야?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "AI와 요즘 취업 시장 상황이 몇 년 전과 많이 달라져서, 지금 상황에 맞게 콘텐츠를 만들고 싶어서다.",
+   "targets": [
+    {
+     "video_id": "-Z11mZaJU0w",
+     "start": 86,
+     "end": 106,
+     "quote": "Cuz with AI, and the job market being the way it is, things are much different than they were 5, 10 years ago when I first started this YouTube channel.",
+     "seq": 5
+    }
+   ]
+  },
+  {
+   "id": "Q16",
+   "question": "당연하다는 착각에 빠진 사람을 미워하지 않고 대하는 방법이 뭔가요",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "그 사람을 나쁜 사람이 아니라 외로운 사람이라 여기며 측은지심으로 곁에서 지켜본다",
+   "targets": [
+    {
+     "video_id": "byVgbqzYJrs",
+     "start": 88,
+     "end": 128,
+     "quote": "그래서 그 사람이 싫지만 싫지만 그 사람을 미워하지는 않아. 왜냐, 그 사람은 나쁜 사람은 아니거든. 외로운 사람이라서 그래.",
+     "seq": 2
+    }
+   ]
+  },
+  {
+   "id": "Q17",
+   "question": "싫은 사람을 미워하지 않으려면 어떤 마음을 가져야 하나요",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "그 사람에게 아무 기대를 하지 않으면 싫어도 미워하지는 않게 된다",
+   "targets": [
+    {
+     "video_id": "byVgbqzYJrs",
+     "start": 250,
+     "end": 292,
+     "quote": "그 사람이 싫은데 그 사람에 대해서 굳이 내가 기대를 안 하면 미워지지 않는 거야.",
+     "seq": 5
+    }
+   ]
+  },
+  {
+   "id": "Q18",
+   "question": "소금물 비유로 좋고 나쁨에 대해 무엇을 말하려 했나요?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "어떤 경험도 그 자체로 좋거나 나쁘다고 정해진 것이 아니라, 맥락과 받아들이는 방식에 따라 달라진다는 뜻이다.",
+   "targets": [
+    {
+     "video_id": "byVgbqzYJrs",
+     "start": 485,
+     "end": 523,
+     "quote": "좋은 것도 아니고 나쁜 것도 아니야. 단지 된장찌개의 구성 요소가 되는 거야.",
+     "seq": 10
+    }
+   ]
+  },
+  {
+   "id": "Q19",
+   "question": "버스에서 혼자 서 있을 때 배 나온 게 신경 쓰여서 어떻게 했다는 거야?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "가방을 앞으로 매서 배를 가렸다",
+   "targets": [
+    {
+     "video_id": "8cp0YvSpDA8",
+     "start": 86,
+     "end": 126,
+     "quote": "그래 가지고 이제 에티켓을 발휘했죠. \"야, 가방 앞으로 매. 이게 에티켓이야, 여기 한국이야. 원래 이렇게 대중교통에선 이렇게 하는 거야.\"",
+     "seq": 3
+    }
+   ]
+  },
+  {
+   "id": "Q20",
+   "question": "대학생 때 교수님이 시끄럽다고 조용히 하라고 한 게 아니라 뭐라고 하셨다는 거야?",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "누가 떠드는지 얼굴만 알면 떠들어도 괜찮다고 말했다",
+   "targets": [
+    {
+     "video_id": "8cp0YvSpDA8",
+     "start": 240,
+     "end": 279,
+     "quote": "\"아니야 아니야 그럴 필요 없어. 너희들 얼굴만 내가 보면은 너네가 떠들어도 괜찮아.\"",
+     "seq": 7
+    }
+   ]
+  },
+  {
+   "id": "Q21",
+   "question": "버스에서 아저씨랑 눈 마주쳤을 때 어색함을 어떻게 풀었대?",
+   "category": "answerable",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "웃으면서 목례를 했다",
+   "targets": [
+    {
+     "video_id": "8cp0YvSpDA8",
+     "start": 279,
+     "end": 321,
+     "quote": "그래서 나는 거기서 어떻게 했느냐? 웃으면서 목례.",
+     "seq": 8
+    }
+   ]
+  },
+  {
+   "id": "Q22",
+   "question": "수능 앞두고 실패해도 괜찮다는 말 대신 진짜 필요한 마음가짐이 뭐라고 하나요",
+   "category": "answerable",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": "실패하더라도 다시 일어설 수 있는 단단한 마음이 필요하다",
+   "targets": [
+    {
+     "video_id": "NtHSSWC04Do",
+     "start": 4,
+     "end": 39,
+     "quote": "실패하더라도 다시 일어설 수 있는 단단한 마음은 이미 우리의 편이기를.",
+     "seq": 0
+    }
+   ]
+  },
+  {
+   "id": "N01",
+   "question": "조바심을 없애는 구체적인 호흡법이나 명상 루틴이 있나요?",
+   "category": "no_answer",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": null,
+   "why": "조바심의 원인과 심리적 통찰만 다루고 실천용 호흡법·명상법은 소개하지 않음",
+   "targets": []
+  },
+  {
+   "id": "N02",
+   "question": "비전보드를 만든 뒤 효과가 나타나기까지 얼마나 걸리나요?",
+   "category": "no_answer",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": null,
+   "why": "비전보드의 원리와 만드는 방법은 다루지만 효과가 나타나는 기간은 말하지 않음",
+   "targets": []
+  },
+  {
+   "id": "N03",
+   "question": "코난 오브라이언이 나중에 왜 토크쇼에서 하차하게 됐나요?",
+   "category": "no_answer",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": null,
+   "why": "영상은 그가 기회를 잡게 된 과정만 다루고 하차 이유는 다루지 않음",
+   "targets": [],
+   "keep_reason": "주제가 가까운 영상이 있어 거절이 어렵다. 커트라인 성능을 보여주는 사례라 일부러 남긴다(2026-09-13 사용자 판정)."
+  },
+  {
+   "id": "N04",
+   "question": "AI 에이전트를 직접 만들려면 어떤 프로그래밍 언어부터 배워야 하나요?",
+   "category": "no_answer",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": null,
+   "why": "AI 에이전트 시장 동향과 활용 사례만 다루고 개발 방법은 다루지 않음",
+   "targets": []
+  },
+  {
+   "id": "N05",
+   "question": "번아웃 왔을 때 추천하는 구체적인 회복 루틴이 뭔가요?",
+   "category": "no_answer",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": null,
+   "why": "번아웃을 겪었다는 고백과 고민만 다루고 회복 방법은 제시하지 않음",
+   "targets": []
+  },
+  {
+   "id": "N06",
+   "question": "이미 관계가 틀어진 사람과 화해하려면 어떻게 해야 하나요?",
+   "category": "no_answer",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": null,
+   "why": "기대를 내려놓고 감사하는 태도를 다룰 뿐 화해 방법은 다루지 않음",
+   "targets": [],
+   "keep_reason": "같은 이유로 남긴다. 검수에서 화해 방법이 실제로 코퍼스에 없는지만 확인한다(2026-09-13 사용자 판정)."
+  },
+  {
+   "id": "N07",
+   "question": "타인의 시선 때문에 생긴 불안 증상은 병원에 가야 하나요?",
+   "category": "no_answer",
+   "split": "dev",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": null,
+   "why": "시선 의식과 친절함의 태도를 다룰 뿐 의학적 대처는 다루지 않음",
+   "targets": []
+  },
+  {
+   "id": "N08",
+   "question": "수능 당일 준비물이나 시간표는 어떻게 되나요?",
+   "category": "no_answer",
+   "split": "test",
+   "author": "AI",
+   "review_status": "draft",
+   "expected_answer": null,
+   "why": "수험생을 향한 응원과 소원만 다루고 실질적인 시험 준비 정보는 다루지 않음",
+   "targets": []
+  }
+ ],
+ "exported_at": "2026-09-13T11:59:24.410Z"
+}

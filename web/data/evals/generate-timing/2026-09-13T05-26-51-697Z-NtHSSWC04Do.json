@@ -1,0 +1,1024 @@
+{
+  "measured_at": "2026-09-13T05:26:51.697Z",
+  "video_url": "https://www.youtube.com/watch?v=NtHSSWC04Do",
+  "requested_lang": null,
+  "returned_lang": "ko",
+  "start_call_ms": 69333,
+  "start_status": 200,
+  "poll_count": 0,
+  "total_ms": 69336,
+  "total_sec": 69.3,
+  "billable_headers": [
+    "2"
+  ],
+  "fits": {
+    "supabase_edge_free_150s": true,
+    "vercel_hobby_fluid_300s": true
+  },
+  "punctuation": {
+    "chars": 842,
+    "sentence_marks": 27,
+    "comma_marks": 3,
+    "marks_per_100_chars": 3.21,
+    "bracketed_samples": []
+  },
+  "text_head": "수능이 얼마 남지 않았습니다. 힘내, 할 수 있어. 그런데 우린 과연 할 수 있을까요? 할 수 있다는 말이, 힘내라는 말이 오히려 힘에 붙일 때가 있습니다. 못해도 되고, 실패해도 괜찮을 세상을 우린 아직 비운 적이 없는 것 같습니다. 그래도 할 수 있는 만큼은 해봅시다. 최선은 다해봅시다. 다만 바랍니다. 실패하더라도 다시 일어설 수 있는 단단한 마음은 이미 우리의 편이기를. 다음 학교께서 꿈 이루기 1 .1 합격하지 저 고려대 미디어 학교라고 학교하고 싶습니다 고려대 경영학교라고 학교 저는 고려대 최초학이라고 썼습니다 6개 다 최초학해서 인생 성공 고려대 학생들 고려대 다 붙게 해주세요 우리 학교 학생들 고려대 맞게 해주세요. 잘 보고 싶어요. 원하는 대학 합격하게 해주세요. PS07 언니들도 합격하게 해주세요. 로또 1등 당첨 기원하고요. 대학도 최초학을 받을 수 있게끔 기원합니다. 100살까지 살 수 있게 해주세요. 그리고 고려대 가기. 행복해지기. 저의 소환은 대학 육하랑입 니다. 사랑입니다. 모의고사 올 1등급 받기 바랍니다. 저는 지혜로운 사람이 되는 게 목표입니다. 월요대 간호학과 합격하기 기말고사 올 1등급 나오기 대학 6층 추억 부탁드립 니",
+  "pieces": 199,
+  "raw_content": [
+    {
+      "text": "수능이",
+      "offset": 3940,
+      "duration": 1500
+    },
+    {
+      "text": "얼마",
+      "offset": 4620,
+      "duration": 1500
+    },
+    {
+      "text": "남지",
+      "offset": 4860,
+      "duration": 1500
+    },
+    {
+      "text": "않았습니다.",
+      "offset": 5200,
+      "duration": 1500
+    },
+    {
+      "text": "힘내,",
+      "offset": 6740,
+      "duration": 1500
+    },
+    {
+      "text": "할 수",
+      "offset": 7980,
+      "duration": 1500
+    },
+    {
+      "text": "있어.",
+      "offset": 8660,
+      "duration": 1500
+    },
+    {
+      "text": "그런데",
+      "offset": 9640,
+      "duration": 1500
+    },
+    {
+      "text": "우린",
+      "offset": 9840,
+      "duration": 1500
+    },
+    {
+      "text": "과연 할",
+      "offset": 10120,
+      "duration": 1500
+    },
+    {
+      "text": "수",
+      "offset": 11220,
+      "duration": 1500
+    },
+    {
+      "text": "있을까요?",
+      "offset": 11360,
+      "duration": 1500
+    },
+    {
+      "text": "할 수",
+      "offset": 13000,
+      "duration": 1500
+    },
+    {
+      "text": "있다는",
+      "offset": 13420,
+      "duration": 1500
+    },
+    {
+      "text": "말이,",
+      "offset": 13680,
+      "duration": 1500
+    },
+    {
+      "text": "힘내라는",
+      "offset": 14340,
+      "duration": 1500
+    },
+    {
+      "text": "말이",
+      "offset": 15280,
+      "duration": 1500
+    },
+    {
+      "text": "오히려",
+      "offset": 16300,
+      "duration": 1500
+    },
+    {
+      "text": "힘에",
+      "offset": 16980,
+      "duration": 1500
+    },
+    {
+      "text": "붙일",
+      "offset": 17320,
+      "duration": 1500
+    },
+    {
+      "text": "때가",
+      "offset": 17660,
+      "duration": 1500
+    },
+    {
+      "text": "있습니다.",
+      "offset": 17900,
+      "duration": 1500
+    },
+    {
+      "text": "못해도",
+      "offset": 18760,
+      "duration": 1500
+    },
+    {
+      "text": "되고,",
+      "offset": 19080,
+      "duration": 1500
+    },
+    {
+      "text": "실패해도",
+      "offset": 19780,
+      "duration": 1500
+    },
+    {
+      "text": "괜찮을",
+      "offset": 20580,
+      "duration": 1500
+    },
+    {
+      "text": "세상을",
+      "offset": 21040,
+      "duration": 1500
+    },
+    {
+      "text": "우린",
+      "offset": 21580,
+      "duration": 1500
+    },
+    {
+      "text": "아직",
+      "offset": 22720,
+      "duration": 1500
+    },
+    {
+      "text": "비운",
+      "offset": 22940,
+      "duration": 1500
+    },
+    {
+      "text": "적이",
+      "offset": 23220,
+      "duration": 1500
+    },
+    {
+      "text": "없는 것",
+      "offset": 23420,
+      "duration": 1500
+    },
+    {
+      "text": "같습니다.",
+      "offset": 23800,
+      "duration": 1500
+    },
+    {
+      "text": "그래도",
+      "offset": 24780,
+      "duration": 1500
+    },
+    {
+      "text": "할 수",
+      "offset": 24960,
+      "duration": 1500
+    },
+    {
+      "text": "있는",
+      "offset": 25280,
+      "duration": 1500
+    },
+    {
+      "text": "만큼은",
+      "offset": 25440,
+      "duration": 1500
+    },
+    {
+      "text": "해봅시다.",
+      "offset": 25880,
+      "duration": 1500
+    },
+    {
+      "text": "최선은",
+      "offset": 26580,
+      "duration": 1500
+    },
+    {
+      "text": "다해봅시다.",
+      "offset": 27580,
+      "duration": 1500
+    },
+    {
+      "text": "다만",
+      "offset": 29500,
+      "duration": 1500
+    },
+    {
+      "text": "바랍니다.",
+      "offset": 30020,
+      "duration": 1500
+    },
+    {
+      "text": "실패하더라도",
+      "offset": 31780,
+      "duration": 1500
+    },
+    {
+      "text": "다시",
+      "offset": 32820,
+      "duration": 1500
+    },
+    {
+      "text": "일어설",
+      "offset": 34200,
+      "duration": 1500
+    },
+    {
+      "text": "수 있는",
+      "offset": 34580,
+      "duration": 1500
+    },
+    {
+      "text": "단단한",
+      "offset": 35040,
+      "duration": 1500
+    },
+    {
+      "text": "마음은",
+      "offset": 35680,
+      "duration": 1500
+    },
+    {
+      "text": "이미",
+      "offset": 36240,
+      "duration": 1500
+    },
+    {
+      "text": "우리의",
+      "offset": 37680,
+      "duration": 1500
+    },
+    {
+      "text": "편이기를.",
+      "offset": 38840,
+      "duration": 1500
+    },
+    {
+      "text": "다음",
+      "offset": 60930,
+      "duration": 1500
+    },
+    {
+      "text": "학교께서",
+      "offset": 62210,
+      "duration": 1500
+    },
+    {
+      "text": "꿈",
+      "offset": 62850,
+      "duration": 1500
+    },
+    {
+      "text": "이루기",
+      "offset": 63190,
+      "duration": 1500
+    },
+    {
+      "text": "1 .1",
+      "offset": 63830,
+      "duration": 1500
+    },
+    {
+      "text": "합격하지",
+      "offset": 64930,
+      "duration": 1500
+    },
+    {
+      "text": "저",
+      "offset": 65750,
+      "duration": 1500
+    },
+    {
+      "text": "고려대",
+      "offset": 66390,
+      "duration": 1500
+    },
+    {
+      "text": "미디어",
+      "offset": 66910,
+      "duration": 1500
+    },
+    {
+      "text": "학교라고",
+      "offset": 67390,
+      "duration": 1500
+    },
+    {
+      "text": "학교하고",
+      "offset": 67870,
+      "duration": 1500
+    },
+    {
+      "text": "싶습니다",
+      "offset": 68330,
+      "duration": 1500
+    },
+    {
+      "text": "고려대",
+      "offset": 68890,
+      "duration": 1500
+    },
+    {
+      "text": "경영학교라고",
+      "offset": 69610,
+      "duration": 1500
+    },
+    {
+      "text": "학교",
+      "offset": 70330,
+      "duration": 1500
+    },
+    {
+      "text": "저는",
+      "offset": 70710,
+      "duration": 1500
+    },
+    {
+      "text": "고려대",
+      "offset": 71770,
+      "duration": 1500
+    },
+    {
+      "text": "최초학이라고",
+      "offset": 72730,
+      "duration": 1500
+    },
+    {
+      "text": "썼습니다",
+      "offset": 73530,
+      "duration": 1500
+    },
+    {
+      "text": "6개 다",
+      "offset": 74250,
+      "duration": 1500
+    },
+    {
+      "text": "최초학해서",
+      "offset": 75390,
+      "duration": 1500
+    },
+    {
+      "text": "인생",
+      "offset": 76130,
+      "duration": 1500
+    },
+    {
+      "text": "성공",
+      "offset": 76790,
+      "duration": 1500
+    },
+    {
+      "text": "고려대",
+      "offset": 77250,
+      "duration": 2300
+    },
+    {
+      "text": "학생들",
+      "offset": 79550,
+      "duration": 1500
+    },
+    {
+      "text": "고려대",
+      "offset": 80070,
+      "duration": 1500
+    },
+    {
+      "text": "다 붙게",
+      "offset": 80570,
+      "duration": 1500
+    },
+    {
+      "text": "해주세요",
+      "offset": 81010,
+      "duration": 1500
+    },
+    {
+      "text": "우리",
+      "offset": 78880,
+      "duration": 1500
+    },
+    {
+      "text": "학교",
+      "offset": 79280,
+      "duration": 1500
+    },
+    {
+      "text": "학생들",
+      "offset": 79580,
+      "duration": 1500
+    },
+    {
+      "text": "고려대",
+      "offset": 80040,
+      "duration": 1500
+    },
+    {
+      "text": "맞게",
+      "offset": 80520,
+      "duration": 1500
+    },
+    {
+      "text": "해주세요.",
+      "offset": 80900,
+      "duration": 1500
+    },
+    {
+      "text": "잘 보고",
+      "offset": 83000,
+      "duration": 1500
+    },
+    {
+      "text": "싶어요.",
+      "offset": 83500,
+      "duration": 1500
+    },
+    {
+      "text": "원하는",
+      "offset": 84940,
+      "duration": 1500
+    },
+    {
+      "text": "대학",
+      "offset": 85540,
+      "duration": 1500
+    },
+    {
+      "text": "합격하게",
+      "offset": 85860,
+      "duration": 1500
+    },
+    {
+      "text": "해주세요.",
+      "offset": 86460,
+      "duration": 1500
+    },
+    {
+      "text": "PS07",
+      "offset": 87140,
+      "duration": 1500
+    },
+    {
+      "text": "언니들도",
+      "offset": 87860,
+      "duration": 1500
+    },
+    {
+      "text": "합격하게",
+      "offset": 88640,
+      "duration": 1500
+    },
+    {
+      "text": "해주세요.",
+      "offset": 89180,
+      "duration": 1500
+    },
+    {
+      "text": "로또",
+      "offset": 90140,
+      "duration": 1500
+    },
+    {
+      "text": "1등",
+      "offset": 90520,
+      "duration": 1500
+    },
+    {
+      "text": "당첨",
+      "offset": 90940,
+      "duration": 1500
+    },
+    {
+      "text": "기원하고요.",
+      "offset": 91580,
+      "duration": 1500
+    },
+    {
+      "text": "대학도",
+      "offset": 92760,
+      "duration": 1500
+    },
+    {
+      "text": "최초학을",
+      "offset": 93720,
+      "duration": 1500
+    },
+    {
+      "text": "받을 수",
+      "offset": 94420,
+      "duration": 1500
+    },
+    {
+      "text": "있게끔",
+      "offset": 94780,
+      "duration": 1500
+    },
+    {
+      "text": "기원합니다.",
+      "offset": 95260,
+      "duration": 1500
+    },
+    {
+      "text": "100살까지",
+      "offset": 97560,
+      "duration": 1500
+    },
+    {
+      "text": "살 수",
+      "offset": 98240,
+      "duration": 1500
+    },
+    {
+      "text": "있게",
+      "offset": 98540,
+      "duration": 1500
+    },
+    {
+      "text": "해주세요.",
+      "offset": 98760,
+      "duration": 1500
+    },
+    {
+      "text": "그리고",
+      "offset": 99520,
+      "duration": 1500
+    },
+    {
+      "text": "고려대",
+      "offset": 100000,
+      "duration": 1500
+    },
+    {
+      "text": "가기.",
+      "offset": 100420,
+      "duration": 1500
+    },
+    {
+      "text": "행복해지기.",
+      "offset": 102460,
+      "duration": 1500
+    },
+    {
+      "text": "저의",
+      "offset": 104040,
+      "duration": 1500
+    },
+    {
+      "text": "소환은",
+      "offset": 104460,
+      "duration": 1500
+    },
+    {
+      "text": "대학",
+      "offset": 104840,
+      "duration": 1500
+    },
+    {
+      "text": "육하랑입",
+      "offset": 105380,
+      "duration": 1500
+    },
+    {
+      "text": "니다.",
+      "offset": 105830,
+      "duration": 1500
+    },
+    {
+      "text": "사랑입니다.",
+      "offset": 105850,
+      "duration": 1500
+    },
+    {
+      "text": "모의고사",
+      "offset": 107070,
+      "duration": 1500
+    },
+    {
+      "text": "올",
+      "offset": 107570,
+      "duration": 1500
+    },
+    {
+      "text": "1등급",
+      "offset": 107950,
+      "duration": 1500
+    },
+    {
+      "text": "받기",
+      "offset": 108390,
+      "duration": 1500
+    },
+    {
+      "text": "바랍니다.",
+      "offset": 108850,
+      "duration": 1500
+    },
+    {
+      "text": "저는",
+      "offset": 110670,
+      "duration": 1500
+    },
+    {
+      "text": "지혜로운",
+      "offset": 110950,
+      "duration": 1500
+    },
+    {
+      "text": "사람이",
+      "offset": 111650,
+      "duration": 1500
+    },
+    {
+      "text": "되는 게",
+      "offset": 111910,
+      "duration": 1500
+    },
+    {
+      "text": "목표입니다.",
+      "offset": 112410,
+      "duration": 1500
+    },
+    {
+      "text": "월요대",
+      "offset": 113550,
+      "duration": 1500
+    },
+    {
+      "text": "간호학과",
+      "offset": 114010,
+      "duration": 1500
+    },
+    {
+      "text": "합격하기",
+      "offset": 114690,
+      "duration": 1500
+    },
+    {
+      "text": "기말고사",
+      "offset": 115410,
+      "duration": 1500
+    },
+    {
+      "text": "올",
+      "offset": 116430,
+      "duration": 1500
+    },
+    {
+      "text": "1등급",
+      "offset": 116730,
+      "duration": 1500
+    },
+    {
+      "text": "나오기",
+      "offset": 117230,
+      "duration": 1500
+    },
+    {
+      "text": "대학",
+      "offset": 117750,
+      "duration": 1500
+    },
+    {
+      "text": "6층",
+      "offset": 118190,
+      "duration": 1500
+    },
+    {
+      "text": "추억",
+      "offset": 118670,
+      "duration": 1500
+    },
+    {
+      "text": "부탁드립",
+      "offset": 118990,
+      "duration": 1500
+    },
+    {
+      "text": "니다!",
+      "offset": 119380,
+      "duration": 1500
+    },
+    {
+      "text": "평범하게",
+      "offset": 120510,
+      "duration": 1500
+    },
+    {
+      "text": "행복하게",
+      "offset": 121510,
+      "duration": 1500
+    },
+    {
+      "text": "모두가",
+      "offset": 122090,
+      "duration": 1500
+    },
+    {
+      "text": "살았으면",
+      "offset": 122490,
+      "duration": 1500
+    },
+    {
+      "text": "좋겠습니다.",
+      "offset": 122870,
+      "duration": 1500
+    },
+    {
+      "text": "3년",
+      "offset": 126330,
+      "duration": 1500
+    },
+    {
+      "text": "동안",
+      "offset": 127330,
+      "duration": 1500
+    },
+    {
+      "text": "준비한",
+      "offset": 127770,
+      "duration": 1500
+    },
+    {
+      "text": "게 이제",
+      "offset": 128850,
+      "duration": 1500
+    },
+    {
+      "text": "끝나니까",
+      "offset": 129630,
+      "duration": 1500
+    },
+    {
+      "text": "떨리기도",
+      "offset": 130350,
+      "duration": 1500
+    },
+    {
+      "text": "하고",
+      "offset": 131830,
+      "duration": 1500
+    },
+    {
+      "text": "뿌듯하기도",
+      "offset": 132190,
+      "duration": 1500
+    },
+    {
+      "text": "한 것",
+      "offset": 132890,
+      "duration": 1500
+    },
+    {
+      "text": "같아요.",
+      "offset": 133230,
+      "duration": 1500
+    },
+    {
+      "text": "너무",
+      "offset": 132820,
+      "duration": 1580
+    },
+    {
+      "text": "긴장돼요?",
+      "offset": 134400,
+      "duration": 1500
+    },
+    {
+      "text": "실수만",
+      "offset": 135880,
+      "duration": 1500
+    },
+    {
+      "text": "안하게",
+      "offset": 136700,
+      "duration": 1500
+    },
+    {
+      "text": "공부한",
+      "offset": 139740,
+      "duration": 1500
+    },
+    {
+      "text": "만큼",
+      "offset": 140700,
+      "duration": 1500
+    },
+    {
+      "text": "나올",
+      "offset": 141240,
+      "duration": 1500
+    },
+    {
+      "text": "거라고",
+      "offset": 141560,
+      "duration": 1500
+    },
+    {
+      "text": "생각합니다",
+      "offset": 141800,
+      "duration": 1500
+    },
+    {
+      "text": "뭔가",
+      "offset": 142400,
+      "duration": 1500
+    },
+    {
+      "text": "이제",
+      "offset": 143420,
+      "duration": 1500
+    },
+    {
+      "text": "3년",
+      "offset": 143780,
+      "duration": 1500
+    },
+    {
+      "text": "동안",
+      "offset": 144280,
+      "duration": 1500
+    },
+    {
+      "text": "준비한",
+      "offset": 144560,
+      "duration": 1500
+    },
+    {
+      "text": "게",
+      "offset": 145060,
+      "duration": 1500
+    },
+    {
+      "text": "끝난다고",
+      "offset": 145220,
+      "duration": 1500
+    },
+    {
+      "text": "생각하니까",
+      "offset": 145900,
+      "duration": 1500
+    },
+    {
+      "text": "좀",
+      "offset": 146500,
+      "duration": 1500
+    },
+    {
+      "text": "후련한",
+      "offset": 146700,
+      "duration": 1500
+    },
+    {
+      "text": "것",
+      "offset": 147100,
+      "duration": 1500
+    },
+    {
+      "text": "같아요",
+      "offset": 147220,
+      "duration": 1500
+    },
+    {
+      "text": "지금",
+      "offset": 147500,
+      "duration": 1500
+    },
+    {
+      "text": "처음으로",
+      "offset": 148860,
+      "duration": 1860
+    },
+    {
+      "text": "이런 큰",
+      "offset": 150720,
+      "duration": 1500
+    },
+    {
+      "text": "시험을",
+      "offset": 151180,
+      "duration": 1500
+    },
+    {
+      "text": "보니까",
+      "offset": 151660,
+      "duration": 1500
+    },
+    {
+      "text": "되게",
+      "offset": 151980,
+      "duration": 1500
+    },
+    {
+      "text": "떨리고",
+      "offset": 152260,
+      "duration": 1500
+    },
+    {
+      "text": "이제",
+      "offset": 153100,
+      "duration": 1500
+    },
+    {
+      "text": "인생의",
+      "offset": 153460,
+      "duration": 1500
+    },
+    {
+      "text": "처음이자",
+      "offset": 154560,
+      "duration": 1500
+    },
+    {
+      "text": "마지막이",
+      "offset": 155160,
+      "duration": 1500
+    },
+    {
+      "text": "될",
+      "offset": 155840,
+      "duration": 1500
+    },
+    {
+      "text": "수능이",
+      "offset": 156000,
+      "duration": 1500
+    },
+    {
+      "text": "되게끔",
+      "offset": 156360,
+      "duration": 1500
+    },
+    {
+      "text": "노력하고",
+      "offset": 156760,
+      "duration": 1500
+    },
+    {
+      "text": "있습니다",
+      "offset": 157260,
+      "duration": 1500
+    },
+    {
+      "text": "아직도",
+      "offset": 157580,
+      "duration": 1500
+    },
+    {
+      "text": "초등학생",
+      "offset": 158320,
+      "duration": 1500
+    },
+    {
+      "text": "같은데",
+      "offset": 158800,
+      "duration": 1500
+    },
+    {
+      "text": "솔직히",
+      "offset": 159240,
+      "duration": 1640
+    },
+    {
+      "text": "체감이",
+      "offset": 160880,
+      "duration": 1500
+    },
+    {
+      "text": "잘",
+      "offset": 161360,
+      "duration": 1500
+    },
+    {
+      "text": "안됩니다",
+      "offset": 161540,
+      "duration": 1500
+    }
+  ]
+}

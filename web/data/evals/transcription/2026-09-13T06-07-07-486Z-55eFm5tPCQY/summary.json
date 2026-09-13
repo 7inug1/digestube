@@ -1,0 +1,82 @@
+{
+  "measured_at": "2026-09-13T06:07:07.486Z",
+  "video_id": "55eFm5tPCQY",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=55eFm5tPCQY",
+  "prompt": "speech",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 23259,
+  "elapsed_sec": 23.3,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 45804,
+    "candidatesTokenCount": 4760,
+    "totalTokenCount": 54040,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 45678
+      }
+    ],
+    "thoughtsTokenCount": 3476,
+    "serviceTier": "standard"
+  },
+  "segments": 72,
+  "chars": {
+    "gemini": 4624,
+    "native": 4058
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 78,
+    "native_sentence_marks": 67
+  },
+  "bracketed": {
+    "gemini": [
+      "(Cursor)",
+      "(Skywork AI)"
+    ],
+    "native": []
+  },
+  "word_overlap": {
+    "gemini_words": 1108,
+    "native_words": 1020,
+    "shared": 866,
+    "only_in_gemini": 242,
+    "only_in_native": 154
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 72,
+    "matched": 54,
+    "coverage": 0.75,
+    "median_gap_sec": 1,
+    "p90_gap_sec": 4
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 488,
+    "native_last_end_sec": 493,
+    "tail_gap_sec": 4.6
+  }
+}
