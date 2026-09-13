@@ -122,19 +122,18 @@ export default function IngestForm() {
   }
 
   return (
-    <div className="mx-auto max-w-[560px]">
+    <div>
       <div className="flex gap-2">
         <input value={url} disabled={busy} aria-label="유튜브 주소"
           onChange={e=>{setUrl(e.target.value);setExisting(null);setConfirmReplace(false);setResume(null);setMsg("");setProgress(null);}}
           onKeyDown={e=>e.key === "Enter" && go()}
-          placeholder="유튜브 영상 또는 플레이리스트 주소"
+          placeholder="유튜브 링크를 붙여넣어 주세요"
           className="h-[46px] min-w-0 flex-1 rounded-lg border border-line bg-muted/50 px-3.5 outline-none placeholder:text-mfg focus:border-fg focus:bg-bg" />
         <button onClick={()=>go()} disabled={!url.trim() || busy}
-          className="h-[46px] shrink-0 rounded-lg bg-fg px-5 text-[13.5px] font-semibold text-bg disabled:opacity-35">
-          {busy ? "넣는 중…" : "넣기"}
+          className="h-[46px] shrink-0 whitespace-nowrap rounded-lg bg-fg px-4 text-small font-semibold text-bg disabled:opacity-35 sm:px-5">
+          {busy ? "준비하는 중…" : "읽기 시작"}
         </button>
       </div>
-      <p className="mt-2 text-[12px] text-mfg">한국어 자막을 가져옵니다. 번역 자막이 사용될 수 있습니다.</p>
       {progress ? <IngestProgress progress={{...progress, elapsedSec: elapsed}} />
         : msg && <p role="status" className="mt-3 text-[13px] text-mfg">{msg}</p>}
       {existing && !busy && <div className="mt-4 rounded-lg border border-line p-4 text-[13px]">

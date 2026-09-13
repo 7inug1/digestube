@@ -3,15 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import VideoThumb from "./VideoThumb";
 
 export type Card = {
   id: string; title: string; channel: string;
   status: string; seconds: number; read: string; ready: boolean;
-};
-
-const dur = (sec: number) => {
-  const m = Math.floor(sec / 60), s = Math.round(sec % 60);
-  return m ? (s ? `${m}분 ${s}초` : `${m}분`) : `${s}초`;
 };
 
 /** 라이브러리 카드. 유튜브 라이브러리처럼 큰 썸네일이 위, 글은 아래.
@@ -30,25 +26,10 @@ export default function VideoCard({ v }: { v: Card }) {
   }
 
   const inner = (
-    <>
-      <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-xl bg-muted">
-        <img src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" loading="lazy"
-             className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]" />
-        {v.seconds > 0 && (
-          <span className="absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[11px] text-white">
-            {dur(v.seconds)}
-          </span>
-        )}
-      </div>
-      <h3 className="mb-1 line-clamp-2 text-[14.5px] font-semibold leading-[1.4] tracking-[-.015em]">
-        {v.title}
-      </h3>
-      <div className="flex items-center gap-2 text-[11.5px] text-mfg">
-        <span className="truncate">{v.channel}</span>
-        <span className="shrink-0 opacity-40">·</span>
-        <span className="shrink-0">{v.ready ? `${v.read} 분량` : v.status}</span>
-      </div>
-    </>
+    <VideoThumb v={{
+      id: v.id, title: v.title, channel: v.channel, seconds: v.seconds,
+      note: v.ready ? `${v.read} 분량` : v.status,
+    }} />
   );
 
   return (

@@ -9,10 +9,36 @@
   --color-line: hsl(240 6% 90%);
   --color-keep: hsl(47 94% 62%);
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  /* 활자 단계는 KRDS 스케일을 따른다(Display medium 44/32, Heading large 32/24,
+     Body medium 17, Body small 15, xsmall label 13).
+     여기 값은 모바일 기준 — 제목 두 단계만 아래 미디어쿼리에서 커진다. */
+  --text-display: 32px;
+  --text-display--line-height: 1.22;
+  --text-title: 24px;
+  --text-title--line-height: 1.34;
+  --text-body: 17px;
+  --text-body--line-height: 1.7;
+  --text-small: 15px;
+  --text-small--line-height: 1.7;
+  --text-label: 13px;
+  --text-label--line-height: 1.5;
 }
 
+/* 제목만 화면 폭을 탄다. 본문·보조·라벨은 양쪽이 같다 —
+   작은 글자를 모바일에서 더 줄이면 읽기만 나빠진다. */
+@media (min-width: 40rem) {
+  :root {
+    --text-display: 44px;
+    --text-title: 32px;
+  }
+}
+
+/* 다크값은 @theme 이 아니라 :root 로 덮는다.
+   Tailwind v4 는 @theme 을 미디어쿼리 밖으로 끌어올린다 — 여기에 @theme 을 쓰면
+   조건이 사라져 다크값이 항상 이기고, 라이트 화면이 아예 나오지 않는다. */
 @media (prefers-color-scheme: dark) {
-  @theme {
+  :root {
     --color-bg: hsl(240 8% 5%);
     --color-fg: hsl(0 0% 96%);
     --color-muted: hsl(240 4% 13%);
@@ -28,6 +54,33 @@ body, input, button { word-break: keep-all; overflow-wrap: break-word; }
 button:not(:disabled), a[href], summary { cursor: pointer; }
 h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
+
+/* 같은 페이지 안의 앵커 이동(#samples)은 부드럽게 —
+   단, 움직임을 줄이도록 설정한 사람에게는 켜지 않는다. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* FAQ 아코디언. <details> 를 그대로 쓴다 — 자바스크립트 없이 열리고,
+   키보드와 스크린리더가 이미 아는 구조다.
+
+   여는 동작은 ::details-content 에 준다. height:auto 로의 전환은 interpolate-size
+   가 있어야 움직이는데 아직 Chromium 뿐이다. 나머지 브라우저에서는 애니메이션 없이
+   즉시 열린다 — 기능은 같고 움직임만 없다(점진적 향상). */
+:root { interpolate-size: allow-keywords; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .faq-item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 280ms cubic-bezier(.2, 0, 0, 1), content-visibility 280ms;
+    transition-behavior: allow-discrete;
+  }
+  .faq-item[open]::details-content { block-size: auto; }
+}
+
+/* 기본 삼각형 표식을 지운다. 자리 표시는 오른쪽 chevron 이 한다. */
+.faq-item > summary::-webkit-details-marker { display: none; }
 
 body {
   background: var(--color-bg);
