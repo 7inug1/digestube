@@ -10,14 +10,14 @@ test("existing video requires explicit confirmation before replacement; cancella
   });
   await page.goto("/");
   await page.getByRole("textbox",{name:"유튜브 주소"}).fill("https://youtu.be/NtHSSWC04Do");
-  await page.getByRole("button",{name:"넣기",exact:true}).click();
+  await page.getByRole("button",{name:"읽기 시작",exact:true}).click();
   await expect(page.getByRole("link",{name:"저장된 영상 보기"})).toBeVisible();
   await page.getByRole("button",{name:"자막 다시 가져오기"}).click();
   await page.getByRole("button",{name:"취소",exact:true}).click();
   expect(bodies).toHaveLength(1);
   await page.getByRole("button",{name:"자막 다시 가져오기"}).click();
   await page.getByRole("button",{name:"교체하기",exact:true}).click();
-  await expect(page.getByRole("status")).toContainText("기존 내용은 유지");
+  await expect(page.getByTestId("ingest-progress")).toContainText("기존 내용은 유지");
   expect(bodies).toHaveLength(2);expect(bodies[0].replace).toBe(false);expect(bodies[1].replace).toBe(true);
 });
 
@@ -32,8 +32,8 @@ test("a failed outline is visible and resumes without a second transcript reques
   await page.route("**/api/embed",async route=>{embedding++;await route.fulfill({json:{done:5,left:0}});});
   await page.goto("/");
   await page.getByRole("textbox",{name:"유튜브 주소"}).fill("https://youtu.be/NtHSSWC04Do");
-  await page.getByRole("button",{name:"넣기",exact:true}).click();
-  await expect(page.getByRole("status")).toContainText("목차 저장 실패");
+  await page.getByRole("button",{name:"읽기 시작",exact:true}).click();
+  await expect(page.getByTestId("ingest-progress")).toContainText("목차 저장 실패");
   await page.getByRole("button",{name:"처리 이어하기"}).click();
   await expect(page).toHaveURL(/videos\/NtHSSWC04Do/);
   expect(ingest).toBe(1);expect(outline).toBe(3);expect(embedding).toBe(1);

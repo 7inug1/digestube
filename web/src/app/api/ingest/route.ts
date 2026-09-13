@@ -4,6 +4,7 @@ import { poll, start, videoId, settings, type Result } from "@/lib/supadata";
 import { transcribe } from "@/lib/gemini";
 import { provider } from "@/lib/transcript-provider";
 import { prepareTranscript } from "@/lib/transcript";
+import { topicChunk } from "@/lib/topic-chunker";
 import { saveTranscriptSource } from "@/lib/transcript-source";
 import { meta } from "@/lib/youtube";
 
@@ -13,13 +14,20 @@ export const maxDuration = 300;
 
 async function save(vid: string, token: string, r: Result, lang: string | null) {
   const prepared = prepareTranscript(r, lang);
+  // 전사는 발화 조각까지만 만든다. 읽기 화면의 문단은 주제 경계 모델이
+  // 고르고, 모델 호출이 실패하면 topicChunk 내부에서 기존 코드 방식으로
+  // 되돌아간다. 새로 등록하는 영상과 재구축한 코퍼스가 같은 경로를 쓴다.
+  const topic = await topicChunk(prepared.raw);
   const m = await meta(vid);
   await saveTranscriptSource(vid, token, r, lang);
   await finishIngest(vid, token, {
     id:vid, title:m?.title ?? null, channel:m?.channel ?? null, lang:r.lang ?? null,
     pieces:prepared.pieces, chars:prepared.chars, raw:prepared.raw,
-  }, prepared.chunks);
-  return {vid, chunks:prepared.chunks.length, chars:prepared.chars};
+  }, topic.chunks);
+  return {
+    vid, chunks:topic.chunks.length, chars:prepared.chars,
+    chunking:topic.source, chunkModel:topic.model,
+  };
 }
 
 export async function POST(req: Request) {

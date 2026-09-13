@@ -116,9 +116,9 @@ export async function topicChunk(pieces: Piece[]): Promise<TopicResult> {
     if (starts.length < 2) problems.push("큰 주제 경계가 하나뿐이다");
 
     // 2) 긴 주제만 다시
-    const topics = build(pieces, starts);
     const groups = starts.flatMap((start, i) =>
-      (topics[i]?.text.length ?? 0) > REFINE_OVER
+      pieces.slice(start - 1, (starts[i + 1] ?? pieces.length + 1) - 1)
+        .map(p => p.text.trim()).join(" ").length > REFINE_OVER
         ? [{topic: i + 1, start, end: starts[i + 1] ?? pieces.length + 1}] : []);
 
     let additions: number[] = [];

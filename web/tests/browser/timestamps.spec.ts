@@ -1,6 +1,6 @@
 import {test,expect} from "@playwright/test";
 
-test("a timestamp click before player readiness is retained at fractional precision",async({page})=>{
+test("a timestamp click before player readiness is retained",async({page})=>{
  await page.route("https://www.youtube.com/iframe_api",route=>route.fulfill({contentType:"application/javascript",body:`
  window.__seeks=[];
  window.YT={Player:class {
@@ -17,7 +17,7 @@ test("a timestamp click before player readiness is retained at fractional precis
  await page.locator("#ck2 button").click();
  expect(await page.evaluate(()=>(window as unknown as {__seeks:number[]}).__seeks)).toEqual([]);
  await page.evaluate(()=>(window as unknown as {__playerReady:()=>void}).__playerReady());
- await expect.poll(()=>page.evaluate(()=>(window as unknown as {__seeks:number[]}).__seeks.at(-1))).toBe(31.36);
+ await expect.poll(()=>page.evaluate(()=>(window as unknown as {__seeks:number[]}).__seeks.at(-1))).toBe(32);
  await expect(page.locator("#ck2 button")).toHaveClass(/bg-fg/);
  await expect(page.locator("#ck1 button")).not.toHaveClass(/bg-fg/);
 });

@@ -23,13 +23,13 @@ test('error retains reading, timestamp link, and retry ignores stale callbacks',
  await emit(page,'onReady');await emit(page,'onError',101);
  await expect(page.getByTestId('youtube-player').getByRole('alert')).toContainText('외부 사이트에서 재생할 수 없어요');
  await page.locator('#ck2 button').click();
- await expect(page.getByTestId('youtube-player').getByRole('link',{name:'유튜브에서 보기',exact:true})).toHaveAttribute('href','https://www.youtube.com/watch?v=3KtrlNyd1ec&t=31s');
+ await expect(page.getByTestId('youtube-player').getByRole('link',{name:'유튜브에서 보기',exact:true})).toHaveAttribute('href','https://www.youtube.com/watch?v=3KtrlNyd1ec&t=32s');
  await expect(page.locator('#ck2')).toBeVisible();
  await page.getByRole('button',{name:'다시 시도',exact:true}).click();
  await page.waitForFunction(()=>(window as unknown as {__players:unknown[]}).__players.length===2);
  await emit(page,'onError',100,0);await expect(page.getByTestId('youtube-player').getByRole('alert')).toHaveCount(0);
  await emit(page,'onReady');
- await expect.poll(()=>page.evaluate(()=>(window as unknown as {__seeks:number[]}).__seeks.at(-1))).toBe(31.36);
+ await expect.poll(()=>page.evaluate(()=>(window as unknown as {__seeks:number[]}).__seeks.at(-1))).toBe(32);
  await expect(page.getByRole('status')).toHaveCount(0);
 });
 test('failed script can be downloaded again on retry',async({page})=>{

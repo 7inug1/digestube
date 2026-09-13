@@ -54,7 +54,8 @@ export default async function Preview({ searchParams }: {
     .then(s => JSON.parse(s) as { caveat: string; reviews: Record<string, { findings?: Finding[] }> })
     .catch(() => null);
 
-  const source = JSON.parse(await readFile(path.join(process.cwd(), run.source), "utf8")) as {
+  // 개발 전용 비교 화면이다. 동적 실험 파일을 프로덕션 산출물에 포함하지 않는다.
+  const source = JSON.parse(await readFile(path.join(/* turbopackIgnore: true */ process.cwd(), run.source), "utf8")) as {
     segments: { start: string; end: string; text: string }[];
   };
   const pieces = source.segments.map(s => ({

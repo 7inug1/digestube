@@ -70,7 +70,8 @@ export default function IngestProgress({progress}: {progress: Progress}) {
   const kind = failed ? failureKind(error ?? "") : null;
 
   return (
-    <div className="mt-5 rounded-xl border border-line p-4">
+    <div data-testid="ingest-progress" role={failed ? "alert" : "status"}
+         className="mt-5 rounded-xl border border-line p-4">
       <div className="flex items-center gap-3">
         {vid ? (
           <img src={`https://i.ytimg.com/vi/${vid}/mqdefault.jpg`} alt="" loading="lazy"
