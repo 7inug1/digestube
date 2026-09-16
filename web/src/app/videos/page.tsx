@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function Videos() {
   const videos = await listVideos();
   if (!videos.length) {
-    return <p className="mx-auto max-w-[1040px]">아직 없다. <Link href="/" className="underline">넣으러 가기 →</Link></p>;
+    return <p className="mx-auto max-w-[1320px]">아직 없다. <Link href="/" className="underline">넣으러 가기 →</Link></p>;
   }
 
   // 제목·채널은 유튜브에서, 문단 수와 길이는 저장소에서 한 번에
@@ -28,9 +28,12 @@ export default async function Videos() {
   }));
 
   return (
-    <div className="mx-auto max-w-[1040px]">
+    <div className="mx-auto max-w-[1320px]">
       <h1 className="mb-6 text-[22px] font-[660] tracking-[-.03em]">라이브러리</h1>
-      <div className="flex flex-wrap gap-x-5 gap-y-8">
+      {/* 열 수를 정하지 않는다. 220px 이상 들어가는 만큼 채우고 남는 폭은 카드가 나눠 갖는다 —
+          카드 폭을 못박아 두면 넓은 화면에서 오른쪽이 비고, 좁은 화면에서 한 줄에 하나만 남는다.
+          폰에서만 두 열로 고정한다. auto-fill 로 두면 한 열이 돼 썸네일이 화면을 다 먹는다. */}
+      <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
         {cards.map((v) => <VideoCard key={v.id} v={v} />)}
       </div>
     </div>

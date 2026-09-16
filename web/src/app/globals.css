@@ -93,3 +93,17 @@ body {
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(300%); }
 }
+
+/* 캐러셀 진행 막대. 다음 장까지 얼마나 남았는지 눈에 보이게 한다 —
+   점만 있으면 "돌아가는 중"인지 "멈춘 것"인지 알 수 없다.
+   width 대신 scaleX 를 쓴다. 매 프레임 레이아웃을 다시 잡지 않는다. */
+@keyframes shot-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* 움직임을 꺼 둔 사람에게는 막대를 채우지 않는다. 현재 장은 꽉 찬 채로 둔다 —
+   비어 있으면 "멈춰서 안 돌아간다"가 아니라 "고장 났다"로 읽힌다. */
+@media (prefers-reduced-motion: reduce) {
+  .shot-bar { animation: none !important; transform: scaleX(1); }
+}

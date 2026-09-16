@@ -33,7 +33,7 @@ export default function VideoCard({ v }: { v: Card }) {
   );
 
   return (
-    <div className="group relative w-[45%] sm:w-[230px]">
+    <div className="group relative">
       {v.ready
         ? <Link href={`/videos/${v.id}`} className="block">{inner}</Link>
         : <div className="opacity-50">{inner}</div>}

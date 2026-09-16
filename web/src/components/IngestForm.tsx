@@ -131,7 +131,7 @@ export default function IngestForm() {
           className="h-[46px] min-w-0 flex-1 rounded-lg border border-line bg-muted/50 px-3.5 outline-none placeholder:text-mfg focus:border-fg focus:bg-bg" />
         <button onClick={()=>go()} disabled={!url.trim() || busy}
           className="h-[46px] shrink-0 whitespace-nowrap rounded-lg bg-fg px-4 text-small font-semibold text-bg disabled:opacity-35 sm:px-5">
-          {busy ? "준비하는 중…" : "읽기 시작"}
+          {busy ? "변환하는 중…" : "글로 변환하기"}
         </button>
       </div>
       {progress ? <IngestProgress progress={{...progress, elapsedSec: elapsed}} />
@@ -144,7 +144,7 @@ export default function IngestForm() {
           <button className="underline" onClick={()=>setConfirmReplace(true)}>자막 다시 가져오기</button>
         </div>
         {confirmReplace && <div className="mt-4 border-t border-line pt-3">
-          <p>새 자막을 가져오면 기존 전사문·목차·검색 데이터를 교체합니다. 계속할까요?</p>
+          <p>새 자막을 가져오면 지금 저장된 글과 목차를 새로 만들어요. 계속할까요?</p>
           <div className="mt-3 flex gap-4">
             <button className="font-semibold underline" onClick={()=>go(true)}>교체하기</button>
             <button onClick={()=>setConfirmReplace(false)}>취소</button>

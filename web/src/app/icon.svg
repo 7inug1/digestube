@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 속이 꽉 찬 D 를 가로 다섯 줄로 썬 모양. 브랜드 첫 글자이면서 "영상이 글 줄이 된다".
+       재생 삼각형(▶)으로도 그려 봤다 — 16px 에서는 ▶ 가 더 잘 남지만 D 로 안 읽혀서
+       D 를 택했다. 16px 에서는 줄무늬 덩어리, 32px 부터 D 와 줄이 보인다.
+       줄 간격 30 — 20 이면 32px 에서 줄이 붙어 회색이 된다. -->
+  <rect width="512" height="512" rx="112" fill="#111"/><clipPath id="p"><path d="M128 71 H236 C468 71 468 441 236 441 H128 Z"/></clipPath><g clip-path="url(#p)">
+  <rect x="100" y="71" width="340" height="50" rx="10" fill="#fff"/><rect x="100" y="151" width="340" height="50" rx="10" fill="#fff"/><rect x="100" y="231" width="340" height="50" rx="10" fill="#fff"/><rect x="100" y="311" width="340" height="50" rx="10" fill="#fff"/><rect x="100" y="391" width="340" height="50" rx="10" fill="#fff"/></g></svg>
