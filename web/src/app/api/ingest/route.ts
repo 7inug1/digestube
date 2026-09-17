@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { beginIngest, cancelIngest, finishIngest, getVideo, setIngestJob } from "@/lib/store";
+import { appendRaw, beginIngest, cancelIngest, finishIngest, getRaw, getVideo, resetRaw, setIngestJob } from "@/lib/store";
 import { poll, start, videoId, settings, type Result } from "@/lib/supadata";
-import { transcribe } from "@/lib/gemini";
+import { transcribe, transcribeStream } from "@/lib/gemini";
 import { provider } from "@/lib/transcript-provider";
 import { prepareTranscript } from "@/lib/transcript";
 import { topicChunk } from "@/lib/topic-chunker";
 import { saveTranscriptSource } from "@/lib/transcript-source";
 import { meta } from "@/lib/youtube";
-import { checkQuota, checkVideo, quotaKeys, spendQuota } from "@/lib/limits";
+import { checkQuota, checkVideo, quotaKeys, spendQuota, SLICE_SECONDS } from "@/lib/limits";
 import { currentUser } from "@/lib/auth/server";
 import { addToLibrary } from "@/lib/store";
 
@@ -33,12 +33,115 @@ async function save(vid: string, token: string, r: Result, lang: string | null) 
   };
 }
 
+/** 받아쓰는 동안 한 줄씩 흘려보낸다. 줄마다 JSON 하나(NDJSON) —
+ *  SSE 는 형식이 더 있지만 여기선 한쪽으로만 보내면 되니 줄바꿈이면 충분하다.
+ *  결과와 값은 통짜 방식과 같다. 다른 것은 기다리는 동안 무엇이 보이느냐다. */
+function streamed(run: (send: (o: unknown) => void) => Promise<void>) {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (o: unknown) => controller.enqueue(encoder.encode(JSON.stringify(o) + "\n"));
+      try { await run(send); }
+      catch (e) { send({ t: "error", error: (e as Error).message }); }
+      finally { controller.close(); }
+    },
+  });
+  return new Response(stream, {
+    headers: {
+      "content-type": "application/x-ndjson; charset=utf-8",
+      // 중간 서버가 모아서 한 번에 보내면 스트리밍이 의미가 없어진다
+      "cache-control": "no-cache, no-transform",
+      "x-accel-buffering": "no",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   let body;
   try { body = await req.json(); } catch { return NextResponse.json({error:"입력을 확인해 주세요."}, {status:400}); }
   const vid = typeof body?.url === "string" ? videoId(body.url) : null;
   if (!vid) return NextResponse.json({error:"유튜브 주소를 확인해 주세요."}, {status:400});
   const token = crypto.randomUUID();
+
+  // 화면에서 넣을 때는 스트리밍으로 받는다. 플레이리스트처럼 여러 편을 도는 쪽은
+  // 예전 방식(통짜 JSON)을 그대로 쓴다 — 화면에 보여줄 것이 없는 자리다.
+  // 화면에서 넣을 때는 스트리밍으로 받는다. 긴 영상은 한 번에 못 끝내므로
+  // 구간을 나눠 여러 번 부른다 — 이 함수는 구간 하나를 맡고, 다음 구간은 화면이 다시 부른다.
+  // 목차(/api/outline)·검색 준비(/api/embed)가 이미 쓰는 방식과 같다.
+  if (body.stream === true && provider() === "gemini") {
+    const from = Number(body.from ?? 0) || 0;
+    const first = from === 0;
+    return streamed(async send => {
+      const existing = await getVideo(vid);
+      // "이미 있다"는 문단까지 만들어진 것만이다. status 로만 보면 만들다 만 영상도
+      // 다 된 것으로 세어, 화면이 다시 그리고 다시 만들기를 반복한다.
+      const ready = Boolean(existing?.chunks.length);
+      if (first && ready && body.replace !== true) {
+        const me = await currentUser();
+        if (me) await addToLibrary(me.id, [vid]);
+        send({ t: "added", vid, title: existing!.title });
+        return;
+      }
+      const keys = quotaKeys(req);
+      const video = await checkVideo(vid);
+      if (!video.ok) { send({ t: "error", code: video.code, error: video.error, vid }); return; }
+
+      const total = video.seconds;
+      const to = total > 0 ? Math.min(total, from + SLICE_SECONDS) : from + SLICE_SECONDS;
+      const slice = Math.max(1, to - from);
+      // 남은 몫은 이번 구간만큼만 본다. 첫 구간에서 영상 전체를 재면,
+      // 하루치보다 긴 영상은 한 구간도 못 받아쓰고 막힌다.
+      const q = await checkQuota(keys, slice);
+      if (!q.ok) { send({ t: "error", code: q.code, error: q.error, vid }); return; }
+
+      // 첫 구간에서만 길이·제목을 알린다. 화면은 이걸로 전체 진행률과 남은 시간을 계산한다.
+      if (first) send({ t: "meta", vid, seconds: total, title: (await meta(vid))?.title ?? null });
+
+      // 자리를 잡는 건 첫 구간뿐이다. 이어지는 구간은 같은 표(token)를 그대로 쓴다.
+      const mark = first ? token : String(body.token ?? "");
+      if (first) {
+        // 만들다 만 영상은 처음부터 다시 받아쓴다. 쌓아 둔 조각을 비우지 않으면
+        // 지난번 것 뒤에 또 붙어 같은 말이 두 번 나온다.
+        if (existing) await resetRaw(vid);
+        const state = await beginIngest(vid, body.replace === true || Boolean(existing), mark, "gemini", null);
+        if (state !== "started") {
+          send({ t: "error", code: state === "busy" ? "INGEST_BUSY" : "VIDEO_EXISTS",
+            error: state === "busy" ? "이미 처리 중입니다. 잠시 후 다시 확인해 주세요." : "이미 등록된 영상입니다.", vid });
+          return;
+        }
+      }
+
+      try {
+        const url = `https://www.youtube.com/watch?v=${vid}`;
+        const range = total > SLICE_SECONDS ? { from, to } : undefined;
+        const { result } = await transcribeStream(url, seg => send({ t: "seg", start: seg.start, text: seg.text }), range);
+        // Gemini 는 늘 조각 배열을 준다. Result 의 content 는 옛 제공자 때문에 문자열도
+        // 될 수 있는 타입이라 여기서 한 번 좁힌다.
+        const got = Array.isArray(result.content) ? result.content : [];
+        // 받아쓴 만큼 그때그때 센다. 중간에 그만둬도 거기까지는 값이 나갔다.
+        await spendQuota(keys, slice);
+
+        const last = !range || to >= total;
+        if (!last) {
+          // 여기까지 받은 것을 남긴다. 다음 구간에서 끊겨도 처음부터 다시 하지 않는다.
+          await appendRaw(vid, got);
+          send({ t: "slice", vid, token: mark, from, to, total, next: to });
+          return;
+        }
+        // 마지막 구간. 앞서 쌓아 둔 것과 합쳐서 문단·목차로 넘긴다.
+        const before = range ? ((await getRaw(vid)) ?? []) : [];
+        const whole = { lang: result.lang, content: [...before, ...got] };
+        const done = await save(vid, mark, whole, null);
+        const me = await currentUser();
+        if (me) await addToLibrary(me.id, [vid]);
+        send({ t: "done", ...done });
+      } catch (e) {
+        await cancelIngest(vid, mark).catch(() => console.error("Could not clear ingest reservation"));
+        send({ t: "error", error: (e as Error).message });
+      }
+    });
+  }
+
   let reserved = false;
   try {
     // Preflight avoids a paid request and gives a useful link even before replacement.

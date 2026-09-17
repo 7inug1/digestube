@@ -245,6 +245,21 @@ export async function getRaw(vid: string) {
   return (data?.raw ?? null) as { text: string; offset: number; duration: number }[] | null;
 }
 
+/** 받아쓴 조각을 이어 붙인다. 긴 영상은 구간을 나눠 받으므로 중간 결과를 쌓아야 한다.
+ *  여기까지 받은 것은 남는다 — 다음 구간에서 끊겨도 처음부터 다시 하지 않는다. */
+export async function appendRaw(vid: string, pieces: {text: string; offset: number; duration: number}[]) {
+  const now = (await getRaw(vid)) ?? [];
+  const { error } = await db().from("video").update({ raw: [...now, ...pieces] }).eq("id", vid);
+  if (error) throw error;
+}
+
+/** 쌓아 둔 조각을 비운다. 끝나지 않은 영상을 처음부터 다시 받아쓸 때 부른다 —
+ *  안 비우면 지난번에 받은 것 뒤에 또 붙어 같은 말이 두 번 나온다. */
+export async function resetRaw(vid: string) {
+  const { error } = await db().from("video").update({ raw: [] }).eq("id", vid);
+  if (error) throw error;
+}
+
 /** 원본으로 문단만 다시 나눈다. 목차·벡터는 무효라 같이 지워진다. */
 export async function rechunk(vid: string, revision: string, chunks: NewChunk[]) {
   if (!await mutation("rechunk", { p_vid: vid, p_revision: revision, p_chunks: chunks })) {

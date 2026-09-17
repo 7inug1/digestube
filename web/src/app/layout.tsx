@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 import AuthNav from "@/components/AuthNav";
+import AnonNotice from "@/components/AnonNotice";
 import MergeMine from "@/components/MergeMine";
 import { currentUser } from "@/lib/auth/server";
 
@@ -41,6 +42,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </div>
         </header>
+        {/* 로그인하지 않았고 담은 게 있을 때만 뜬다 — 판단은 컴포넌트가 한다 */}
+        {!user && <AnonNotice />}
         {/* 폭은 화면마다 다르다 — 영상 화면은 2단이라 더 넓다 */}
         <main className="flex-1 px-5 py-8">{children}</main>
         <MergeMine signedIn={Boolean(user)} />

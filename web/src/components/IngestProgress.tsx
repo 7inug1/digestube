@@ -24,6 +24,8 @@ export type Progress = {
   ratio?: number | null;
   detail?: string;
   elapsedSec?: number;
+  /** 영상 길이(초). 남은 시간을 어림잡는 데 쓴다 — 없으면 경과만 적는다. */
+  total?: number | null;
   error?: string;
 };
 
@@ -41,6 +43,7 @@ export function failureKind(message: string): {icon: string; label: string} {
   if (/라이브|live/i.test(m)) return {icon: "🔴", label: "라이브 방송"};
   if (/비공개|제한|restricted|403/i.test(m)) return {icon: "🔒", label: "접근 제한"};
   if (/음성|no_speech|비어/i.test(m)) return {icon: "📭", label: "음성 없음"};
+  if (/막혔|RECITATION|받아쓸 수 없는/i.test(m)) return {icon: "🚧", label: "받아쓰기가 막힌 영상"};
   if (/시간|timeout|오래/i.test(m)) return {icon: "⏱️", label: "시간 초과"};
   return {icon: "⚠️", label: "처리 실패"};
 }
@@ -54,6 +57,23 @@ function percent(p: Progress): number {
   return Math.round(done * 100);
 }
 
+/** 받아쓰기는 실측으로 영상 길이의 10~15% 가 걸린다. 넉넉한 쪽(15%)으로 잡는다 —
+ *  "1분"이라 해놓고 80초가 걸리면 속은 기분이지만, 그 반대는 빨리 끝났다는 기분이다. */
+const TRANSCRIBE_RATIO = 0.15;
+/** 받아쓰기 뒤에 붙는 단계들(문단·목차·검색 준비). 영상 길이와 거의 무관하게 걸린다. */
+const AFTER_SECONDS = 25;
+
+function remainingText(p: Progress): string | null {
+  if (p.state === "done" && p.stage === "검색 준비") return "다 됐어요";
+  if (!p.total) return null;
+  const whole = p.total * TRANSCRIBE_RATIO + AFTER_SECONDS;
+  const spent = p.elapsedSec ?? 0;
+  const left = Math.max(0, whole - spent);
+  if (left < 15) return "거의 다 됐어요";
+  const m = Math.round(left / 60);
+  return m >= 1 ? `${m}분쯤 남았어요` : `${Math.round(left / 10) * 10}초쯤 남았어요`;
+}
+
 function stageState(p: Progress, s: StageName): StageState {
   if (p.state === "error" && s === p.stage) return "error";
   if (STAGES.indexOf(s) < STAGES.indexOf(p.stage)) return "done";
@@ -61,13 +81,16 @@ function stageState(p: Progress, s: StageName): StageState {
   return "queued";
 }
 
-export default function IngestProgress({progress}: {progress: Progress}) {
-  const {vid, title, stage, state, detail, elapsedSec, error} = progress;
-  // 전사 중에는 남은 양을 알 수 없다. 막대를 흐르게 두고 경과 시간만 적는다.
-  const unknown = stage === "전사" && state === "running";
+export default function IngestProgress({progress, live = []}: {progress: Progress; live?: string[]}) {
+  const {vid, title, stage, state, detail, elapsedSec, total, error} = progress;
+  // 예전엔 전사 중에 남은 양을 몰라 막대를 흐르게 두고 경과만 적었다. 이제 조각마다
+  // 영상 속 시각이 붙어 오므로 어디까지 받아썼는지를 그대로 쓴다.
+  // 아직 첫 조각이 안 온 동안만 흐르는 막대다 — 그때는 정말로 모른다.
+  const unknown = stage === "전사" && state === "running" && progress.ratio == null;
   const pct = percent(progress);
   const failed = state === "error";
   const kind = failed ? failureKind(error ?? "") : null;
+  const left = remainingText(progress);
 
   return (
     <div data-testid="ingest-progress" role={failed ? "alert" : "status"}
@@ -89,7 +112,7 @@ export default function IngestProgress({progress}: {progress: Progress}) {
             {failed ? `${kind!.icon} ${kind!.label}` : detail ?? `${stage} 중…`}
           </p>
         </div>
-        <span className="shrink-0 font-mono text-[12px] text-mfg">
+        <span className="shrink-0 whitespace-nowrap font-mono text-[12px] text-mfg">
           {failed ? "" : unknown ? `${elapsedSec ?? 0}초` : `${pct}%`}
         </span>
       </div>
@@ -102,6 +125,27 @@ export default function IngestProgress({progress}: {progress: Progress}) {
                style={{width: `${failed ? 100 : pct}%`}} />
         )}
       </div>
+
+      {/* 얼마나 남았는지 한 줄. 3분짜리와 25분짜리는 기다리는 마음이 다른데,
+          "처리 중…"만 있으면 둘이 똑같아 보인다. 어림값이라 "쯤"을 붙인다.
+          다 되면 문구를 바꿔 끝났다는 걸 같은 자리에서 말한다. */}
+      {left !== null && !failed && (
+        <p className="mt-2.5 text-[12px] text-mfg">{left}</p>
+      )}
+
+      {/* 받아쓰는 글을 흘려보낸다. 막대만 도는 것과 글이 차오르는 것은 기다리는 느낌이
+          다르고, 무엇보다 제품이 지금 뭘 하는지가 눈에 보인다.
+          세 줄만 둔다 — 더 두면 이 상자가 자라며 아래가 계속 밀린다. */}
+      {live.length > 0 && (
+        <div aria-hidden className="mt-3 space-y-0.5 text-[12px] leading-[1.6] text-mfg">
+          {live.map((line, i) => (
+            <p key={`${i}-${line.slice(0, 12)}`}
+               className={`truncate ${i === live.length - 1 ? "text-fg" : "opacity-60"}`}>
+              {line}
+            </p>
+          ))}
+        </div>
+      )}
 
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
         {STAGES.map(s => {

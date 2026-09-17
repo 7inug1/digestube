@@ -94,6 +94,9 @@ export async function videosByIds(ids: string[]) {
   return ids.map(id => d.video[id]).filter(Boolean);
 }
 
+export async function appendRaw() {}
+export async function resetRaw() {}
+
 export async function removeVideo() {
   throw new Error("파일 저장소는 읽기 전용이다.");
 }

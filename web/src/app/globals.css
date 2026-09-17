@@ -107,3 +107,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .shot-bar { animation: none !important; transform: scaleX(1); }
 }
+
+/* 새로 받아쓴 줄이 아래에서 올라오며 나타난다. 툭 튀어나오면 어디가 새 줄인지 모른다. */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}

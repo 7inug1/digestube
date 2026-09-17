@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { judge, quotaMessage, MAX_SECONDS, ANON_DAY_SECONDS } from "../src/lib/limits";
+import { judge, quotaMessage, ANON_DAY_SECONDS, SLICE_SECONDS } from "../src/lib/limits";
 import { isoSeconds, type Details } from "../src/lib/youtube";
 
 const ok: Details = { seconds: 600, live: "none", privacy: "public", ageRestricted: false, embeddable: true };
@@ -13,19 +13,19 @@ test("ISO 8601 길이를 초로 읽는다", () => {
   assert.equal(isoSeconds("이상한값"), 0);
 });
 
-test("공개·30분 이하·라이브 아님이면 받는다", () => {
+test("공개·라이브 아님이면 길이와 상관없이 받는다", () => {
   assert.deepEqual(judge(ok), { ok: true });
-  assert.deepEqual(judge({ ...ok, seconds: MAX_SECONDS }), { ok: true });
+  // 한 영상 길이 제한은 없앴다 — 긴 영상은 나눠서 받아쓴다
+  assert.deepEqual(judge({ ...ok, seconds: 3 * 60 * 60 }), { ok: true });
+});
+
+test("구간은 서버 한 번 실행(300초) 안에 끝날 크기여야 한다", () => {
+  // 받아쓰기는 실측으로 길이의 15% 쯤 걸린다. 모델 준비 시간 40초를 얹어도 300초 아래여야 한다
+  assert.ok(SLICE_SECONDS * 0.15 + 40 < 300);
 });
 
 test("확인을 못 하면 막지 않는다", () => {
   assert.deepEqual(judge(null), { ok: true });
-});
-
-test("30분 넘으면 분 수를 말하며 거른다", () => {
-  const v = judge({ ...ok, seconds: MAX_SECONDS + 1 });
-  assert.equal(v.ok, false);
-  if (!v.ok) { assert.equal(v.code, "VIDEO_TOO_LONG"); assert.match(v.error, /30분/); }
 });
 
 test("비공개·라이브·연령제한은 각자 다른 이유로 거른다", () => {

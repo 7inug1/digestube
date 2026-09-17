@@ -68,17 +68,138 @@ export async function transcribe(videoUrl: string): Promise<Result> {
   return (await transcribeWithUsage(videoUrl)).result;
 }
 
-function call(videoUrl: string): Promise<Response> {
-  return fetch(`${API}/models/${MODEL}:generateContent?key=${key()}`, {
+/** 영상의 한 구간. 서버 한 번 실행이 300초까지라 긴 영상은 나눠서 받아쓴다.
+ *  돌아오는 시각은 잘라낸 구간 기준이 아니라 영상 전체 기준이다(확인함) —
+ *  그래서 이어 붙일 때 보정할 것이 없다. */
+export type Range = { from: number; to: number };
+
+function call(videoUrl: string, stream = false, range?: Range): Promise<Response> {
+  const path = stream ? "streamGenerateContent?alt=sse&" : "generateContent?";
+  const file: Record<string, unknown> = { fileData: { fileUri: videoUrl } };
+  if (range) file.videoMetadata = { startOffset: `${range.from}s`, endOffset: `${range.to}s` };
+  return fetch(`${API}/models/${MODEL}:${path}key=${key()}`, {
     method: "POST",
     headers: {"content-type": "application/json"},
     body: JSON.stringify({
-      contents: [{parts: [{text: PROMPT}, {fileData: {fileUri: videoUrl}}]}],
+      contents: [{parts: [{text: PROMPT}, file]}],
       generationConfig: {responseMimeType: "application/json", maxOutputTokens: 65536, temperature: 0},
     }),
     // 실측 처리 시간은 영상 길이의 10~15% 였다(10.9분 영상 96초).
     signal: AbortSignal.timeout(280000),
   });
+}
+
+
+/** 받아쓰는 동안 한 줄씩 내보낸다.
+ *
+ *  다 끝나고 한 번에 주면 10분 영상에 96초 동안 빈 화면이다. 값이나 결과는 같고
+ *  기다리는 느낌만 달라진다 — 첫 문장이 몇 초 만에 뜨면 무슨 일이 벌어지는지 보인다.
+ *
+ *  모델은 JSON 하나를 흘려 보낸다. 중간 조각은 깨진 JSON 이라 통째로는 못 읽는다.
+ *  segments 배열 안에서 중괄호가 맞아떨어진 객체만 골라 그때그때 넘긴다.
+ *  전문은 서버가 따로 쌓는다 — 화면이 끊겨도 저장은 끝까지 간다.
+ */
+export async function transcribeStream(
+  videoUrl: string,
+  onSegment: (seg: Segment) => void,
+  range?: Range,
+): Promise<{result: Result; usage: Usage}> {
+  let r = await call(videoUrl, true, range);
+  if (r.status === 503 || r.status === 429) {
+    await new Promise(res => setTimeout(res, 3000));
+    r = await call(videoUrl, true, range);
+  }
+  if (r.status === 503 || r.status === 429) {
+    throw new Error("전사 서버가 지금 붐벼요. 잠시 뒤 다시 눌러주세요.");
+  }
+  if (!r.ok) {
+    const body = await r.text();
+    throw new Error(`전사에 실패했습니다 (${r.status}): ${body.slice(0, 200).replaceAll(key(), "***")}`);
+  }
+  if (!r.body) throw new Error("전사 응답이 비어 있습니다.");
+
+  const reader = r.body.getReader();
+  const decoder = new TextDecoder();
+  let sse = "";      // 아직 줄바꿈이 안 온 SSE 조각
+  let json = "";     // 모델이 지금까지 뱉은 JSON 전체
+  let sent = 0;      // 이미 화면으로 넘긴 조각 수
+  let usage: Usage = {};
+  const segments: Segment[] = [];
+
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    sse += decoder.decode(value, { stream: true });
+    const lines = sse.split("\n");
+    sse = lines.pop() ?? "";
+    for (const line of lines) {
+      if (!line.startsWith("data:")) continue;
+      const payload = line.slice(5).trim();
+      if (!payload || payload === "[DONE]") continue;
+      let chunk;
+      try { chunk = JSON.parse(payload); } catch { continue; }
+      usage = chunk.usageMetadata ?? usage;
+      const stop = chunk.candidates?.[0]?.finishReason;
+      if (stop && stop !== "STOP") throw new Error(reasonMessage(stop));
+      const piece = chunk.candidates?.[0]?.content?.parts?.map((x: {text?: string}) => x.text ?? "").join("") ?? "";
+      if (!piece) continue;
+      json += piece;
+      sent = drain(json, sent, seg => { segments.push(seg); onSegment(seg); });
+    }
+  }
+
+  const content = toPieces(segments);
+  if (!content.length) throw new Error("전사 결과가 비어 있습니다. 기존 내용은 유지됩니다.");
+  const lang = /"lang"\s*:\s*"([a-z]{2})"/i.exec(json)?.[1]?.toLowerCase();
+  return {result: {lang, content}, usage};
+}
+
+/** 모델이 중간에 멈춘 이유를 사람 말로 옮긴다. RECITATION 은 받아쓴 글이 어딘가에
+ *  그대로 있는 글과 너무 닮았다고 모델이 스스로 멈춘 것이다 — 낭독·자막 읽기 영상에서 난다.
+ *  영어 약어를 그대로 보여주면 쓰는 사람은 자기가 뭘 잘못했는지 알 수 없다. */
+function reasonMessage(reason: string): string {
+  if (reason === "RECITATION") return "이 영상은 받아쓰기가 중간에 막혔어요. 다른 영상으로 해볼까요?";
+  if (reason === "SAFETY") return "이 영상은 받아쓸 수 없는 내용이 있어요.";
+  if (reason === "MAX_TOKENS") return "영상이 너무 길어 한 번에 다 받아쓰지 못했어요.";
+  return `전사가 끝까지 오지 않았어요 (${reason}).`;
+}
+
+/** 쌓인 JSON 에서 아직 안 넘긴 조각을 꺼낸다. 이미 넘긴 개수를 돌려준다.
+ *
+ *  바깥은 {"lang":..,"segments":[..]} 하나라 중괄호 깊이가 1 로 시작한다.
+ *  깊이가 0 으로 떨어지길 기다리면 맨 끝까지 아무것도 안 나온다 — 처음에 그렇게
+ *  짰다가 조각이 하나도 안 왔다. 깊이 2 에서 1 로 돌아오는 객체가 우리가 찾는 것이다.
+ *
+ *  매번 처음부터 훑는다. 이어서 훑으려면 깊이를 호출 사이에 들고 다녀야 하는데,
+ *  전사문은 길어야 수백 KB 라 다시 훑는 값이 그 복잡함보다 싸다.
+ */
+function drain(json: string, already: number, emit: (seg: Segment) => void): number {
+  let depth = 0, start = -1, seen = 0, inStr = false, esc = false;
+  for (let i = 0; i < json.length; i++) {
+    const c = json[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === "\\") esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') { inStr = true; continue; }
+    if (c === "{") { if (depth === 1) start = i; depth++; continue; }
+    if (c === "}") {
+      depth--;
+      if (depth === 1 && start >= 0) {
+        seen++;
+        if (seen > already) {
+          try {
+            const o = JSON.parse(json.slice(start, i + 1));
+            if (typeof o?.text === "string" && typeof o?.start === "string") emit(o as Segment);
+          } catch {}
+        }
+        start = -1;
+      }
+    }
+  }
+  return seen;
 }
 
 /** 토큰 사용량까지 필요한 곳(재전사 스크립트·측정)에서 쓴다. */
@@ -104,7 +225,7 @@ export async function transcribeWithUsage(videoUrl: string): Promise<{result: Re
   };
   const candidate = data.candidates?.[0];
   if (candidate?.finishReason && candidate.finishReason !== "STOP") {
-    throw new Error(`전사가 끝까지 오지 않았습니다 (${candidate.finishReason}).`);
+    throw new Error(reasonMessage(candidate.finishReason));
   }
   const raw = candidate?.content?.parts?.map(p => p.text ?? "").join("") ?? "";
   let parsed: {lang?: string; segments?: Segment[]};

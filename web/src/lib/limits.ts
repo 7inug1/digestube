@@ -17,8 +17,10 @@
 import { db } from "./supabase";
 import { details, type Details } from "./youtube";
 
-export const MAX_SECONDS = 30 * 60;
 export const ANON_DAY_SECONDS = 60 * 60;
+/** 한 번에 받아쓸 구간. 서버 한 번 실행이 300초이고 받아쓰기가 길이의 15% 쯤 걸리니
+ *  20분(=180초)이면 모델 준비 시간까지 넣어도 넉넉하다. */
+export const SLICE_SECONDS = 20 * 60;
 /** 서버가 심는 브라우저 표시. httpOnly 라 화면 코드가 건드리지 못한다. */
 export const BROWSER_COOKIE = "dt.bid";
 
@@ -30,10 +32,6 @@ export function judge(d: Details | null): Verdict {
   if (d.privacy === "private") return no("VIDEO_PRIVATE", "비공개 영상이거나 없는 영상이에요.", 422);
   if (d.live !== "none") return no("VIDEO_LIVE", "라이브·예정된 영상은 끝난 뒤에 넣어주세요.", 422);
   if (d.ageRestricted) return no("VIDEO_AGE", "연령 제한 영상은 받을 수 없어요.", 422);
-  if (d.seconds > MAX_SECONDS) {
-    const m = Math.round(d.seconds / 60);
-    return no("VIDEO_TOO_LONG", `${m}분짜리네요. 지금은 ${MAX_SECONDS / 60}분까지만 받을 수 있어요.`, 422);
-  }
   return { ok: true };
 }
 
@@ -50,6 +48,14 @@ export async function checkQuota(keys: string[], seconds: number): Promise<Verdi
   const worst = counts.filter((n): n is number => n !== null).sort((a, b) => b - a)[0];
   if (worst === undefined || worst + seconds <= ANON_DAY_SECONDS) return { ok: true };
   return no("QUOTA", quotaMessage(ANON_DAY_SECONDS - worst, seconds), 429);
+}
+
+/** 오늘 남은 초. 열쇠 중 가장 많이 쓴 쪽을 기준으로 본다 — 막을 때와 같은 잣대다.
+ *  못 읽으면 null 을 준다. 화면은 그때 아무 말도 하지 않는다 — 틀린 숫자보다 낫다. */
+export async function remaining(keys: string[]): Promise<number | null> {
+  const counts = (await Promise.all(keys.map(used))).filter((n): n is number => n !== null);
+  if (!counts.length) return null;
+  return Math.max(0, ANON_DAY_SECONDS - Math.max(...counts));
 }
 
 /** 남은 시간과 이 영상 길이를 같이 말한다. "안 돼요"만 하면 왜인지 모른다. */
