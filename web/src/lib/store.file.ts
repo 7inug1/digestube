@@ -83,10 +83,11 @@ export async function chunksWithoutEmbedding() {
 /** 파일 저장소에는 로그인이 없다. 라이브러리는 비어 있는 것으로 둔다. */
 export async function libraryIds(): Promise<string[]> { return []; }
 export async function libraryCount(): Promise<number> { return 0; }
-export async function shareOf(): Promise<string | null> { return null; }
+export async function shareOf(): Promise<{shareId: string; name: string | null} | null> { return null; }
+export async function setShareName() {}
 export async function startShare(_u: string, id: string): Promise<string> { return id; }
 export async function stopShare() {}
-export async function userByShare(): Promise<string | null> { return null; }
+export async function userByShare(): Promise<{userId: string; name: string | null} | null> { return null; }
 export async function addToLibrary() {}
 export async function removeFromLibrary() {}
 export async function videosByIds(ids: string[]) {

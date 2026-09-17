@@ -8,14 +8,18 @@ export default async function Videos() {
   const user = await currentUser();
   return (
     <div className="mx-auto max-w-[1320px]">
-      <h1 className="mb-1 text-[22px] font-[660] tracking-[-.03em]">라이브러리</h1>
+      {/* 공유는 제목 옆에 아이콘 하나로 둔다. 매일 쓰는 것이 아닌데 목록 위 한 줄을
+          통째로 차지하고 있었다. 로그인한 사람만 — 브라우저에만 있는 목록은 남에게
+          보여줄 주소가 없다. */}
+      <div className="mb-1 flex items-center gap-2">
+        <h1 className="text-[22px] font-[660] tracking-[-.03em]">라이브러리</h1>
+        {user && <ShareLibrary />}
+      </div>
       <p className="mb-6 text-small text-mfg">
         {user
           ? "담은 영상은 어느 기기에서든 여기 있어요."
           : "이 브라우저에 담은 영상이에요. 로그인하면 어느 기기에서든 볼 수 있어요."}
       </p>
-      {/* 공유는 로그인한 사람만. 브라우저에만 있는 목록은 남에게 보여줄 주소가 없다 */}
-      {user && <ShareLibrary />}
       <LibraryGrid signedIn={Boolean(user)} />
     </div>
   );

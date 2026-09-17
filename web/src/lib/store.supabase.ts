@@ -62,18 +62,24 @@ export async function removeFromLibrary(userId: string, vid: string) {
 }
 
 /** 공유 주소 한 조각. 지금 공유 중이면 share_id, 아니면 null. */
-export async function shareOf(userId: string): Promise<string | null> {
+export async function shareOf(userId: string): Promise<{shareId: string; name: string | null} | null> {
   const { data, error } = await db()
-    .from("library_share").select("share_id").eq("user_id", userId).maybeSingle();
+    .from("library_share").select("share_id,name").eq("user_id", userId).maybeSingle();
   if (error) throw error;
-  return data?.share_id ?? null;
+  return data ? {shareId: data.share_id, name: data.name ?? null} : null;
+}
+
+/** 공유 화면에 띄울 이름. 비우면 이름 없이 보인다. */
+export async function setShareName(userId: string, name: string | null) {
+  const { error } = await db().from("library_share").update({ name }).eq("user_id", userId);
+  if (error) throw error;
 }
 
 /** 공유를 켠다. 이미 켜져 있으면 쓰던 주소를 그대로 돌려준다 —
  *  켤 때마다 주소가 바뀌면 남에게 준 링크가 조용히 죽는다. */
 export async function startShare(userId: string, shareId: string): Promise<string> {
   const now = await shareOf(userId);
-  if (now) return now;
+  if (now) return now.shareId;
   const { error } = await db().from("library_share").insert({ user_id: userId, share_id: shareId });
   if (error) throw error;
   return shareId;
@@ -85,11 +91,11 @@ export async function stopShare(userId: string) {
 }
 
 /** 공유 주소로 주인을 찾는다. 없으면 null — 공유를 껐거나 없는 주소다. */
-export async function userByShare(shareId: string): Promise<string | null> {
+export async function userByShare(shareId: string): Promise<{userId: string; name: string | null} | null> {
   const { data, error } = await db()
-    .from("library_share").select("user_id").eq("share_id", shareId).maybeSingle();
+    .from("library_share").select("user_id,name").eq("share_id", shareId).maybeSingle();
   if (error) throw error;
-  return data?.user_id ?? null;
+  return data ? {userId: data.user_id, name: data.name ?? null} : null;
 }
 
 /** 아이디로 영상을 가져온다. 넘긴 순서를 지킨다 — 담은 순서가 목록 순서다. */
