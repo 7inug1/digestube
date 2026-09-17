@@ -53,7 +53,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* 위 여백을 따로 주지 않는다. main 의 py-8 이 이미 띄우고 있어서, 여기에 또 두면
             상단 32px 에 하단 96px 이 된다 — 마지막 칸이 붕 떠 보인다.
             © 줄의 숨은 푸터 자신의 py-6 이 맡는다. */}
-        <footer className="border-t border-line">
+        {/* 구분선은 뺐다. 마지막 칸과 © 줄 사이에 이미 여백이 있고, 글자 색도 옅어
+            선 없이도 "여기서 본문이 끝났다"가 읽힌다. 선이 하나 줄면 화면이 조용해진다. */}
+        <footer>
           <p className="px-5 py-6 text-center text-label text-mfg">
             © {new Date().getFullYear()} Digestube
           </p>

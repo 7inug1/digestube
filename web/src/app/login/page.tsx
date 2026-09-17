@@ -41,7 +41,7 @@ export default function Login() {
     <div className="mx-auto max-w-[400px] py-16 text-center">
       <p className="mb-2 text-[22px] font-[740] tracking-[-.03em] sm:text-[28px]">로그인</p>
       <p className="mb-8 text-small text-mfg">
-        이메일로 로그인 링크를 보내드려요.<br />비밀번호는 없어요.
+        비밀번호 없이 로그인할 수 있는<br />링크를 이메일로 보내드려요
       </p>
 
       {state === "sent" ? (

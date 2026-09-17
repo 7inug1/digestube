@@ -94,60 +94,40 @@ export default function Reader({ vid, chunks, outline, meta }: {
     window.addEventListener("pointerup", up);
   }
 
+  /** 끄는 동안에는 React 를 거치지 않는다. 전환도 꺼서 손가락을 그대로 따라오게 한다. */
+  const hold = (el: HTMLElement, style: Partial<CSSStyleDeclaration>) => {
+    el.style.transition = "none";
+    Object.assign(el.style, style);
+  };
+  /** 손을 떼면 다시 React 가 그리게 둔다.
+   *
+   *  폭은 지우지 않고 제자리로 돌려놓는다. React 는 렌더 사이에 값이 같으면 다시 쓰지
+   *  않는데, 우리가 직접 지워 버리면 React 는 그대로인 줄 알고 손대지 않는다 —
+   *  폭이 사라져 창이 내용 크기(300px)로 벌어졌다. 왼쪽·위는 값이 달라지므로 React 가
+   *  다시 쓴다. 오른쪽·아래는 style 객체에서 빠지므로 React 가 지운다. */
+  const release = (el: HTMLElement, width: number) => {
+    el.style.transition = "";
+    el.style.width = `min(${width}px, 92vw)`;
+  };
+
   const remember = (key: string, value: unknown) => {
     try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* 사생활 보호 모드 등 */ }
   };
 
-  /** 놓으면 가장 가까운 모서리로 붙는다 — iOS PiP 가 그렇게 동작한다.
-   *  자유 위치로 두면 글을 가리는 자리에 어중간하게 남는다. */
-  const snap = (x: number, y: number) => {
+  /** 화면 안으로 되돌린다. 예전엔 가장 가까운 좌우 모서리로 붙였는데(자석) 뺐다 —
+   *  크기를 바꿀 수 있게 된 뒤로는, 붙는 동작이 방금 잡아 놓은 자리를 자꾸 되돌려
+   *  손이 한 번 더 가야 했다. 붙이든지 크기를 주든지 둘 중 하나여야 한다.
+   *  화면 밖으로 나가는 것만 막는다. */
+  const inside = (x: number, y: number) => {
     const box = panel.current?.getBoundingClientRect();
-    const w = box?.width ?? size, h = box?.height ?? size * 0.5625, gap = 12;
-    const left = gap, right = window.innerWidth - w - gap;
-    const top = gap + 56, bottom = window.innerHeight - h - gap;   // 위쪽은 헤더를 피한다
+    const w = box?.width ?? size, h = box?.height ?? size * 0.5625, gap = 8;
     return {
-      x: x + w / 2 < window.innerWidth / 2 ? left : right,
-      y: Math.min(Math.max(top, y), bottom),
+      x: Math.min(Math.max(gap, x), Math.max(gap, window.innerWidth - w - gap)),
+      y: Math.min(Math.max(gap + 56, y), Math.max(gap + 56, window.innerHeight - h - gap)),
     };
   };
 
-  /** 두 손가락으로 벌리고 오므려 크기를 바꾼다. 모서리를 집는 것보다 손에 익다. */
-  function pinch(e: React.PointerEvent<HTMLDivElement>) {
-    const points = new Map<number, {x: number; y: number}>();
-    points.set(e.pointerId, {x: e.clientX, y: e.clientY});
-    const box = panel.current?.getBoundingClientRect();
-    if (!box) return;
-    let startGap = 0, startSize = box.width, last = box.width;
-    const gapOf = () => {
-      const [a, b] = [...points.values()];
-      return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
-    };
-    const move = (ev: PointerEvent) => {
-      if (!points.has(ev.pointerId)) return;
-      points.set(ev.pointerId, {x: ev.clientX, y: ev.clientY});
-      if (points.size < 2) return;
-      const gap = gapOf();
-      if (!startGap) { startGap = gap; startSize = last; return; }
-      last = Math.round(Math.min(Math.max(120, startSize * (gap / startGap)), window.innerWidth * 0.92));
-      setSize(last);
-      setSpot(cur => cur ? snap(cur.x, cur.y) : cur);
-    };
-    const down = (ev: PointerEvent) => points.set(ev.pointerId, {x: ev.clientX, y: ev.clientY});
-    const up = (ev: PointerEvent) => {
-      points.delete(ev.pointerId);
-      if (points.size) { startGap = 0; return; }
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerdown", down);
-      window.removeEventListener("pointerup", up);
-      window.removeEventListener("pointercancel", up);
-      remember("digestube:mini-size", last);
-      setSpot(cur => { const next = cur ? snap(cur.x, cur.y) : cur; if (next) remember("digestube:mini-spot", next); return next; });
-    };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerdown", down);
-    window.addEventListener("pointerup", up);
-    window.addEventListener("pointercancel", up);
-  }
+
 
 
   function jump(t: number, seq?: number) {
@@ -175,31 +155,43 @@ export default function Reader({ vid, chunks, outline, meta }: {
               <div ref={panel}
                 // 접힌 창은 작아서 플레이어의 최소 높이(210px)를 풀어야 비율이 맞는다.
                 className={mini
-                  ? "fixed z-40 overflow-hidden rounded-xl bg-bg shadow-2xl ring-1 ring-line [&_[data-testid=youtube-player]]:min-h-0"
+                  // 접힌 창에서는 플레이어 아래 안내문("자동 재생이 차단됐어요")을 숨긴다.
+                  // 작은 창에 글이 붙으면 창이 영상보다 길어지고, 그 글이 아래 모서리의
+                  // 크기 손잡이를 덮어 잡을 수 없게 된다.
+                  ? "fixed z-40 overflow-hidden rounded-xl bg-bg shadow-2xl ring-1 ring-line [&_[data-testid=youtube-player]]:min-h-0 [&>div>p]:hidden"
                   : "absolute inset-0"}
-                onPointerDown={mini ? pinch : undefined}
                 style={mini
                   ? {width: `min(${size}px, 92vw)`, ...(spot ? {left: spot.x, top: spot.y} : {right: 12, bottom: 12}),
                      transition: "left .18s ease-out, top .18s ease-out"}
                   : undefined}>
                 {mini && (
                   <div onPointerDown={e => {
-                         const box = panel.current?.getBoundingClientRect();
-                         if (!box) return;
+                         const el = panel.current;
+                         const box = el?.getBoundingClientRect();
+                         if (!el || !box) return;
                          const dx = e.clientX - box.left, dy = e.clientY - box.top;
-                         setSpot({x: box.left, y: box.top});   // 오른쪽 기준에서 좌표 기준으로 옮긴다
+                         // 끄는 동안에는 React 를 거치지 않고 style 을 직접 쓴다. 상태를 매번
+                         // 바꾸면 손가락이 움직일 때마다 화면 전체가 다시 그려져 버벅인다.
+                         // 전환(transition)도 끈다 — 켜 두면 손가락을 따라오다 뒤늦게 미끄러진다.
+                         // 폭을 지금 값으로 못박는다. 안 박아 두면 창이 화면 가장자리에
+                         // 닿을 때 min(…, 92vw) 이 다시 계산돼 끄는 중에 크기가 변한다.
+                         // 브라우저 자체 제스처(확대·당겨서 새로고침)도 여기서 막는다.
+                         e.preventDefault();
+                         (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+                         hold(el, {left: `${box.left}px`, top: `${box.top}px`,
+                                   right: "auto", bottom: "auto", width: `${box.width}px`});
                          let last = {x: box.left, y: box.top};
                          track(ev => {
-                           const w = panel.current?.offsetWidth ?? box.width;
-                           const h = panel.current?.offsetHeight ?? box.height;
                            last = {
-                             x: Math.min(Math.max(8, ev.clientX - dx), window.innerWidth - w - 8),
-                             y: Math.min(Math.max(8, ev.clientY - dy), window.innerHeight - h - 8),
+                             x: Math.min(Math.max(8, ev.clientX - dx), window.innerWidth - el.offsetWidth - 8),
+                             y: Math.min(Math.max(8, ev.clientY - dy), window.innerHeight - el.offsetHeight - 8),
                            };
-                           setSpot(last);
+                           el.style.left = `${last.x}px`;
+                           el.style.top = `${last.y}px`;
                          }, () => {
-                           // 손을 떼면 가까운 모서리로 붙는다.
-                           last = snap(last.x, last.y);
+                           // 손을 떼면 가까운 모서리로 붙는다. 이때 다시 React 에 맡긴다.
+                           release(el, size);
+                           last = inside(last.x, last.y);
                            setSpot(last);
                            remember("digestube:mini-spot", last);
                          });
@@ -223,21 +215,42 @@ export default function Reader({ vid, chunks, outline, meta }: {
                 <YouTube videoId={vid} seek={seek} nonce={nonce} autoplay={nonce > 0} />
                 {mini && (
                   <div onPointerDown={e => {
-                         const box = panel.current?.getBoundingClientRect();
-                         if (!box) return;
+                         const el = panel.current;
+                         const box = el?.getBoundingClientRect();
+                         if (!el || !box) return;
                          const from = {x: e.clientX, w: box.width, right: box.right, top: box.top};
-                         setSpot({x: box.left, y: box.top});
+                         e.preventDefault();
+                         (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+                         hold(el, {left: `${box.left}px`, top: `${box.top}px`, right: "auto", bottom: "auto"});
                          let last = box.width;
                          track(ev => {
                            // 왼쪽으로 끌면 커진다. 오른쪽 변은 제자리에 둔다.
-                           last = Math.round(Math.min(Math.max(120, from.w + (from.x - ev.clientX)), window.innerWidth * 0.9));
+                           last = Math.round(Math.min(Math.max(140, from.w + (from.x - ev.clientX)), window.innerWidth * 0.92));
+                           el.style.width = `${last}px`;
+                           el.style.left = `${Math.max(8, from.right - last)}px`;
+                         }, () => {
+                           release(el, last);
                            setSize(last);
-                           setSpot({x: Math.max(8, from.right - last), y: from.top});
-                         }, () => remember("digestube:mini-size", last));
+                           const at = inside(Math.max(8, from.right - last), from.top);
+                           setSpot(at);
+                           remember("digestube:mini-spot", at);
+                           remember("digestube:mini-size", last);
+                         });
                        }}
                        aria-label="창 크기 조절"
-                       // 보이는 것은 두지 않는다. 커서만 바뀌어 잡을 수 있다는 걸 알린다.
-                       className="absolute bottom-0 left-0 z-10 h-7 w-7 cursor-nesw-resize touch-none" />
+                       // 보이게 둔다. 예전엔 커서로만 알렸는데, 손가락에는 커서가 없어서
+                       // 모바일에서는 이런 것이 있는 줄도 몰랐다. 손가락이 닿는 크기(44px)로 키운다.
+                       className="absolute bottom-0 left-0 z-10 grid h-11 w-11 cursor-nesw-resize
+                                  touch-none place-items-end justify-items-start p-1.5">
+                    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden
+                         className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,.8)]">
+                      <path d="M1 13h12M1 13V1" stroke="none" />
+                      <g stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                        <path d="M2 12h10" opacity=".9" /><path d="M2 12V2" opacity=".9" />
+                        <path d="M2 12 8 6" opacity=".55" />
+                      </g>
+                    </svg>
+                  </div>
                 )}
               </div>
             </div>

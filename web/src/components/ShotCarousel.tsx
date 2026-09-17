@@ -68,21 +68,25 @@ export default function ShotCarousel({ shots, ms = 4500 }: { shots: Shot[]; ms?:
             막대가 묻히지 않게 한다. */}
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-12
                                     bg-gradient-to-t from-bg/85 to-transparent" />
-        <div className="absolute inset-x-2.5 bottom-2.5 flex gap-1.5">
+        <div className="absolute inset-x-2.5 bottom-1 flex gap-2">
           {shots.map((s, n) => (
-            // 칸을 똑같이 나눠 가진다 — 몇 장짜리인지가 폭으로 보인다
+            // 칸을 똑같이 나눠 가진다 — 몇 장짜리인지가 폭으로 보인다.
+            // 보이는 굵기는 1px 로 두고 누르는 자리만 위아래로 키운다(py-2.5 = 20px 씩).
+            // 손가락은 1px 막대를 못 맞춘다 — 모바일에서 눌러도 아무 일이 없던 이유다.
             <button key={s.label} onClick={() => jump(n)}
                     aria-label={`${s.label} 보기`} aria-current={n === i}
-                    className="relative h-1 flex-1 overflow-hidden rounded-full bg-fg/20
-                               transition-colors hover:bg-fg/35">
-              {n === i && (
-                <span key={i} aria-hidden
-                      className="shot-bar absolute inset-0 origin-left rounded-full bg-fg/85"
-                      style={{animation: `shot-fill ${ms}ms linear forwards`,
-                              animationPlayState: held ? "paused" : "running"}} />
-              )}
-              {/* 지나간 장은 채운 채로 둔다 — 어디까지 봤는지가 남는다 */}
-              {n < i && <span aria-hidden className="absolute inset-0 rounded-full bg-fg/45" />}
+                    className="group/bar flex flex-1 items-center py-2.5">
+              <span className="relative h-1 w-full overflow-hidden rounded-full bg-fg/20
+                               transition-colors group-hover/bar:bg-fg/35">
+                {n === i && (
+                  <span key={i} aria-hidden
+                        className="shot-bar absolute inset-0 origin-left rounded-full bg-fg/85"
+                        style={{animation: `shot-fill ${ms}ms linear forwards`,
+                                animationPlayState: held ? "paused" : "running"}} />
+                )}
+                {/* 지나간 장은 채운 채로 둔다 — 어디까지 봤는지가 남는다 */}
+                {n < i && <span aria-hidden className="absolute inset-0 rounded-full bg-fg/45" />}
+              </span>
             </button>
           ))}
         </div>
