@@ -81,8 +81,10 @@ async function samples() {
 export default async function Home() {
   const picks = await samples();
 
+  // 아래 여백은 main(py-8)과 푸터가 이미 갖고 있다. 여기에 또 두면 셋이 쌓여
+  // 위는 32px, 아래는 160px 이 됐다 — 모바일에서 마지막 칸이 붕 떠 보였다.
   return (
-    <div className="mx-auto max-w-[620px] px-1 pb-16">
+    <div className="mx-auto max-w-[620px] px-1">
       {/* ① 후킹 — h1 은 "나중에 볼 동영상"이라는 유튜브 기능 이름을 그대로 쓴다.
           쓰는 사람이 1초에 자기 얘기로 읽는 자리라 바꾸지 않았다.
           설명 줄과 처리량 숫자를 붙여 봤는데 뺐다. 입력창까지 가는 길에 읽을 게

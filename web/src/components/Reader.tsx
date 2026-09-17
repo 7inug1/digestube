@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import YouTube from "./YouTube";
+import SearchForm from "./SearchForm";
 
 type Chunk = { seq: number; t: number; t_end: number; text: string };
 type Outline = { seq: number; t: number; label: string };
@@ -48,13 +49,17 @@ export default function Reader({ vid, chunks, outline, meta }: {
     const el = marker.current;
     if (!el) return;
     const wide = window.matchMedia("(min-width: 768px)");
+    // 보이는지(seen)와 좁은 화면인지(wide)를 따로 들고, 둘 중 하나가 바뀌면 다시 센다.
+    // 예전엔 화면 폭이 바뀌어도 넓어질 때만 접힌 창을 껐다. 넓다가 좁히면 IntersectionObserver
+    // 는 다시 울지 않으니(보이는 상태가 안 바뀌었으므로) 영상이 제자리에 없는 채로 남았다.
+    let seen = true;
+    const apply = () => setMini(!wide.matches && !seen);
     // 헤더 밑으로 가려진 것도 "안 보이는" 것으로 친다.
-    const io = new IntersectionObserver(([e]) => setMini(!wide.matches && !e.isIntersecting),
+    const io = new IntersectionObserver(([e]) => { seen = e.isIntersecting; apply(); },
       {rootMargin: "-64px 0px 0px 0px"});
     io.observe(el);
-    const off = () => wide.matches && setMini(false);
-    wide.addEventListener("change", off);
-    return () => { io.disconnect(); wide.removeEventListener("change", off); };
+    wide.addEventListener("change", apply);
+    return () => { io.disconnect(); wide.removeEventListener("change", apply); };
   }, []);
   /* 접힌 창은 손잡이를 잡아 옮길 수 있다. iframe 위에서는 마우스 이벤트가
      유튜브로 먹혀서 재생 조작이 막히므로, 위쪽 손잡이에서만 끈다.
@@ -281,6 +286,10 @@ export default function Reader({ vid, chunks, outline, meta }: {
           {/* 목차는 왼쪽이다. 한 번 읽고 마는 요약과 달리 읽는 내내 돌아오는 곳이라,
               글과 같이 흘러가면 매번 위로 되짚어 올라가야 한다.
               붙어 있는 칸(sticky)에 두면 언제든 손이 닿는다. */}
+          {/* 읽다가 "그 얘기 어디서 했더라" 하는 순간이 이 화면에서 생긴다.
+              그때 헤더를 찾아 누르고 새 화면으로 가게 두면 대개 그냥 넘긴다. */}
+          <SearchForm q="" vid={vid} small />
+
           {outline.length > 0 && (
             <div className="rounded-xl bg-muted/60 p-4">
               <div className="mb-2 text-[11px] uppercase tracking-[.12em] text-mfg">목차</div>

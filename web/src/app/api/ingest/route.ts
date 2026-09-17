@@ -83,7 +83,9 @@ export async function POST(req: Request) {
         send({ t: "added", vid, title: existing!.title });
         return;
       }
-      const keys = quotaKeys(req);
+      // 열쇠를 고르려면 로그인 여부가 먼저 필요하다. 아래에서 담을 때도 다시 쓴다.
+      const me = await currentUser();
+      const keys = quotaKeys(req, me?.id);
       const video = await checkVideo(vid);
       if (!video.ok) { send({ t: "error", code: video.code, error: video.error, vid }); return; }
 
@@ -133,7 +135,6 @@ export async function POST(req: Request) {
         const before = range ? ((await getRaw(vid)) ?? []) : [];
         const whole = { lang: result.lang, content: [...before, ...got] };
         const done = await save(vid, mark, whole, null);
-        const me = await currentUser();
         if (me) await addToLibrary(me.id, [vid]);
         send({ t: "done", ...done });
       } catch (e) {

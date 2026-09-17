@@ -32,11 +32,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="ml-auto flex items-center gap-4">
               {/* 늘 보인다. 라이브러리에 맛보기가 한 편 깔려 있어 첫 방문에도 비지 않는다 —
                   담은 게 없을 때 숨겨 봤는데, 그러면 이 제품에 무엇이 있는지를 못 보여준다 */}
-              <Link href="/search" className="text-[14px] font-semibold text-fg/65 transition-colors hover:text-fg">
-                검색
-              </Link>
+              {/* 라이브러리가 먼저다. 내 것을 보러 오는 일이 찾으러 오는 일보다 잦고,
+                  찾는 것도 대개 라이브러리에 담긴 것 중에서 찾는다 — 큰 것에서 작은 것 순서다. */}
               <Link href="/videos" className="text-[14px] font-semibold text-fg/65 transition-colors hover:text-fg">
                 라이브러리
+              </Link>
+              <Link href="/search" className="text-[14px] font-semibold text-fg/65 transition-colors hover:text-fg">
+                검색
               </Link>
               <AuthNav />
             </div>
@@ -48,7 +50,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main className="flex-1 px-5 py-8">{children}</main>
         <MergeMine signedIn={Boolean(user)} />
         {/* 푸터는 저작권 한 줄뿐. 연도는 빌드 때 찍힌다 — 해가 바뀌면 배포 한 번으로 따라온다. */}
-        <footer className="mt-16 border-t border-line">
+        {/* 위 여백을 따로 주지 않는다. main 의 py-8 이 이미 띄우고 있어서, 여기에 또 두면
+            상단 32px 에 하단 96px 이 된다 — 마지막 칸이 붕 떠 보인다.
+            © 줄의 숨은 푸터 자신의 py-6 이 맡는다. */}
+        <footer className="border-t border-line">
           <p className="px-5 py-6 text-center text-label text-mfg">
             © {new Date().getFullYear()} Digestube
           </p>
