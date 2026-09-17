@@ -80,6 +80,20 @@ export async function chunksWithoutEmbedding() {
   return [] as { seq: number; text: string }[];
 }
 
+/** 파일 저장소에는 로그인이 없다. 라이브러리는 비어 있는 것으로 둔다. */
+export async function libraryIds(): Promise<string[]> { return []; }
+export async function libraryCount(): Promise<number> { return 0; }
+export async function shareOf(): Promise<string | null> { return null; }
+export async function startShare(_u: string, id: string): Promise<string> { return id; }
+export async function stopShare() {}
+export async function userByShare(): Promise<string | null> { return null; }
+export async function addToLibrary() {}
+export async function removeFromLibrary() {}
+export async function videosByIds(ids: string[]) {
+  const d = await read();
+  return ids.map(id => d.video[id]).filter(Boolean);
+}
+
 export async function removeVideo() {
   throw new Error("파일 저장소는 읽기 전용이다.");
 }

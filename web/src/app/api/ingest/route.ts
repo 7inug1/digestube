@@ -7,6 +7,9 @@ import { prepareTranscript } from "@/lib/transcript";
 import { topicChunk } from "@/lib/topic-chunker";
 import { saveTranscriptSource } from "@/lib/transcript-source";
 import { meta } from "@/lib/youtube";
+import { checkQuota, checkVideo, quotaKeys, spendQuota } from "@/lib/limits";
+import { currentUser } from "@/lib/auth/server";
+import { addToLibrary } from "@/lib/store";
 
 // Gemini 전사는 영상 길이의 10~15% 가 걸린다(실측: 10.9분 영상 96초).
 // fluid compute 가 켜진 Hobby 플랜의 상한이 300초다.
@@ -43,9 +46,20 @@ export async function POST(req: Request) {
     // 전사가 실패해 껍데기만 남은 행은 '이미 등록된 영상'이 아니다.
     // 이게 없으면 실패한 주소를 다시 넣을 때 replace 없이는 409 로 막힌다.
     const usable = existing && existing.status !== "실패";
-    if (usable && body.replace !== true) return NextResponse.json({
-      code:"VIDEO_EXISTS", error:"이미 등록된 영상입니다.", vid, title:existing!.title,
-    }, {status:409});
+    // 이미 변환된 영상이면 담기만 한다. 전사를 다시 하지 않으니 비용도 쿼터도 없다 —
+    // 남이 변환해 둔 영상을 내 라이브러리에 넣는 길이기도 하다.
+    // (다시 전사하려는 건 replace: true 로 온다)
+    if (usable && body.replace !== true) {
+      const me = await currentUser();
+      if (me) await addToLibrary(me.id, [vid]);
+      return NextResponse.json({state:"added", vid, title:existing!.title});
+    }
+    // 돈이 나가기 전에 거른다. 이미 있는 영상 확인이 먼저다 — 그건 비용이 없다.
+    const keys = quotaKeys(req);
+    const video = await checkVideo(vid);
+    for (const v of [video, await checkQuota(keys, video.seconds)]) {
+      if (!v.ok) return NextResponse.json({code:v.code, error:v.error, vid}, {status:v.status});
+    }
     const source = provider();
     // Gemini 는 언어를 고르지 않는다 — 영상의 언어 그대로 받아쓴다.
     const config = source === "gemini" ? {mode: "gemini" as const, lang: null} : settings();
@@ -55,8 +69,16 @@ export async function POST(req: Request) {
     reserved = true;
     const url = `https://www.youtube.com/watch?v=${vid}`;
     if (source === "gemini") {
-      return NextResponse.json({state:"done",...(await save(vid,token,await transcribe(url),null))});
+      const r = await transcribe(url);
+      // 전사가 돌아온 뒤에 센다. 그 전에 세면 구글이 503 으로 튕긴 것도 깎인다 —
+      // 실제로 그랬다. 전사 뒤 저장이 실패하는 건 드물고, 그때는 비용이 나갔으니 깎는 게 맞다.
+      await spendQuota(keys, video.seconds);
+      const done = await save(vid,token,r,null);
+      const me = await currentUser();
+      if (me) await addToLibrary(me.id, [vid]);
+      return NextResponse.json({state:"done",...done});
     }
+    await spendQuota(keys, video.seconds);
     const r = await start(url, settings());
     if (r.state === "working") {
       await setIngestJob(vid, token, r.job);

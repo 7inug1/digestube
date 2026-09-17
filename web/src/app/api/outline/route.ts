@@ -4,6 +4,9 @@ import { outlineWhole } from "@/lib/outline-whole";
 import { getVideo, refreshVideoStatus, saveOutlineBatch } from "@/lib/store";
 
 // Four paragraphs at a time, each with at most two 20-second calls.
+/** 아무나 부를 수 있지만 남은 일이 있을 때만 모델을 부른다 — 목차가 다 차 있으면
+ *  todo 가 비어 아무 값도 들지 않는다. 그래서 따로 잠그지 않았다.
+ *  값이 드는 문(다시 전사·다시 나누기)은 /api/ingest 와 /api/rechunk 쪽이다. */
 export const maxDuration = 60;
 export async function POST(req: Request) {
   try {

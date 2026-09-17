@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { embed } from "@/lib/embed";
 import { chunksWithoutEmbedding, getVideo, refreshVideoStatus, saveEmbeddingBatch } from "@/lib/store";
 
+/** outline 과 같다 — 벡터가 없는 문단만 처리하므로 반복해 불러도 총량이 영상 하나
+ *  분량을 넘지 않는다. 그래서 잠그지 않았다. */
 export const maxDuration = 60;
 export async function POST(req: Request) {
   try {

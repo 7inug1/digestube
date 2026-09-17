@@ -9,17 +9,21 @@ import VideoThumb from "@/components/VideoThumb";
 import {ClockIcon, Sec} from "@/components/ui";
 import {listVideos, statsOf} from "@/lib/store";
 import {readTime} from "@/lib/format";
+import {SAMPLE_IDS} from "@/lib/samples";
 import {meta, thumb} from "@/lib/youtube";
 
 export const dynamic = "force-dynamic";
 
-/** 저장만 해두고 안 본 영상들 — 썸네일만 쓴다. 아래로 흐려지며 목록이 이어지는 인상을 준다. */
+/** 저장만 해두고 안 본 영상들 — 썸네일만 쓴다. 아래로 흐려지며 목록이 이어지는 인상을 준다.
+ *  여기 적은 것만 쓴다. 라이브러리에서 빌려 오면 남이 변환한 영상이 랜딩에 걸린다. */
 const SHELF = ["Evx4V4Rsf1s", "-PmZ2KcfGCI", "VkYnrRicqxI",
-               "aMJ9cPRAhSw", "i0NcKL1JLfg", "Kvs02l-4YLE"];
+               "aMJ9cPRAhSw", "i0NcKL1JLfg", "Kvs02l-4YLE",
+               "byVgbqzYJrs", "55eFm5tPCQY", "8cp0YvSpDA8"];
 
 /** 샘플로 먼저 보여주고 싶은 순서. 말로 지식·경험을 전하는 영상들이다.
- *  여기 없거나 아직 문단이 없으면 라이브러리의 다른 완성본으로 채운다. */
-const SAMPLE_ORDER = ["byVgbqzYJrs", "55eFm5tPCQY", "8cp0YvSpDA8", "pZjYP24kTjc", "JRJd1ZrHmgg"];
+ *  라이브러리에 깔아 두는 맛보기와 같은 목록을 쓴다(lib/samples.ts) — 두 곳이
+ *  다른 영상을 보여주면 따로 놀아 보인다. */
+const SAMPLE_ORDER = SAMPLE_IDS;
 /** 하나만 둔다. 고르게 하는 자리가 아니라 "눌러서 들어가 보는" 자리다. */
 const SAMPLE_COUNT = 1;
 
@@ -38,6 +42,12 @@ const FAQ = [
   {q: "화면을 봐야 아는 영상은요?",
    a: "시연이나 자료 화면이 중심인 영상은 아쉬울 수 있어요. 음성만 받아쓰고 화면에 뜬 글자는 옮기지 않거든요. " +
       "음악·자연음·무음 영상도 옮길 말 자체가 적어요."},
+  {q: "얼마나 넣을 수 있나요?",
+   a: "한 편은 30분까지, 하루에 다 합쳐 60분까지 무료예요. " +
+      "30분짜리 두 편이든 10분짜리 여섯 편이든 같아요. 다음 날 0시(한국 시간)에 다시 채워져요."},
+  {q: "안 되는 영상도 있나요?",
+   a: "라이브 중이거나 예정된 영상, 비공개 영상, 연령 제한 영상은 받을 수 없어요. " +
+      "30분이 넘는 영상도 지금은 어려워요 — 넣어보시면 이유를 바로 알려드려요."},
   {q: "변환하는 데 얼마나 걸리나요?",
    a: "영상 길이에 따라 달라요. 링크를 넣으면 지금 어느 단계인지 화면에서 보여주니까, " +
       "창을 지켜보고 있지 않아도 괜찮아요."},
@@ -46,21 +56,14 @@ const FAQ = [
 ];
 
 
-/** 더미에 깔 썸네일. SHELF 로 모자라면 라이브러리에 실제로 있는 영상으로 채운다.
- *  없는 아이디를 지어내면 회색 네모만 남는다. */
-async function pileOf() {
-  const videos = await listVideos();
-  return [...new Set([...SHELF, ...videos.map(v => v.id)])].slice(0, 9);
-}
-
 async function samples() {
-  const videos = await listVideos();
+  // 라이브러리 전체에서 고르지 않는다. 쓰는 사람이 늘면 남이 변환한 영상이
+  // 랜딩 첫 화면에 걸리는데, 무엇이 걸릴지 우리가 모르는 자리는 두면 안 된다.
+  // SAMPLE_ORDER 에 적어 둔 것만 쓴다.
+  const videos = (await listVideos()).filter(v => SAMPLE_ORDER.includes(v.id));
   const stats = await statsOf(videos.map(v => v.id));
   const ready = videos.filter(v => (stats[v.id]?.chunks ?? 0) > 0);
-  const rank = (id: string) => {
-    const i = SAMPLE_ORDER.indexOf(id);
-    return i < 0 ? SAMPLE_ORDER.length : i;
-  };
+  const rank = (id: string) => SAMPLE_ORDER.indexOf(id);
   const picked = ready.sort((a, b) => rank(a.id) - rank(b.id)).slice(0, SAMPLE_COUNT);
   return Promise.all(picked.map(async v => {
     const [m, src] = await Promise.all([meta(v.id), thumb(v.id)]);
@@ -76,7 +79,6 @@ async function samples() {
 
 export default async function Home() {
   const picks = await samples();
-  const pile = await pileOf();
 
   return (
     <div className="mx-auto max-w-[620px] px-1 pb-16">
@@ -90,6 +92,10 @@ export default async function Home() {
           <br />이제 읽어보세요!
         </h1>
         <IngestForm />
+        {/* 제한은 넣기 전에 알린다. 넣고 나서 거절당하면 그때야 규칙을 배우게 된다 */}
+        <p className="mt-3 text-label text-mfg">
+          30분 이하 영상 · 하루 60분까지 무료
+        </p>
       </div>
 
       {/* ② 문제 — 묻는 말 하나와 쌓인 목록 하나. 그걸로 끝낸다.
@@ -121,7 +127,7 @@ export default async function Home() {
         <div className="grid grid-cols-3 gap-1.5"
              style={{maskImage: "linear-gradient(to bottom, #000 55%, transparent)",
                      WebkitMaskImage: "linear-gradient(to bottom, #000 55%, transparent)"}}>
-          {pile.map(id => (
+          {SHELF.map(id => (
             // eslint-disable-next-line @next/next/no-img-element
             <img key={id} src={`https://i.ytimg.com/vi/${id}/mqdefault.jpg`} alt="" loading="lazy"
                  className="aspect-video w-full rounded bg-muted object-cover" />

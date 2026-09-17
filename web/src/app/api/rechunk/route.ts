@@ -11,7 +11,17 @@ import { getRaw, rechunk } from "@/lib/store";
  *  /api/embed 와 /api/outline 을 다시 불러야 한다. */
 export const maxDuration = 60;
 
+/** 관리용 문이다. 문단을 다시 나누면 목차와 벡터가 무효가 되고, 그걸 다시 만드는 데
+ *  값이 든다 — 즉 아무나 부르면 남의 영상을 망가뜨리면서 우리 돈을 쓴다.
+ *  ADMIN_TOKEN 이 없으면 아예 닫는다. 실수로 열린 채 배포되는 쪽이 더 나쁘다. */
+function allowed(req: Request): boolean {
+  const token = process.env.ADMIN_TOKEN;
+  if (!token) return false;
+  return req.headers.get("x-admin-token") === token;
+}
+
 export async function POST(req: Request) {
+  if (!allowed(req)) return NextResponse.json({error:"권한이 없습니다."}, {status:403});
   try {
     const { vid } = await req.json();
     if (typeof vid !== "string" || !vid) {

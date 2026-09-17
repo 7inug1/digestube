@@ -38,3 +38,45 @@ export async function thumb(vid: string): Promise<string> {
   }
   return `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
 }
+
+/** 제출한 영상이 받을 수 있는 영상인지 보려면 길이와 공개 상태가 필요한데
+ *  oEmbed 는 둘 다 안 준다. YouTube Data API 가 공식으로 주는 유일한 길이다.
+ *  키는 무료(하루 1만 회). 없으면 null — 부르는 쪽이 "확인 못 함"으로 다룬다. */
+export type Details = {
+  seconds: number;
+  live: "none" | "live" | "upcoming";
+  privacy: "public" | "unlisted" | "private";
+  ageRestricted: boolean;
+  embeddable: boolean;
+};
+
+export async function details(vid: string): Promise<Details | null> {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key) return null;
+  const url = "https://www.googleapis.com/youtube/v3/videos" +
+    `?part=contentDetails,status,snippet&id=${vid}&key=${key}`;
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(5000), next: { revalidate: 3600 } });
+    if (!r.ok) return null;
+    const item = (await r.json()).items?.[0];
+    // 목록이 비면 없는 영상이거나 비공개다 — 둘 다 받을 수 없다
+    if (!item) return { seconds: 0, live: "none", privacy: "private", ageRestricted: false, embeddable: false };
+    return {
+      seconds: isoSeconds(item.contentDetails?.duration ?? ""),
+      live: item.snippet?.liveBroadcastContent ?? "none",
+      privacy: item.status?.privacyStatus ?? "public",
+      ageRestricted: item.contentDetails?.contentRating?.ytRating === "ytAgeRestricted",
+      embeddable: item.status?.embeddable !== false,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** "PT1H2M3S" → 3723. 라이브는 "P0D" 로 온다 → 0. */
+export function isoSeconds(iso: string): number {
+  const m = /^P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(iso);
+  if (!m) return 0;
+  const [, d, h, mi, se] = m.map(x => Number(x ?? 0));
+  return d * 86400 + h * 3600 + mi * 60 + se;
+}

@@ -68,9 +68,8 @@ export async function transcribe(videoUrl: string): Promise<Result> {
   return (await transcribeWithUsage(videoUrl)).result;
 }
 
-/** 토큰 사용량까지 필요한 곳(재전사 스크립트·측정)에서 쓴다. */
-export async function transcribeWithUsage(videoUrl: string): Promise<{result: Result; usage: Usage}> {
-  const r = await fetch(`${API}/models/${MODEL}:generateContent?key=${key()}`, {
+function call(videoUrl: string): Promise<Response> {
+  return fetch(`${API}/models/${MODEL}:generateContent?key=${key()}`, {
     method: "POST",
     headers: {"content-type": "application/json"},
     body: JSON.stringify({
@@ -80,9 +79,24 @@ export async function transcribeWithUsage(videoUrl: string): Promise<{result: Re
     // 실측 처리 시간은 영상 길이의 10~15% 였다(10.9분 영상 96초).
     signal: AbortSignal.timeout(280000),
   });
+}
+
+/** 토큰 사용량까지 필요한 곳(재전사 스크립트·측정)에서 쓴다. */
+export async function transcribeWithUsage(videoUrl: string): Promise<{result: Result; usage: Usage}> {
+  let r = await call(videoUrl);
+  // 503(혼잡)·429(속도 제한)는 구글 쪽 사정이고 비용도 없다. 3초 뒤 한 번만 더 두드린다.
+  // 2026-09-16 운영에서 503 이 연달아 났는데 로컬은 4초 만에 됐다 — 경로 문제라 재시도가 먹힌다.
+  if (r.status === 503 || r.status === 429) {
+    await new Promise(res => setTimeout(res, 3000));
+    r = await call(videoUrl);
+  }
   const body = await r.text();
+  if (r.status === 503 || r.status === 429) {
+    throw new Error("전사 서버가 지금 붐벼요. 잠시 뒤 다시 눌러주세요.");
+  }
   // 키가 에러 응답에 그대로 돌아오는 경우가 있어 가린다.
   if (!r.ok) throw new Error(`전사에 실패했습니다 (${r.status}): ${body.slice(0, 200).replaceAll(key(), "***")}`);
+
 
   const data = JSON.parse(body) as {
     candidates?: {content?: {parts?: {text?: string}[]}; finishReason?: string}[];

@@ -31,6 +31,76 @@ export async function listVideos(): Promise<Video[]> {
   return rows.filter(v => (counts[v.id] ?? 0) > 0);
 }
 
+/** 내가 담은 영상 아이디. 최근에 담은 것이 앞에 온다. */
+export async function libraryIds(userId: string): Promise<string[]> {
+  const { data, error } = await db()
+    .from("library").select("video_id").eq("user_id", userId).order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map(r => r.video_id as string);
+}
+
+/** 담은 게 하나라도 있나. 목록을 다 읽지 않고 세기만 한다. */
+export async function libraryCount(userId: string): Promise<number> {
+  const { count, error } = await db()
+    .from("library").select("*", { count: "exact", head: true }).eq("user_id", userId);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+/** 담는다. 이미 있으면 아무 일도 없다 — 같은 영상을 두 번 담아도 오류가 아니다. */
+export async function addToLibrary(userId: string, vids: string[]) {
+  if (!vids.length) return;
+  const { error } = await db()
+    .from("library").upsert(vids.map(v => ({ user_id: userId, video_id: v })), { onConflict: "user_id,video_id" });
+  if (error) throw error;
+}
+
+/** 내 목록에서만 뺀다. 영상 자체는 남는다. */
+export async function removeFromLibrary(userId: string, vid: string) {
+  const { error } = await db().from("library").delete().eq("user_id", userId).eq("video_id", vid);
+  if (error) throw error;
+}
+
+/** 공유 주소 한 조각. 지금 공유 중이면 share_id, 아니면 null. */
+export async function shareOf(userId: string): Promise<string | null> {
+  const { data, error } = await db()
+    .from("library_share").select("share_id").eq("user_id", userId).maybeSingle();
+  if (error) throw error;
+  return data?.share_id ?? null;
+}
+
+/** 공유를 켠다. 이미 켜져 있으면 쓰던 주소를 그대로 돌려준다 —
+ *  켤 때마다 주소가 바뀌면 남에게 준 링크가 조용히 죽는다. */
+export async function startShare(userId: string, shareId: string): Promise<string> {
+  const now = await shareOf(userId);
+  if (now) return now;
+  const { error } = await db().from("library_share").insert({ user_id: userId, share_id: shareId });
+  if (error) throw error;
+  return shareId;
+}
+
+export async function stopShare(userId: string) {
+  const { error } = await db().from("library_share").delete().eq("user_id", userId);
+  if (error) throw error;
+}
+
+/** 공유 주소로 주인을 찾는다. 없으면 null — 공유를 껐거나 없는 주소다. */
+export async function userByShare(shareId: string): Promise<string | null> {
+  const { data, error } = await db()
+    .from("library_share").select("user_id").eq("share_id", shareId).maybeSingle();
+  if (error) throw error;
+  return data?.user_id ?? null;
+}
+
+/** 아이디로 영상을 가져온다. 넘긴 순서를 지킨다 — 담은 순서가 목록 순서다. */
+export async function videosByIds(ids: string[]): Promise<Video[]> {
+  if (!ids.length) return [];
+  const { data, error } = await db().from("video").select("*").in("id", ids);
+  if (error) throw error;
+  const by = new Map((data ?? []).map(v => [v.id, v as Video]));
+  return ids.map(id => by.get(id)).filter((v): v is Video => Boolean(v));
+}
+
 export async function getVideo(vid: string) {
   const s = db();
   const [v, c, o] = await Promise.all([
@@ -74,9 +144,9 @@ export async function statsOf(vids: string[]) {
 }
 
 /** 질문 벡터와 가까운 문단. 비교는 DB 가 한다(schema.sql 의 search_chunks). */
-export async function search(q: number[], k = 5, vid?: string): Promise<Hit[]> {
+export async function search(q: number[], k = 5, vid?: string, ids?: string[]): Promise<Hit[]> {
   const { data, error } = await db().rpc("search_chunks", {
-    q: JSON.stringify(q), k, only_video: vid ?? null,
+    q: JSON.stringify(q), k, only_video: vid ?? null, only_videos: ids ?? null,
   });
   if (error) throw error;
   return (data ?? []) as Hit[];

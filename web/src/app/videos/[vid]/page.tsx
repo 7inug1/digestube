@@ -3,6 +3,8 @@ import { getVideo } from "@/lib/store";
 import { meta } from "@/lib/youtube";
 import { readTime } from "@/lib/format";
 import Reader from "@/components/Reader";
+import AnonNotice from "@/components/AnonNotice";
+import { currentUser } from "@/lib/auth/server";
 
 export const dynamic = "force-dynamic";
 
@@ -15,11 +17,13 @@ export async function generateMetadata({ params }: { params: Promise<{ vid: stri
 
 export default async function Video({ params }: { params: Promise<{ vid: string }> }) {
   const { vid } = await params;
-  const [v, m] = await Promise.all([getVideo(vid), meta(vid)]);
+  const [v, m, user] = await Promise.all([getVideo(vid), meta(vid), currentUser()]);
   if (!v) notFound();
 
   return (
-    <Reader
+    <>
+      {!user && <AnonNotice />}
+      <Reader
       vid={vid}
       chunks={v.chunks}
       outline={v.outline ?? []}
@@ -30,6 +34,7 @@ export default async function Video({ params }: { params: Promise<{ vid: string 
         read: readTime(v.chars ?? 0),
         mode: v.mode, lang: v.lang,
       }}
-    />
+      />
+    </>
   );
 }

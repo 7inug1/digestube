@@ -62,7 +62,8 @@ create index if not exists chunk_video_idx on chunk (video_id, seq);
 create or replace function search_chunks(
   q vector(1024),
   k int default 5,
-  only_video text default null
+  only_video text default null,
+  only_videos text[] default null
 )
 returns table (
   video_id text, seq int, t real, t_end real, text text, score real
@@ -73,6 +74,46 @@ language sql stable as $$
   from chunk c
   where c.embedding is not null
     and (only_video is null or c.video_id = only_video)
+    and (only_videos is null or c.video_id = any(only_videos))
   order by c.embedding <=> q
   limit k
 $$;
+
+-- 익명 사용 상한. IP 와 날짜(한국 기준)로 그날 넣은 영상 길이(초)를 합산한다.
+-- 편수가 아니라 초로 센다 — 비용은 길이에 비례한다.
+create table if not exists public.quota (
+  key text not null,
+  day date not null,
+  n int not null default 0,
+  primary key (key, day)
+);
+alter table public.quota enable row level security;
+
+-- 이 영상 길이만큼 썼다고 적는다. 행이 없으면 만든다.
+create or replace function public.quota_use(p_key text, p_day date, p_seconds int)
+returns void language sql security definer as $$
+  insert into public.quota (key, day, n) values (p_key, p_day, p_seconds)
+  on conflict (key, day) do update set n = quota.n + p_seconds;
+$$;
+
+-- 라이브러리는 "누가 담았나"다. 영상 자체와 분리한다 —
+-- 한 영상을 여러 사람이 담아도 변환은 한 번이면 되고, 내가 목록에서 빼도
+-- 다른 사람 목록에서 사라지면 안 된다.
+create table if not exists public.library (
+  user_id uuid not null,
+  video_id text not null references public.video(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (user_id, video_id)
+);
+create index if not exists library_user_idx on public.library (user_id, created_at desc);
+alter table public.library enable row level security;
+
+-- 라이브러리 공유. 행이 있으면 공유 중, 지우면 꺼진다.
+-- 사용자 아이디를 주소에 쓰지 않는다 — 주소가 곧 계정 식별자가 되면 끄고 켤 수가 없다.
+-- share_id 를 새로 뽑으면 예전 링크는 죽는다.
+create table if not exists public.library_share (
+  user_id uuid primary key,
+  share_id text unique not null,
+  created_at timestamptz not null default now()
+);
+alter table public.library_share enable row level security;

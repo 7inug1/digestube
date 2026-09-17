@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { remember } from "@/lib/mine";
 import IngestProgress, {type Progress, type StageName} from "./IngestProgress";
 
 type Existing = {vid:string;url:string;title?:string};
@@ -72,6 +73,8 @@ export default function IngestForm() {
     const guess = /[?&]v=([\w-]{11})|youtu\.be\/([\w-]{11})/.exec(videoUrl);
     step("전사","영상 소리를 받아쓰는 중…",null,guess?.[1] ?? guess?.[2] ?? null);
     let d = await post("/api/ingest",{url:videoUrl,replace});
+    // 이미 변환돼 있던 영상. 전사를 건너뛰고 담기만 한다 — 비용도 기다림도 없다.
+    if (d.state === "added") { remember(d.vid); return d.vid as string; }
     const deadline = Date.now()+10*60*1000;
     while (d.state === "working") {
       if (Date.now()>deadline) throw new Error("자막 처리가 오래 걸리고 있습니다. 잠시 후 확인해 주세요.");
@@ -82,7 +85,11 @@ export default function IngestForm() {
       if (!r.ok) throw new Error(d.error ?? `${r.status}`);
     }
     step("문단","문단으로 나누는 중…",1,d.vid);
-    return complete(d.vid,note);
+    const vid = await complete(d.vid,note);
+    // 로그인했으면 서버가 이미 담았다. 여기 적어 두는 건 로그인하지 않은 경우다 —
+    // 로그인해도 적어 두면 나중에 로그인할 때 합쳐지므로 해롭지 않다.
+    remember(vid);
+    return vid;
   }
 
   async function go(replace=false) {

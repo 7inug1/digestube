@@ -71,11 +71,14 @@ async function highlight(qv: number[], hits: Found[], topN = 3, perChunk = 10) {
 }
 
 /** 가까운 문단 k개. 기본은 판단하기 쉬운 세 대목만 보여준다. */
-export async function find(q: string, vid?: string, k = 3): Promise<Found[]> {
+/** ids 를 주면 그 영상 안에서만 찾는다 — 내 라이브러리로 좁히는 데 쓴다.
+ *  빈 배열은 "찾을 곳이 없다"는 뜻이라 바로 빈 결과다(전체 검색이 아니다). */
+export async function find(q: string, vid?: string, k = 3, ids?: string[]): Promise<Found[]> {
   const query = (q ?? "").trim();
   if (!query) return [];
+  if (ids && !ids.length) return [];
   const qv = await embedOne(query);
-  const hits = (await searchStore(qv, k, vid)) as Found[];
+  const hits = (await searchStore(qv, k, vid, ids)) as Found[];
   await highlight(qv, hits);
   return hits;
 }
