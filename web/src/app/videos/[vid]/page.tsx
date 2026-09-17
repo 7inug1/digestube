@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getVideo } from "@/lib/store";
-import { meta } from "@/lib/youtube";
+import { about, countText, meta, whenText } from "@/lib/youtube";
 import { readTime } from "@/lib/format";
 import Reader from "@/components/Reader";
 import Building from "@/components/Building";
@@ -22,7 +22,7 @@ export default async function Video({
 }) {
   const { vid } = await params;
   const { convert } = await searchParams;
-  const [v, m] = await Promise.all([getVideo(vid), meta(vid)]);
+  const [v, m, a] = await Promise.all([getVideo(vid), meta(vid), about(vid)]);
 
   // 아직 문단이 없으면 만들어지는 중이다. 랜딩에서 넘어온 길(convert=1)이거나
   // 이미 자리를 잡아 둔 영상일 때만 시작한다 — 주소만 찍어 넣는다고 변환이
@@ -31,7 +31,8 @@ export default async function Video({
   if (building && !(convert === "1" || v)) notFound();
   if (building) {
     if (!m) notFound(); // 유튜브에 없는 영상
-    return <Building vid={vid} title={m.title} channel={m.channel} />;
+    return <Building vid={vid} title={a?.title ?? m.title} channel={a?.channel ?? m.channel}
+                     avatar={a?.avatar ?? null} />;
   }
 
   return (
@@ -45,6 +46,10 @@ export default async function Video({
         seconds: v!.chunks.at(-1)?.t_end ?? 0,
         read: readTime(v!.chars ?? 0),
         mode: v!.mode, lang: v!.lang,
+        avatar: a?.avatar ?? null,
+        published: a?.published ? whenText(a.published) : null,
+        views: a?.views ? countText(a.views) : null,
+        tldr: v!.tldr ?? null,
       }}
     />
   );

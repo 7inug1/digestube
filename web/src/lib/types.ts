@@ -7,6 +7,8 @@ export type Video = {
   requested_lang?: string | null;
   transcribed_at?: string | null;
   revision?: string | null;
+  /** 세 줄 요약. 목차와 같은 호출에서 받는다. */
+  tldr?: string[] | null;
   ingest_token?: string | null;
   pending_mode?: "native" | "generate" | "gemini" | null;
   pending_lang?: string | null;

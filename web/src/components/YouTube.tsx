@@ -52,14 +52,19 @@ function errorMessage(code:number) {
   return "유튜브 연결 또는 재생 중 문제가 생겼어요.";
 }
 
-type Props = {videoId:string;seek:number;nonce?:number;autoplay?:boolean};
+type Props = {
+  videoId:string;seek:number;nonce?:number;autoplay?:boolean;
+  /** 사람이 재생을 시작했을 때. 만드는 화면이 "보는 중"인지 알아야 하기 때문이다 —
+   *  보는 중에 화면을 갈아치우면 재생이 처음으로 돌아간다. */
+  onPlay?:()=>void;
+};
 /** Remount on retry/video change so old callbacks cannot affect the new player. */
 export default function YouTube(props:Props) {
   const [attempt,setAttempt]=useState(0);
   return <PlayerSurface key={`${props.videoId}:${attempt}`} {...props} onRetry={()=>setAttempt(n=>n+1)} />;
 }
 
-function PlayerSurface({videoId,seek,nonce=0,autoplay=true,onRetry}:Props&{onRetry:()=>void}) {
+function PlayerSurface({videoId,seek,nonce=0,autoplay=true,onPlay,onRetry}:Props&{onRetry:()=>void}) {
   const host=useRef<HTMLDivElement>(null);
   const player=useRef<Player|null>(null);
   const [ready,setReady]=useState(false);
@@ -90,7 +95,7 @@ function PlayerSurface({videoId,seek,nonce=0,autoplay=true,onRetry}:Props&{onRet
           onStateChange:event=>{
             if(dead||failed)return;
             if(event.data===3)wait();else if([0,1,2,5].includes(event.data))clearTimeout(timer);
-            if(event.data===1)setAutoplayBlocked(false);
+            if(event.data===1){setAutoplayBlocked(false);onPlay?.();}
           },
           onAutoplayBlocked:()=>{if(!dead&&!failed){clearTimeout(timer);setAutoplayBlocked(true);}},
         },

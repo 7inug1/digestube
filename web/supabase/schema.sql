@@ -117,3 +117,6 @@ create table if not exists public.library_share (
   created_at timestamptz not null default now()
 );
 alter table public.library_share enable row level security;
+
+-- 세 줄 요약. 목차와 같은 모델 호출에서 받으므로 따로 값이 들지 않는다.
+alter table public.video add column if not exists tldr jsonb;

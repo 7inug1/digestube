@@ -253,6 +253,12 @@ export async function appendRaw(vid: string, pieces: {text: string; offset: numb
   if (error) throw error;
 }
 
+/** 세 줄 요약을 적는다. 목차와 같이 받으므로 목차를 저장한 뒤에 부른다. */
+export async function saveTldr(vid: string, lines: string[]) {
+  const { error } = await db().from("video").update({ tldr: lines }).eq("id", vid);
+  if (error) throw error;
+}
+
 /** 쌓아 둔 조각을 비운다. 끝나지 않은 영상을 처음부터 다시 받아쓸 때 부른다 —
  *  안 비우면 지난번에 받은 것 뒤에 또 붙어 같은 말이 두 번 나온다. */
 export async function resetRaw(vid: string) {

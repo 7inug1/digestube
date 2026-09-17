@@ -1,3 +1,4 @@
+import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { find } from "@/lib/search";
 import { currentUser } from "@/lib/auth/server";
@@ -41,6 +42,6 @@ export async function GET(req: Request) {
       })),
     });
   } catch (e) {
-    return NextResponse.json({ error: (e as Error).message }, { status: 502 });
+    return NextResponse.json({ error: saySorry(e, "search") }, { status: 502 });
   }
 }

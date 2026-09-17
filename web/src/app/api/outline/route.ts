@@ -1,7 +1,8 @@
+import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { label } from "@/lib/outline";
 import { outlineWhole } from "@/lib/outline-whole";
-import { getVideo, refreshVideoStatus, saveOutlineBatch } from "@/lib/store";
+import { getVideo, refreshVideoStatus, saveOutlineBatch, saveTldr } from "@/lib/store";
 
 // Four paragraphs at a time, each with at most two 20-second calls.
 /** 아무나 부를 수 있지만 남은 일이 있을 때만 모델을 부른다 — 목차가 다 차 있으면
@@ -22,6 +23,8 @@ export async function POST(req: Request) {
         const whole = await outlineWhole(v.chunks);
         if (whole.items.length >= 2) {
           await saveOutlineBatch(vid,v.revision ?? null,whole.items);
+          // 요약은 목차와 같은 호출에서 왔다. 여기서 같이 저장한다 — 따로 부르면 값이 두 배다.
+          if (whole.tldr.length) await saveTldr(vid, whole.tldr);
           await refreshVideoStatus(vid,v.revision ?? null);
           return NextResponse.json({vid,n:v.chunks.length,done:whole.items.length,
             kept:whole.items.length,left:0,dropped:whole.dropped.length});
@@ -42,6 +45,6 @@ export async function POST(req: Request) {
     return NextResponse.json({vid,n:v.chunks.length,done:items.length,kept:completed.size+items.length,
       left:Math.max(0,todo.length-tried.length),fallback:items.filter(o=>o.source==="fallback").length});
   } catch(e) {
-    return NextResponse.json({error:(e as Error).message}, {status:502});
+    return NextResponse.json({error: saySorry(e, "outline")}, {status:502});
   }
 }

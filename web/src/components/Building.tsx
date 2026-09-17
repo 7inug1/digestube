@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { remember } from "@/lib/mine";
 import { clock, runIngest, type Made, type Stage } from "@/lib/ingest-client";
+import YouTube from "./YouTube";
 import { failureKind } from "./IngestProgress";
+import { saySorry } from "@/lib/errors";
 
 /** 만들어지는 중인 읽기 화면.
  *
@@ -16,8 +18,8 @@ import { failureKind } from "./IngestProgress";
  *  왼쪽에 영상·제목을 두는 배치는 완성된 읽기 화면과 같다. 다 됐을 때 글자가
  *  제자리로 옮겨 앉는 느낌이 없어야 한다.
  */
-export default function Building({ vid, title, channel }: {
-  vid: string; title: string; channel: string;
+export default function Building({ vid, title, channel, avatar }: {
+  vid: string; title: string; channel: string; avatar?: string | null;
 }) {
   /** 받아쓴 말을 문단으로 묶어 쌓는다. 조각 하나는 "그렇지, 그렇지." 처럼 짧아서
    *  그대로 한 줄씩 쌓으면 완성된 읽기 화면(문단 340자)과 모양이 전혀 다르다 —
@@ -31,8 +33,13 @@ export default function Building({ vid, title, channel }: {
   const [failed, setFailed] = useState<string | null>(null);
   /** 다 됐을 때 잠깐 머무는 자리. 바로 넘기면 무슨 일이 끝났는지 모른 채 화면만 바뀐다. */
   const [made, setMade] = useState<Made | null>(null);
+  /** 영상을 틀어 놨나. 보는 중에 화면을 갈아치우면 재생이 처음으로 돌아가므로,
+   *  그때는 스스로 넘기지 않고 누를 자리를 준다. */
+  const [watching, setWatching] = useState(false);
   const router = useRouter();
   const started = useRef(false);
+  /** 효과 안에서 최신 값을 봐야 해서 따로 든다 — 상태만 쓰면 시작할 때 값에 묶인다. */
+  const watchingRef = useRef(false);
   const tail = useRef<HTMLDivElement>(null);
   /** 받아쓴 글이 끝나는 자리. 아래에 회색 줄을 깔아 뒀으므로 "칸의 바닥"으로 따라가면
    *  글을 지나쳐 빈 회색만 보게 된다 — 실제로 그랬다. 이 표를 기준으로 따라간다. */
@@ -71,9 +78,10 @@ export default function Building({ vid, title, channel }: {
         setMade(m);
         // 잠깐 보여주고 넘긴다. 서버가 다시 그리면 이 자리에 완성된 읽기 화면이 온다.
         // 1.4초는 한 줄을 읽고 "아 됐구나" 하기까지의 시간이다 — 더 두면 기다리게 된다.
-        setTimeout(() => router.refresh(), 1400);
+        // 영상을 보는 중이면 넘기지 않는다. 보던 것이 처음으로 돌아가면 뺏긴 기분이 든다.
+        if (!watchingRef.current) setTimeout(() => router.refresh(), 1400);
       })
-      .catch(e => setFailed((e as Error).message))
+      .catch(e => setFailed(saySorry(e, "building")))
       .finally(() => clearInterval(tick));
     return () => clearInterval(tick);
   }, [vid, router]);
@@ -128,12 +136,27 @@ export default function Building({ vid, title, channel }: {
     <div className="mx-auto grid max-w-[1320px] gap-8 md:grid-cols-[560px_1fr] md:gap-14">
       <aside className="md:h-full">
         <div className="grid gap-4 md:sticky md:top-[76px]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`} alt=""
-               className="aspect-video w-full rounded-xl bg-muted object-cover" />
+          {/* 기다리는 동안 볼 것이 있어야 한다. 받아쓰기는 유튜브가 아니라 우리 서버가
+              하는 일이라, 영상을 틀어 놔도 전사가 느려지지 않는다.
+              자동 재생은 하지 않는다 — 글을 읽으러 온 사람에게 소리부터 나오면 놀란다. */}
+          <div className="-mx-5 md:mx-0">
+            <YouTube videoId={vid} seek={0} autoplay={false} onPlay={() => { setWatching(true); watchingRef.current = true; }} />
+          </div>
           <div>
-            <h1 className="mb-1 text-body font-semibold leading-[1.4] tracking-[-.02em]">{title}</h1>
-            <p className="text-label text-mfg">{channel}</p>
+            <h1 className="mb-2 text-body font-semibold leading-[1.4] tracking-[-.02em]">{title}</h1>
+            {/* 완성된 읽기 화면과 같은 줄이다 — 다 됐을 때 이 자리가 흔들리지 않는다 */}
+            <div className="flex items-center gap-2">
+              {avatar ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={avatar} alt="" loading="lazy"
+                     className="h-6 w-6 shrink-0 rounded-full bg-muted object-cover" />
+              ) : (
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-muted text-[10px] font-bold text-mfg">
+                  {channel.slice(0, 1)}
+                </span>
+              )}
+              <span className="truncate text-[12.5px] font-medium">{channel}</span>
+            </div>
           </div>
 
           {/* 다 되면 같은 자리에서 끝났다고 말한다. 상자가 사라졌다 생기면 화면이 덜컹거린다.
@@ -157,6 +180,12 @@ export default function Building({ vid, title, channel }: {
                 ? `문단 ${made.paragraphs}개 · 목차 ${made.outline}개`
                 : left(total, elapsed)}
             </p>
+            {made && watching && (
+              <button onClick={() => router.refresh()}
+                      className="mt-3 w-full rounded-lg bg-fg py-2.5 text-small font-semibold text-bg">
+                읽으러 가기
+              </button>
+            )}
           </div>
         </div>
       </aside>
@@ -203,13 +232,14 @@ export default function Building({ vid, title, channel }: {
         </div>
 
         {/* 위로 올려 읽는 중일 때만. 받아쓰기는 계속 도는데 화면은 멈춰 있으니
-            "지금 어디까지 왔나"로 돌아갈 길이 있어야 한다. */}
+            "지금 어디까지 왔나"로 돌아갈 길이 있어야 한다.
+            문구는 짧게 — 글 위에 얹히는 것이라 길면 가리는 면적이 커진다. */}
         {stuck && (
           <button onClick={() => { setStuck(false); follow(); }}
                   className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5
                              rounded-full border border-line bg-bg/95 px-3.5 py-2 text-label
                              font-semibold shadow-lg backdrop-blur">
-            받아쓰는 곳으로 <span aria-hidden>↓</span>
+            맨 아래로 <span aria-hidden>↓</span>
           </button>
         )}
       </div>

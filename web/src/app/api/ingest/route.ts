@@ -1,3 +1,4 @@
+import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { appendRaw, beginIngest, cancelIngest, finishIngest, getRaw, getVideo, resetRaw, setIngestJob } from "@/lib/store";
 import { poll, start, videoId, settings, type Result } from "@/lib/supadata";
@@ -42,7 +43,7 @@ function streamed(run: (send: (o: unknown) => void) => Promise<void>) {
     async start(controller) {
       const send = (o: unknown) => controller.enqueue(encoder.encode(JSON.stringify(o) + "\n"));
       try { await run(send); }
-      catch (e) { send({ t: "error", error: (e as Error).message }); }
+      catch (e) { send({ t: "error", error: saySorry(e, "ingest-stream") }); }
       finally { controller.close(); }
     },
   });
@@ -137,7 +138,7 @@ export async function POST(req: Request) {
         send({ t: "done", ...done });
       } catch (e) {
         await cancelIngest(vid, mark).catch(() => console.error("Could not clear ingest reservation"));
-        send({ t: "error", error: (e as Error).message });
+        send({ t: "error", error: saySorry(e, "ingest-slice") });
       }
     });
   }
@@ -190,7 +191,7 @@ export async function POST(req: Request) {
     return NextResponse.json({state:"done",...(await save(vid,token,r.result,config.lang))});
   } catch (e) {
     if (reserved) await cancelIngest(vid,token).catch(() => console.error("Could not clear ingest reservation"));
-    return NextResponse.json({error:(e as Error).message}, {status:502});
+    return NextResponse.json({error: saySorry(e, "ingest")}, {status:502});
   }
 }
 
@@ -214,6 +215,6 @@ export async function GET(req: Request) {
       throw e;
     }
   } catch(e) {
-    return NextResponse.json({error:(e as Error).message}, {status:502});
+    return NextResponse.json({error: saySorry(e, "ingest")}, {status:502});
   }
 }

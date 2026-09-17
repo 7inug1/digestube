@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { runIngest, videoIdOf, IngestError } from "@/lib/ingest-client";
+import { runIngest, videoIdOf } from "@/lib/ingest-client";
+import { saySorry } from "@/lib/errors";
 import QuotaLeft from "./QuotaLeft";
 
 /** 유튜브 주소를 받는 자리.
@@ -43,12 +44,12 @@ export default function IngestForm() {
         for (const [i, vid] of (d.todo as string[]).entries()) {
           setMsg(`${i + 1}/${d.todo.length}편 처리 중…`);
           try { await runIngest(`https://www.youtube.com/watch?v=${vid}`); }
-          catch (e) { failed.push(`${vid}: ${(e as Error).message}`); }
+          catch (e) { failed.push(saySorry(e, "playlist-item")); }
         }
-        if (failed.length) { setMsg(`일부 영상을 처리하지 못했어요. ${failed.join(" / ")}`); return; }
+        if (failed.length) { setMsg(`${failed.length}편을 처리하지 못했어요. ${failed[0]}`); return; }
         router.push("/videos");
       } catch (e) {
-        setMsg(e instanceof IngestError ? e.message : (e as Error).message);
+        setMsg(saySorry(e, "playlist"));
       } finally { setBusy(false); }
       return;
     }

@@ -96,6 +96,7 @@ export async function videosByIds(ids: string[]) {
 
 export async function appendRaw() {}
 export async function resetRaw() {}
+export async function saveTldr() {}
 
 export async function removeVideo() {
   throw new Error("파일 저장소는 읽기 전용이다.");

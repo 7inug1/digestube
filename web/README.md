@@ -14,6 +14,8 @@ npm run dev
 
 `.env.local`에 다음 값을 설정합니다.
 
+- `NEXT_PUBLIC_SITE_URL`: 로컬은 `http://localhost:3000`, 운영은 `https://digestube.vercel.app`
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`: 브라우저·서버 인증
 - `GEMINI_API_KEY`: 전사·주제 청킹·목차 생성
 - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`: 서버의 DB·Storage 접근
 - `HF_TOKEN`: KURE-v1 임베딩
@@ -28,6 +30,27 @@ npm run dev
 3. 비공개 Storage 버킷 `transcript-sources`를 생성하고 서버의 서비스 역할 키 접근을 확인합니다.
 
 원본 발화는 재청킹에 사용합니다. 재등록은 사용자 확인 후 새 전사를 검증하고 교체하며, 기존 영상은 등록만으로 자동 재청킹되지 않습니다.
+
+## 이메일 로그인 설정
+
+호스팅된 Supabase 프로젝트의 **Authentication → URL Configuration**에서 다음 값을 설정합니다.
+
+- Site URL: `https://digestube.vercel.app`
+- Redirect URLs: `https://digestube.vercel.app/auth/callback`
+- 로컬 개발용 Redirect URL: `http://localhost:3000/auth/callback`
+
+**Authentication → Email Templates → Magic Link**의 제목은 `Digestube 로그인 링크`, 본문은
+[`supabase/templates/magic-link.html`](supabase/templates/magic-link.html)을 사용합니다. 링크에는
+전달된 콜백 주소가 포함된 `{{ .ConfirmationURL }}`을 그대로 써야 합니다.
+
+새 Free 프로젝트에서 기본 SMTP를 쓰면 이메일 템플릿 수정이 제한될 수 있습니다. 이 경우 Custom SMTP를
+연결한 뒤 템플릿을 적용합니다.
+
+Supabase Management API 토큰이 있으면 대시보드 입력 대신 아래 명령으로 같은 설정을 적용할 수 있습니다.
+
+```sh
+SUPABASE_ACCESS_TOKEN=... node --env-file=.env.local scripts/configure-auth.mjs
+```
 
 ## 검증
 

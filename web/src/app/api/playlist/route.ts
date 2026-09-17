@@ -1,3 +1,4 @@
+import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { playlistId, playlistVideos } from "@/lib/supadata";
 import { listVideos } from "@/lib/store";
@@ -20,6 +21,6 @@ export async function POST(req: Request) {
       todo: ids.filter((v) => !have.has(v)),
     });
   } catch (e) {
-    return NextResponse.json({ error: (e as Error).message }, { status: 502 });
+    return NextResponse.json({ error: saySorry(e, "playlist") }, { status: 502 });
   }
 }

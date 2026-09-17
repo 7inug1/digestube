@@ -80,3 +80,70 @@ export function isoSeconds(iso: string): number {
   const [, d, h, mi, se] = m.map(x => Number(x ?? 0));
   return d * 86400 + h * 3600 + mi * 60 + se;
 }
+
+/** 영상 한 편에 딸린, 화면에 쓸 만한 것들.
+ *
+ *  oEmbed 는 제목과 채널 이름만 준다. Data API 는 한 번에 채널 번호·올린 날·조회수까지
+ *  주므로, 이미 부르고 있는 김에 같이 받아 둔다. 채널 사진만 한 번 더 부른다 —
+ *  영상 응답에는 채널 사진이 없다.
+ *
+ *  키가 없거나 API 가 죽으면 null 이다. 화면은 그때 예전처럼 글자만 보여준다 —
+ *  꾸밈 때문에 읽기가 막히면 안 된다.
+ */
+export type About = {
+  title: string; channel: string; channelId: string | null;
+  avatar: string | null; published: string | null; views: number | null;
+};
+
+export async function about(vid: string): Promise<About | null> {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key) return null;
+  try {
+    const r = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${vid}&key=${key}`,
+      { signal: AbortSignal.timeout(5000), next: { revalidate: 3600 } });
+    if (!r.ok) return null;
+    const item = (await r.json()).items?.[0];
+    if (!item) return null;
+    const channelId: string | null = item.snippet?.channelId ?? null;
+    return {
+      title: item.snippet?.title ?? vid,
+      channel: item.snippet?.channelTitle ?? "채널 미확인",
+      channelId,
+      avatar: channelId ? await avatarOf(channelId, key) : null,
+      published: item.snippet?.publishedAt ?? null,
+      views: Number(item.statistics?.viewCount ?? 0) || null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** 채널 사진. 채널은 거의 안 바뀐다 — 하루에 한 번만 물어본다. */
+async function avatarOf(channelId: string, key: string): Promise<string | null> {
+  try {
+    const r = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${key}`,
+      { signal: AbortSignal.timeout(5000), next: { revalidate: 86400 } });
+    if (!r.ok) return null;
+    const t = (await r.json()).items?.[0]?.snippet?.thumbnails;
+    return t?.medium?.url ?? t?.default?.url ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** 1234567 → "123만". 정확한 자릿수는 여기서 쓸모가 없다 — 규모만 보이면 된다. */
+export function countText(n: number): string {
+  if (n >= 100000000) return `${Math.floor(n / 10000000) / 10}억`;
+  if (n >= 10000) return `${Math.floor(n / 1000) / 10}만`;
+  if (n >= 1000) return `${Math.floor(n / 100) / 10}천`;
+  return `${n}`;
+}
+
+/** ISO 날짜 → "2026년 9월". 날짜까지 적으면 줄이 길어지고, 어차피 대략만 필요하다. */
+export function whenText(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
+}

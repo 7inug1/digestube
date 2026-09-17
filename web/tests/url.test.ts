@@ -18,3 +18,13 @@ test("여러 모양의 유튜브 주소에서 영상 번호를 찾는다", () =>
   ];
   for (const [url, want] of cases) assert.equal(videoIdOf(url), want, url);
 });
+
+test("숫자와 날짜를 사람이 읽는 크기로 줄인다", async () => {
+  const { countText, whenText } = await import("../src/lib/youtube");
+  assert.equal(countText(523), "523");
+  assert.equal(countText(12800), "1.2만");
+  assert.equal(countText(1_234_567), "123.4만");
+  assert.equal(countText(234_000_000), "2.3억");
+  assert.equal(whenText("2026-09-17T00:00:00Z"), "2026년 9월");
+  assert.equal(whenText("이상한값"), "");
+});

@@ -5,7 +5,14 @@ import YouTube from "./YouTube";
 
 type Chunk = { seq: number; t: number; t_end: number; text: string };
 type Outline = { seq: number; t: number; label: string };
-type Meta = { title: string; channel: string; seconds: number; read: string; mode?: string | null; lang?: string | null };
+type Meta = {
+  title: string; channel: string; seconds: number; read: string;
+  mode?: string | null; lang?: string | null;
+  /** 유튜브에서 받아 온 것들. 없으면 없는 대로 그린다 — 꾸밈 때문에 읽기가 막히면 안 된다. */
+  avatar?: string | null; published?: string | null; views?: string | null;
+  /** 세 줄 요약. 목차 위에 둔다 — 목차보다 먼저 읽히는 것이 순서에 맞다. */
+  tldr?: string[] | null;
+};
 
 const mm = (s: number) =>
   `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -150,7 +157,12 @@ export default function Reader({ vid, chunks, outline, meta }: {
   return (
     <div className="mx-auto grid max-w-[1320px] gap-8 md:grid-cols-[560px_1fr] md:gap-14">
       <aside className="md:h-full">
-        <div className="grid gap-4 md:sticky md:top-[76px]">
+        {/* 영상·제목·목차를 합치면 화면보다 길어진다. 붙여만 두면(sticky) 넘치는 만큼이
+            화면 밖에 남아 목차 아래쪽에 닿을 방법이 없다 — 오른쪽 글을 끝까지 내려야
+            겨우 보였다. 화면 높이로 잘라 두고 안에서 따로 구르게 한다.
+            좁은 화면에서는 위아래로 쌓이므로 한 덩어리로 구른다. */}
+        <div className="grid gap-4 md:sticky md:top-[76px] md:max-h-[calc(100vh-92px)]
+                        md:overflow-y-auto md:pr-1">
           <div className="-mx-5 md:mx-0">
             {/* 바깥 상자는 접히든 말든 늘 같은 높이를 갖는다. 높이가 흔들리면
                 마커가 화면 경계를 오가며 접힘·펼침이 반복된다. */}
@@ -234,16 +246,29 @@ export default function Reader({ vid, chunks, outline, meta }: {
               {meta.title}
             </h1>
             <div className="mt-2 flex items-center gap-2">
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-muted text-[10px] font-bold text-mfg">
-                {meta.channel.slice(0, 1)}
-              </span>
-              <span className="text-[12.5px] font-medium">{meta.channel}</span>
-              <span className="text-[11.5px] text-mfg">· {mm(meta.seconds)} · {meta.read} 분량</span>
+              {/* 채널 사진이 오면 그걸 쓴다. 첫 글자만 넣은 동그라미는 "누가 한 말인지"를
+                  알려주지 못하는데, 말한 사람이 누구인지가 이 글의 절반이다. */}
+              {meta.avatar ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={meta.avatar} alt="" loading="lazy"
+                     className="h-6 w-6 shrink-0 rounded-full bg-muted object-cover" />
+              ) : (
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-muted text-[10px] font-bold text-mfg">
+                  {meta.channel.slice(0, 1)}
+                </span>
+              )}
+              <span className="truncate text-[12.5px] font-medium">{meta.channel}</span>
+              <span className="shrink-0 text-[11.5px] text-mfg">· {mm(meta.seconds)} · {meta.read} 분량</span>
               <a href={`https://youtu.be/${vid}`} target="_blank" rel="noreferrer"
                  className="ml-auto text-[11.5px] text-mfg underline underline-offset-2 hover:text-fg">
                 유튜브에서 보기
               </a>
             </div>
+            {(meta.published || meta.views) && (
+              <p className="mt-1.5 text-[11.5px] text-mfg">
+                {[meta.published, meta.views && `조회 ${meta.views}회`].filter(Boolean).join(" · ")}
+              </p>
+            )}
           </div>
 
           {/* 전사 방식은 읽는 사람에게 필요한 정보일 때만 적는다.
@@ -253,29 +278,47 @@ export default function Reader({ vid, chunks, outline, meta }: {
             <p className="text-[11.5px] text-mfg">기존 자막 · 번역 자막일 수 있음</p>
           )}
 
+          {/* 목차는 왼쪽이다. 한 번 읽고 마는 요약과 달리 읽는 내내 돌아오는 곳이라,
+              글과 같이 흘러가면 매번 위로 되짚어 올라가야 한다.
+              붙어 있는 칸(sticky)에 두면 언제든 손이 닿는다. */}
           {outline.length > 0 && (
             <div className="rounded-xl bg-muted/60 p-4">
               <div className="mb-2 text-[11px] uppercase tracking-[.12em] text-mfg">목차</div>
-              <div className="md:max-h-[34vh] md:overflow-y-auto">
-                <ol className="grid">
+              <ol className="grid">
                   {outline.map((o, i) => (
                     <li key={o.seq}>
                       <button onClick={() => jump(o.t, o.seq)}
                               className="flex w-full items-baseline gap-2 rounded px-1 py-1 text-left hover:bg-bg">
                         <span className="w-4 shrink-0 font-mono text-[11px] text-mfg">{i + 1}</span>
-                        <span className="text-[13px] leading-[1.6]">{o.label}</span>
-                        <span className="ml-auto shrink-0 font-mono text-[10.5px] text-mfg">{mm(o.t)}</span>
+                        <span className="flex-1 text-[13px] leading-[1.6]">{o.label}</span>
+                        <span className="shrink-0 font-mono text-[10.5px] text-mfg">{mm(o.t)}</span>
                       </button>
                     </li>
                   ))}
-                </ol>
-              </div>
+              </ol>
             </div>
           )}
         </div>
       </aside>
 
       <div>
+        {/* 요약은 글 바로 위다. 읽기 시작하기 전에 한 번 보는 것이라, 왼쪽에 두면
+            영상·제목 다음으로 밀리고 좁은 화면에서는 더 그렇다.
+            한 번 읽고 마는 것이라 붙여 둘 이유도 없다 — 목차와 반대다. */}
+        {meta.tldr && meta.tldr.length > 0 && (
+          <div className="mb-6 rounded-xl bg-muted/60 p-4">
+            <p className="mb-2 text-[11.5px] font-semibold text-mfg">세 줄 요약</p>
+            <ul className="grid gap-1.5">
+              {meta.tldr.map((line, i) => (
+                <li key={i} className="flex gap-2 text-[13px] leading-[1.6]">
+                  <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-mfg" />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {chunks.map((c) => {
           const on = selectedSeq === c.seq;
           const head = heads.get(c.seq);

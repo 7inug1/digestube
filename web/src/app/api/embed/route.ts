@@ -1,3 +1,4 @@
+import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { embed } from "@/lib/embed";
 import { chunksWithoutEmbedding, getVideo, refreshVideoStatus, saveEmbeddingBatch } from "@/lib/store";
@@ -20,6 +21,6 @@ export async function POST(req: Request) {
     const left = (await chunksWithoutEmbedding(vid)).length;
     return NextResponse.json({vid,done:todo.length,left});
   } catch(e) {
-    return NextResponse.json({error:(e as Error).message}, {status:502});
+    return NextResponse.json({error: saySorry(e, "embed")}, {status:502});
   }
 }

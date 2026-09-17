@@ -1,3 +1,4 @@
+import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { chunk, stats } from "@/lib/chunker";
 import { getRaw, rechunk } from "@/lib/store";
@@ -36,6 +37,6 @@ export async function POST(req: Request) {
     await rechunk(vid, crypto.randomUUID(), cs);
     return NextResponse.json({ vid, ...stats(cs) });
   } catch (e) {
-    return NextResponse.json({ error: (e as Error).message }, { status: 502 });
+    return NextResponse.json({ error: saySorry(e, "rechunk") }, { status: 502 });
   }
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { browserClient } from "@/lib/auth/client";
+import { saySorry } from "@/lib/errors";
 
 /** 비밀번호 없이 메일로 온 링크를 눌러 들어온다. 외울 것도, 잊을 것도 없다. */
 export default function Login() {
@@ -15,11 +16,24 @@ export default function Login() {
     const to = email.trim();
     if (!to) return;
     setState("sending");
+    // 운영 링크가 Supabase 의 localhost Site URL 로 되돌아가지 않도록 배포 주소를
+    // 명시한다. 로컬에서는 환경변수를 비워 현재 origin 을 그대로 쓴다.
+    const site = process.env.NEXT_PUBLIC_SITE_URL?.trim() || location.origin;
     const { error } = await browserClient().auth.signInWithOtp({
       email: to,
-      options: { emailRedirectTo: `${location.origin}/auth/callback` },
+      options: { emailRedirectTo: new URL("/auth/callback", site).toString() },
     });
-    if (error) { setState("error"); setMsg(error.message); return; }
+    if (error) {
+      setState("error");
+      if (error.code === "over_email_send_rate_limit") {
+        setMsg("로그인 메일 발송 한도에 도달했어요. 한 시간 뒤 다시 시도해 주세요.");
+      } else if (error.code === "email_address_not_authorized") {
+        setMsg("현재는 등록된 테스트 이메일로만 로그인할 수 있어요.");
+      } else {
+        setMsg(saySorry(error, "login"));
+      }
+      return;
+    }
     setState("sent");
   }
 

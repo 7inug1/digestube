@@ -18,9 +18,11 @@ const SCHEMA = `아래는 유튜브 영상의 전사문이다. 문단마다 번�
 
 이 영상의 목차를 만들어라. 다음 JSON 형식으로만 답한다.
 
-{"goal":"영상이 하려는 말 한 문장","points":[{"label":"짧은 소제목","quote":"그 대목의 핵심 문장을 전사문에서 글자 그대로 옮김"}]}
+{"goal":"영상이 하려는 말 한 문장","tldr":["요점 한 줄","요점 한 줄","요점 한 줄"],"points":[{"label":"짧은 소제목","quote":"그 대목의 핵심 문장을 전사문에서 글자 그대로 옮김"}]}
 
 규칙
+- tldr 은 3~4줄. 한 줄에 요점 하나씩, 각 줄은 40자 이내로 그 자체로 말이 되게 쓴다.
+  "이 영상은 ~을 다룬다" 같은 소개말이 아니라, 영상이 실제로 한 주장을 적는다.
 - quote 는 전사문에 있는 문장을 토씨 하나 안 틀리고 그대로 옮긴다. 줄이거나 이어 붙이거나 의역하면 버려진다.
 - quote 는 "이 문장만 읽어도 무슨 말인지 통하는" 핵심 문장을 고른다. '두 번째는', '자 그럼' 같은 전환 문구는 고르지 않는다.
 - label 은 한국어 25자 이내. 번호를 붙이지 않는다.
@@ -41,6 +43,8 @@ function key(): string {
 
 export type WholeResult = {
   goal: string | null;
+  /** 세 줄 요약. 목차와 같은 호출에서 받는다 — 따로 부르면 값이 두 배다. */
+  tldr: string[];
   items: Omit<Outline, "video_id">[];
   /** 버린 항목 수와 이유 — 조용히 사라지면 나중에 원인을 못 찾는다. */
   dropped: string[];
@@ -73,7 +77,7 @@ export async function outlineWhole(
   if (c?.finishReason !== "STOP") throw new Error(`목차 응답 미완료: ${c?.finishReason}`);
   const raw = c.content?.parts?.map(p => p.text ?? "").join("") ?? "";
   const parsed = JSON.parse(raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1)) as
-    {goal?: string; points?: Point[]};
+    {goal?: string; tldr?: unknown; points?: Point[]};
 
   const dropped: string[] = [];
   const items: Omit<Outline, "video_id">[] = [];
@@ -94,6 +98,10 @@ export async function outlineWhole(
 
   return {
     goal: typeof parsed.goal === "string" ? parsed.goal.trim() : null,
+    // 네 줄까지만 받는다. 더 길면 요약이 아니라 또 하나의 글이 된다.
+    tldr: (Array.isArray(parsed.tldr) ? parsed.tldr : [])
+      .filter((x): x is string => typeof x === "string" && x.trim().length > 0)
+      .map(x => x.trim()).slice(0, 4),
     items, dropped, ms: Date.now() - started,
     usage: {
       input: d.usageMetadata?.promptTokenCount ?? 0,
