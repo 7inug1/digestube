@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Found, { type FoundHit } from "./Found";
 import { mine } from "@/lib/mine";
 import { saySorry } from "@/lib/errors";
+import { Bar } from "./Skeleton";
 
 /** 검색 결과. 범위가 "내 라이브러리"라 로그인하지 않은 사람은 이 브라우저 목록을
  *  같이 보내야 한다 — 그건 서버가 모르니 화면이 뜬 뒤에 물어본다. */
@@ -35,7 +36,28 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
     );
   }
   if (failed) return <p className="mt-6 text-small text-mfg">검색에 실패했어요 — {failed}</p>;
-  if (hits === null) return <p className="mt-6 text-small text-mfg">찾는 중…</p>;
+  // 결과 카드와 같은 모양(썸네일·제목·문단 두 덩이)으로 자리를 잡아 둔다
+  if (hits === null) {
+    return (
+      <div className="mt-6 grid gap-3">
+        {[0, 1].map(c => (
+          <article key={c} className="rounded-xl border border-line p-4 sm:p-5">
+            <div className="flex items-center gap-3">
+              <div className="h-[42px] w-[74px] shrink-0 animate-pulse rounded-md bg-muted"
+                   style={{ animationDelay: `${c * 120}ms` }} />
+              <div className="grid min-w-0 flex-1 gap-1.5">
+                <Bar w="56%" h={12} delay={c * 120 + 80} />
+                <Bar w="32%" h={10} delay={c * 120 + 160} />
+              </div>
+            </div>
+            <div className="mt-4 grid gap-2">
+              {[100, 96, 72].map((w, i) => <Bar key={i} w={`${w}%`} delay={c * 120 + 240 + i * 80} />)}
+            </div>
+          </article>
+        ))}
+      </div>
+    );
+  }
 
   const grouped = new Map<string, FoundHit[]>();
   for (const h of hits) grouped.set(h.video_id, [...(grouped.get(h.video_id) ?? []), h]);

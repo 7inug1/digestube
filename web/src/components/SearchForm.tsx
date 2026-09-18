@@ -29,7 +29,7 @@ export default function SearchForm({ q, vid, small }: { q: string; vid?: string;
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && go()}
-        placeholder={vid ? "이 영상에서 찾기" : "뜻으로 찾아요 — 영상에 없는 표현으로 물어봐도 돼요"}
+        placeholder={vid ? "이 영상에서 궁금한 내용을 찾아보세요" : "뜻으로 찾아요 — 영상에 없는 표현으로 물어봐도 돼요"}
         className={`${h} min-w-0 flex-1 rounded-lg border border-line bg-muted/50 px-3.5
                    text-[13.5px] outline-none placeholder:text-mfg focus:border-fg focus:bg-bg`}
       />

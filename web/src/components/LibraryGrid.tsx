@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import VideoThumb from "./VideoThumb";
+import { CardSkeleton } from "./Skeleton";
 import { forget, mine } from "@/lib/mine";
 import type { Card } from "@/app/api/library/route";
 
@@ -29,7 +30,15 @@ export default function LibraryGrid({ signedIn }: { signedIn: boolean }) {
     setCards(c => (c ?? []).filter(v => v.id !== id));
   }
 
-  if (cards === null) return <p className="text-small text-mfg">불러오는 중…</p>;
+  // 들어올 카드와 같은 모양으로 자리를 잡아 둔다. 글자로 "불러오는 중"이라 적으면
+  // 목록이 들어오는 순간 화면이 통째로 바뀐다.
+  if (cards === null) {
+    return (
+      <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+        {Array.from({ length: 6 }, (_, i) => <CardSkeleton key={i} delay={i * 90} />)}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">

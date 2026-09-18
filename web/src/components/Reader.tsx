@@ -94,6 +94,15 @@ export default function Reader({ vid, chunks, outline, meta }: {
     window.addEventListener("pointerup", up);
   }
 
+  /** 접힘이 풀리면 직접 쓴 인라인 값을 비운다.
+   *
+   *  끄고 크기를 바꾸는 동안 style 을 직접 썼는데, 원래 자리로 돌아갈 때 React 의
+   *  style 속성은 undefined 라 React 는 아무것도 지우지 않는다 — 자기가 쓴 값이
+   *  아니기 때문이다. 그래서 줄여 둔 폭이 그대로 남아 큰 화면에서도 작게 나왔다. */
+  useEffect(() => {
+    if (!mini) panel.current?.removeAttribute("style");
+  }, [mini]);
+
   /** 끄는 동안에는 React 를 거치지 않는다. 전환도 꺼서 손가락을 그대로 따라오게 한다. */
   const hold = (el: HTMLElement, style: Partial<CSSStyleDeclaration>) => {
     el.style.transition = "none";
@@ -323,7 +332,10 @@ export default function Reader({ vid, chunks, outline, meta }: {
         </div>
       </aside>
 
-      <div>
+      {/* 한 줄이 너무 길면 눈이 다음 줄 첫 글자를 못 찾는다. 넓은 화면에서 오른쪽 칸은
+          700px 를 넘는데, 한글 17px 기준 한 줄에 45자가 넘어간다. 종이책이 대개 35~40자다.
+          폭을 잡고 가운데 두면 화면이 넓어져도 읽는 리듬이 그대로다. */}
+      <div className="mx-auto w-full max-w-[40rem]">
         {/* 요약은 글 바로 위다. 읽기 시작하기 전에 한 번 보는 것이라, 왼쪽에 두면
             영상·제목 다음으로 밀리고 좁은 화면에서는 더 그렇다.
             한 번 읽고 마는 것이라 붙여 둘 이유도 없다 — 목차와 반대다. */}
