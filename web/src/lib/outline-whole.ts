@@ -96,6 +96,7 @@ export async function outlineWhole(
     // 제목이 붙을 자리는 "그 대목이 시작되는 문장"이다. 핵심 문장(quote)은 대개
     // 대목 한복판에 있어서, 거기에 붙이면 이야기가 이미 시작된 뒤에 제목이 나온다 —
     // 실제로 그래 보였다. start 를 먼저 찾고, 없거나 확인이 안 되면 quote 로 물러선다.
+    if (!chunks.some(ch => holds(quote, ch.text))) { dropped.push(`인용문 원문에 없음: ${label}`); continue; }
     const start = String(p.start ?? "").trim();
     const at = (start && chunks.find(ch => holds(start, ch.text))) || chunks.find(ch => holds(quote, ch.text));
     if (!at) { dropped.push(`원문에 없음: ${label}`); continue; }

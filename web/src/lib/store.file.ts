@@ -117,3 +117,5 @@ export async function getRaw() {
 export async function rechunk() {
   throw new Error("파일 저장소는 읽기 전용이다.");
 }
+
+export const replaceOutline = upsertVideo;

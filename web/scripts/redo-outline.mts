@@ -7,7 +7,7 @@
  *  이야기가 한참 진행된 뒤에 제목이 나왔다(실측 최대 89초 늦음).
  *  요약(tldr)도 같은 호출에서 오므로 함께 새로 쓴다 — 값이 더 들지 않는다.
  */
-import { listVideos, getVideo, saveOutlineBatch, saveTldr, refreshVideoStatus } from "../src/lib/store.supabase";
+import { listVideos, getVideo, replaceOutline, refreshVideoStatus } from "../src/lib/store.supabase";
 import { outlineWhole } from "../src/lib/outline-whole";
 
 const go = process.argv.includes("--go");
@@ -24,8 +24,8 @@ for (const v of videos) {
   try {
     const whole = await outlineWhole(full.chunks);
     if (whole.items.length < 2) { console.log(`- ${v.id}: 목차가 너무 적어 건너뜀`); failed++; continue; }
-    await saveOutlineBatch(v.id, full.revision ?? null, whole.items);
-    if (whole.tldr.length) await saveTldr(v.id, whole.tldr);
+    await replaceOutline(v.id, full.revision ?? null, whole.items, whole.tldr);
+
     await refreshVideoStatus(v.id, full.revision ?? null);
     done++;
     const was = (full.outline ?? []).map(o => mm(o.t)).join(" ");

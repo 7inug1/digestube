@@ -278,3 +278,8 @@ export async function rechunk(vid: string, revision: string, chunks: NewChunk[])
     throw new Error("영상을 찾지 못했다");
   }
 }
+
+/** Replace a complete outline and its summary atomically for the same transcript revision. */
+export async function replaceOutline(vid: string, revision: string | null, items: Omit<Outline,"video_id">[], tldr: string[]) {
+  if (!await mutation("replace_outline", {p_vid:vid,p_revision:revision,p_items:items,p_tldr:tldr})) throw new Error("전사문이 교체됐다. 다시 시도해 주세요.");
+}

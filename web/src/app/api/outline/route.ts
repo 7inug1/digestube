@@ -2,7 +2,7 @@ import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { label } from "@/lib/outline";
 import { outlineWhole } from "@/lib/outline-whole";
-import { getVideo, refreshVideoStatus, saveOutlineBatch, saveTldr } from "@/lib/store";
+import { getVideo, refreshVideoStatus, saveOutlineBatch, replaceOutline } from "@/lib/store";
 
 // Four paragraphs at a time, each with at most two 20-second calls.
 /** 아무나 부를 수 있지만 남은 일이 있을 때만 모델을 부른다 — 목차가 다 차 있으면
@@ -16,15 +16,19 @@ export async function POST(req: Request) {
     const v = await getVideo(vid);
     if (!v) return NextResponse.json({error:"없는 영상입니다."}, {status:404});
     if (!v.chunks.length) return NextResponse.json({error:"문단이 없습니다."}, {status:400});
+    if (v.outline_complete) {
+      await refreshVideoStatus(vid, v.revision ?? null);
+      return NextResponse.json({vid,n:v.chunks.length,done:0,kept:v.outline.length,left:0});
+    }
     // 목차는 전사문 전체를 한 번에 보고 만든다(notes/30). 문단마다 부르면
     // 앞뒤 맥락을 못 봐서 제목이 겹치고 개수도 문단 수에 묶인다.
     if (!v.outline.length) {
       try {
         const whole = await outlineWhole(v.chunks);
         if (whole.items.length >= 2) {
-          await saveOutlineBatch(vid,v.revision ?? null,whole.items);
+          await replaceOutline(vid,v.revision ?? null,whole.items,whole.tldr);
           // 요약은 목차와 같은 호출에서 왔다. 여기서 같이 저장한다 — 따로 부르면 값이 두 배다.
-          if (whole.tldr.length) await saveTldr(vid, whole.tldr);
+
           await refreshVideoStatus(vid,v.revision ?? null);
           return NextResponse.json({vid,n:v.chunks.length,done:whole.items.length,
             kept:whole.items.length,left:0,dropped:whole.dropped.length});
