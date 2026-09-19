@@ -10,54 +10,50 @@ import { saveTranscriptSource } from "@/lib/transcript-source";
 import { meta } from "@/lib/youtube";
 import { checkQuota, checkVideo, quotaKeys, spendQuota, SLICE_SECONDS } from "@/lib/limits";
 import { currentUser } from "@/lib/auth/server";
-import { addToLibrary } from "@/lib/store";
+import { addToLibrary, recordFailure } from "@/lib/store";
+import { describe, type FailureStage } from "@/lib/failure";
+import { ndjson } from "@/lib/ndjson";
 
 // Gemini 전사는 영상 길이의 10~15% 가 걸린다(실측: 10.9분 영상 96초).
 // fluid compute 가 켜진 Hobby 플랜의 상한이 300초다.
 export const maxDuration = 300;
+/** 이 시각 안에 끝낸다(한도 300초에서 10초 여유). 안쪽 호출 타임아웃을 여기에 맞춘다 —
+ *  전사 280초 + 문단 나누기 240초를 그대로 두면 합이 한도를 넘어, 느린 날엔 서버가 먼저
+ *  끊겨 문장 경계 폴백에도 못 간다. */
+const BUDGET_MS = 290_000;
+/** 전사가 끝난 뒤 문단 나누기·저장에 남겨 둘 시간. */
+const SAVE_RESERVE_MS = 25_000;
+/** 문단 나누기가 끝난 뒤 제목 조회·원본 보관·저장에 남겨 둘 시간. */
+const STORE_RESERVE_MS = 8_000;
 
-async function save(vid: string, token: string, r: Result, lang: string | null) {
+/** 등록을 되돌리고 무엇이 어디서 실패했는지 남긴다. 기록이 실패해도 응답은 막지 않는다. */
+async function fail(vid: string, token: string, e: unknown, stage: FailureStage) {
+  await cancelIngest(vid, token).catch(() => console.error("Could not clear ingest reservation"));
+  await recordFailure(vid, describe(e, stage)).catch(err => console.error(`실패 기록 실패: ${(err as Error).message}`));
+}
+
+async function save(vid: string, token: string, r: Result, lang: string | null, until?: number) {
   const prepared = prepareTranscript(r, lang);
   // 전사는 발화 조각까지만 만든다. 읽기 화면의 문단은 주제 경계 모델이
   // 고르고, 모델 호출이 실패하면 topicChunk 내부에서 기존 코드 방식으로
   // 되돌아간다. 새로 등록하는 영상과 재구축한 코퍼스가 같은 경로를 쓴다.
-  const topic = await topicChunk(prepared.raw);
+  const topic = await topicChunk(prepared.raw, until === undefined ? undefined : until - STORE_RESERVE_MS);
   const m = await meta(vid);
   await saveTranscriptSource(vid, token, r, lang);
   await finishIngest(vid, token, {
     id:vid, title:m?.title ?? null, channel:m?.channel ?? null, lang:r.lang ?? null,
     pieces:prepared.pieces, chars:prepared.chars, raw:prepared.raw,
   }, topic.chunks);
+  // 다시 등록해서 성공했으면 지난 실패 기록을 지운다
+  await recordFailure(vid, null).catch(err => console.error(`실패 기록 정리 실패: ${(err as Error).message}`));
   return {
     vid, chunks:topic.chunks.length, chars:prepared.chars,
     chunking:topic.source, chunkModel:topic.model,
   };
 }
 
-/** 받아쓰는 동안 한 줄씩 흘려보낸다. 줄마다 JSON 하나(NDJSON) —
- *  SSE 는 형식이 더 있지만 여기선 한쪽으로만 보내면 되니 줄바꿈이면 충분하다.
- *  결과와 값은 통짜 방식과 같다. 다른 것은 기다리는 동안 무엇이 보이느냐다. */
-function streamed(run: (send: (o: unknown) => void) => Promise<void>) {
-  const encoder = new TextEncoder();
-  const stream = new ReadableStream({
-    async start(controller) {
-      const send = (o: unknown) => controller.enqueue(encoder.encode(JSON.stringify(o) + "\n"));
-      try { await run(send); }
-      catch (e) { send({ t: "error", error: saySorry(e, "ingest-stream") }); }
-      finally { controller.close(); }
-    },
-  });
-  return new Response(stream, {
-    headers: {
-      "content-type": "application/x-ndjson; charset=utf-8",
-      // 중간 서버가 모아서 한 번에 보내면 스트리밍이 의미가 없어진다
-      "cache-control": "no-cache, no-transform",
-      "x-accel-buffering": "no",
-    },
-  });
-}
-
 export async function POST(req: Request) {
+  const until = Date.now() + BUDGET_MS;
   let body;
   try { body = await req.json(); } catch { return NextResponse.json({error:"입력을 확인해 주세요."}, {status:400}); }
   const vid = typeof body?.url === "string" ? videoId(body.url) : null;
@@ -72,7 +68,7 @@ export async function POST(req: Request) {
   if (body.stream === true && provider() === "gemini") {
     const from = Number(body.from ?? 0) || 0;
     const first = from === 0;
-    return streamed(async send => {
+    return ndjson("ingest-stream", async send => {
       const existing = await getVideo(vid);
       // "이미 있다"는 문단까지 만들어진 것만이다. status 로만 보면 만들다 만 영상도
       // 다 된 것으로 세어, 화면이 다시 그리고 다시 만들기를 반복한다.
@@ -114,10 +110,13 @@ export async function POST(req: Request) {
         }
       }
 
+      let stage: FailureStage = "transcribe";
       try {
         const url = `https://www.youtube.com/watch?v=${vid}`;
         const range = total > SLICE_SECONDS ? { from, to } : undefined;
-        const { result } = await transcribeStream(url, seg => send({ t: "seg", start: seg.start, text: seg.text }), range);
+        const { result } = await transcribeStream(url, seg => send({ t: "seg", start: seg.start, text: seg.text }), range,
+          until - SAVE_RESERVE_MS);
+        stage = "spend_quota";
         // Gemini 는 늘 조각 배열을 준다. Result 의 content 는 옛 제공자 때문에 문자열도
         // 될 수 있는 타입이라 여기서 한 번 좁힌다.
         const got = Array.isArray(result.content) ? result.content : [];
@@ -127,24 +126,27 @@ export async function POST(req: Request) {
         const last = !range || to >= total;
         if (!last) {
           // 여기까지 받은 것을 남긴다. 다음 구간에서 끊겨도 처음부터 다시 하지 않는다.
+          stage = "save_slice";
           await appendRaw(vid, got);
           send({ t: "slice", vid, token: mark, from, to, total, next: to });
           return;
         }
         // 마지막 구간. 앞서 쌓아 둔 것과 합쳐서 문단·목차로 넘긴다.
+        stage = "save";
         const before = range ? ((await getRaw(vid)) ?? []) : [];
         const whole = { lang: result.lang, content: [...before, ...got] };
-        const done = await save(vid, mark, whole, null);
+        const done = await save(vid, mark, whole, null, until);
         if (me) await addToLibrary(me.id, [vid]);
         send({ t: "done", ...done });
       } catch (e) {
-        await cancelIngest(vid, mark).catch(() => console.error("Could not clear ingest reservation"));
+        await fail(vid, mark, e, stage);
         send({ t: "error", error: saySorry(e, "ingest-slice") });
       }
     });
   }
 
   let reserved = false;
+  let stage: FailureStage = "transcribe";
   try {
     // Preflight avoids a paid request and gives a useful link even before replacement.
     const existing = await getVideo(vid);
@@ -174,29 +176,35 @@ export async function POST(req: Request) {
     reserved = true;
     const url = `https://www.youtube.com/watch?v=${vid}`;
     if (source === "gemini") {
-      const r = await transcribe(url);
+      const r = await transcribe(url, until - SAVE_RESERVE_MS);
+      stage = "spend_quota";
       // 전사가 돌아온 뒤에 센다. 그 전에 세면 구글이 503 으로 튕긴 것도 깎인다 —
       // 실제로 그랬다. 전사 뒤 저장이 실패하는 건 드물고, 그때는 비용이 나갔으니 깎는 게 맞다.
       await spendQuota(keys, video.seconds);
-      const done = await save(vid,token,r,null);
+      stage = "save";
+      const done = await save(vid,token,r,null,until);
       const me = await currentUser();
       if (me) await addToLibrary(me.id, [vid]);
       return NextResponse.json({state:"done",...done});
     }
+    stage = "spend_quota";
     await spendQuota(keys, video.seconds);
+    stage = "supadata_start";
     const r = await start(url, settings());
     if (r.state === "working") {
       await setIngestJob(vid, token, r.job);
       return NextResponse.json({state:"working",vid,job:r.job,token});
     }
-    return NextResponse.json({state:"done",...(await save(vid,token,r.result,config.lang))});
+    stage = "save";
+    return NextResponse.json({state:"done",...(await save(vid,token,r.result,config.lang,until))});
   } catch (e) {
-    if (reserved) await cancelIngest(vid,token).catch(() => console.error("Could not clear ingest reservation"));
+    if (reserved) await fail(vid, token, e, stage);
     return NextResponse.json({error: saySorry(e, "ingest")}, {status:502});
   }
 }
 
 export async function GET(req: Request) {
+  const until = Date.now() + BUDGET_MS;
   const u = new URL(req.url);
   const job=u.searchParams.get("job"), vid=u.searchParams.get("vid"), token=u.searchParams.get("token");
   if (!job || !vid || !token) return NextResponse.json({error:"전사 작업 정보가 필요합니다."}, {status:400});
@@ -206,13 +214,13 @@ export async function GET(req: Request) {
     const r = await poll(job);
     if (r.state === "working") return NextResponse.json({state:"working",vid,job,token});
     if (r.state === "failed") {
-      await cancelIngest(vid,token);
+      await fail(vid, token, new Error(String(r.error ?? "전사 작업 실패")), "supadata_poll");
       return NextResponse.json({state:"failed",error:r.error}, {status:502});
     }
     try {
-      return NextResponse.json({state:"done",...(await save(vid,token,r.result,v.pending_lang ?? null))});
+      return NextResponse.json({state:"done",...(await save(vid,token,r.result,v.pending_lang ?? null,until))});
     } catch(e) {
-      await cancelIngest(vid,token);
+      await fail(vid, token, e, "save");
       throw e;
     }
   } catch(e) {

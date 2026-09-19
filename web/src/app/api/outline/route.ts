@@ -9,7 +9,13 @@ import { getVideo, refreshVideoStatus, saveOutlineBatch, replaceOutline } from "
  *  todo 가 비어 아무 값도 들지 않는다. 그래서 따로 잠그지 않았다.
  *  값이 드는 문(다시 전사·다시 나누기)은 /api/ingest 와 /api/rechunk 쪽이다. */
 export const maxDuration = 60;
+/** 한도 60초에서 5초 여유. 전체 목차는 앞 35초까지만 기다리고, 넘거나 실패하면
+ *  남은 시간으로 문단별 폴백을 돈다. 예전엔 전체 목차가 180초까지 기다려서, 느린 날엔
+ *  서버가 먼저 끊겨 폴백에 닿지 못했다. 평소 전체 목차는 3~10초다(2026-09-19 4편). */
+const BUDGET_MS = 55_000;
+const WHOLE_MS = 35_000;
 export async function POST(req: Request) {
+  const started = Date.now(), until = started + BUDGET_MS;
   try {
     const {vid} = await req.json();
     if (typeof vid !== "string") return NextResponse.json({error:"영상 번호가 필요합니다."}, {status:400});
@@ -24,7 +30,7 @@ export async function POST(req: Request) {
     // 앞뒤 맥락을 못 봐서 제목이 겹치고 개수도 문단 수에 묶인다.
     if (!v.outline.length) {
       try {
-        const whole = await outlineWhole(v.chunks);
+        const whole = await outlineWhole(v.chunks, started + WHOLE_MS);
         if (whole.items.length >= 2) {
           await replaceOutline(vid,v.revision ?? null,whole.items,whole.tldr);
           // 요약은 목차와 같은 호출에서 왔다. 여기서 같이 저장한다 — 따로 부르면 값이 두 배다.
@@ -41,7 +47,7 @@ export async function POST(req: Request) {
     const completed = new Set(v.outline.map(o=>o.seq));
     const todo = v.chunks.filter(c=>!completed.has(c.seq));
     const tried = todo.slice(0,4);
-    const items = await Promise.all(tried.map(c=>label(c)));
+    const items = await Promise.all(tried.map(c=>label(c, undefined, until)));
     // 확인이 안 되면 원문 첫 문장으로 채우고 source=fallback 으로 구분한다 — 줄이 비면
     // 그 대목으로 건너뛸 길이 사라진다. 폴백 수를 세어 품질 지표로 돌려준다.
     if (items.length) await saveOutlineBatch(vid,v.revision ?? null,items);

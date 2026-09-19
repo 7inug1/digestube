@@ -12,6 +12,7 @@
  *  문단이 없는 영상이 생기지 않게 한다.
  */
 import {chunk, type Chunk, type Piece} from "./chunker";
+import {timeoutFor} from "./deadline";
 
 const API = "https://generativelanguage.googleapis.com/v1beta";
 export const TOPIC_MODEL = process.env.TOPIC_CHUNK_MODEL ?? "gemini-3.8-flash";
@@ -66,7 +67,7 @@ function key(): string {
   return k.trim();
 }
 
-async function ask(prompt: string): Promise<string> {
+async function ask(prompt: string, until?: number): Promise<string> {
   const k = key();
   const r = await fetch(`${API}/models/${TOPIC_MODEL}:generateContent?key=${k}`, {
     method: "POST",
@@ -75,7 +76,7 @@ async function ask(prompt: string): Promise<string> {
       contents: [{parts: [{text: prompt}]}],
       generationConfig: {responseMimeType: "application/json", maxOutputTokens: 16000, temperature: 0},
     }),
-    signal: AbortSignal.timeout(240000),
+    signal: AbortSignal.timeout(timeoutFor("문단 나누기", 240000, until)),
   });
   const body = await r.text();
   if (!r.ok) throw new Error(`문단 나누기 ${r.status}: ${body.slice(0, 200).replaceAll(k, "***")}`);
@@ -101,7 +102,8 @@ function build(pieces: Piece[], starts: number[]): Chunk[] {
     chunk(pieces.slice(start - 1, (starts[i + 1] ?? pieces.length + 1) - 1), HARD_MAX, HARD_MAX));
 }
 
-export async function topicChunk(pieces: Piece[]): Promise<TopicResult> {
+/** until 을 주면 그 시각 안에 끝낸다. 시간이 모자라면 모델을 부르지 않고 문장 경계로 나눈다. */
+export async function topicChunk(pieces: Piece[], until?: number): Promise<TopicResult> {
   const started = Date.now();
   const problems: string[] = [];
   const done = (chunks: Chunk[], source: TopicResult["source"], starts: number[] | null): TopicResult =>
@@ -109,7 +111,7 @@ export async function topicChunk(pieces: Piece[]): Promise<TopicResult> {
 
   try {
     // 1) 큰 주제 경계
-    const first = parse<{starts?: number[]}>(await ask(TOPIC_PROMPT + numbered(pieces)));
+    const first = parse<{starts?: number[]}>(await ask(TOPIC_PROMPT + numbered(pieces), until));
     let starts = [...new Set(first.starts ?? [])].filter(n => Number.isInteger(n) && n >= 1 && n <= pieces.length)
       .sort((a, b) => a - b);
     if (starts[0] !== 1) starts = [1, ...starts];
@@ -125,7 +127,7 @@ export async function topicChunk(pieces: Piece[]): Promise<TopicResult> {
     if (groups.length) {
       const lines = groups.map(g =>
         `주제 ${g.topic}\n` + numbered(pieces.slice(g.start - 1, g.end - 1), g.start)).join("\n\n");
-      const second = parse<{topics?: {topic: number; starts: number[]}[]}>(await ask(REFINE_PROMPT + lines));
+      const second = parse<{topics?: {topic: number; starts: number[]}[]}>(await ask(REFINE_PROMPT + lines, until));
       const allowed = new Set(groups.flatMap(g =>
         Array.from({length: g.end - g.start}, (_, i) => g.start + i)));
       additions = (second.topics ?? []).flatMap(t => t.starts ?? [])

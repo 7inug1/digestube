@@ -9,6 +9,7 @@
  *  없으면 그 항목을 버린다. 항목이 너무 적게 남으면 문단별 방식으로 되돌린다.
  */
 import {holds} from "./verify";
+import {timeoutFor} from "./deadline";
 import type {Outline} from "./types";
 
 const API = "https://generativelanguage.googleapis.com/v1beta";
@@ -57,6 +58,7 @@ export type WholeResult = {
 
 export async function outlineWhole(
   chunks: {seq: number; t: number; text: string}[],
+  until?: number,
 ): Promise<WholeResult> {
   const started = Date.now();
   const body = chunks.map(c => `[${c.seq}] ${c.text}`).join("\n\n");
@@ -70,7 +72,7 @@ export async function outlineWhole(
       // 값이 드니 넉넉히 둔다 — 한도에 걸려 통째로 버리는 쪽이 훨씬 비싸다.
       generationConfig: {responseMimeType: "application/json", maxOutputTokens: 24000, temperature: 0},
     }),
-    signal: AbortSignal.timeout(180000),
+    signal: AbortSignal.timeout(timeoutFor("목차", 180000, until)),
   });
   const text = await r.text();
   if (!r.ok) throw new Error(`목차 ${r.status}: ${text.slice(0, 200).replaceAll(k, "***")}`);

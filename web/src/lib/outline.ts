@@ -7,6 +7,7 @@
  * 지난 비교 결과와 나란히 놓을 수 없다. 되돌리려면 OUTLINE_PROVIDER=anthropic.
  */
 import { holds } from "./verify";
+import { timeoutFor } from "./deadline";
 import type { Outline } from "./types";
 
 const PROVIDER = (process.env.OUTLINE_PROVIDER ?? "gemini") as "gemini" | "anthropic";
@@ -31,12 +32,12 @@ const PROMPT = `다음은 영상 전사에서 잘라낸 문단이다. 목차에 
 
 export type Labeled = Omit<Outline, "video_id">;
 
-async function callGemini(text: string): Promise<string> {
+async function callGemini(text: string, until?: number): Promise<string> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("GEMINI_API_KEY 가 없다");
   const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`, {
     method: "POST",
-    signal: AbortSignal.timeout(30000),
+    signal: AbortSignal.timeout(timeoutFor("목차", 30000, until)),
     headers: {"content-type": "application/json"},
     body: JSON.stringify({
       contents: [{parts: [{text: PROMPT.replace("{text}", text)}]}],
@@ -49,13 +50,13 @@ async function callGemini(text: string): Promise<string> {
   return d.candidates?.[0]?.content?.parts?.map(p => p.text ?? "").join("") ?? "";
 }
 
-async function callAnthropic(text: string): Promise<string> {
+async function callAnthropic(text: string, until?: number): Promise<string> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error("ANTHROPIC_API_KEY 가 없다");
 
   const r = await fetch(URL, {
     method: "POST",
-    signal: AbortSignal.timeout(20000),
+    signal: AbortSignal.timeout(timeoutFor("목차", 20000, until)),
     headers: {
       "x-api-key": key,
       "anthropic-version": "2023-06-01",
@@ -73,8 +74,8 @@ async function callAnthropic(text: string): Promise<string> {
   return (d.content ?? []).map((b: { text?: string }) => b.text ?? "").join("");
 }
 
-async function call(text: string): Promise<{ label: string; quote: string }> {
-  const out = PROVIDER === "gemini" ? await callGemini(text) : await callAnthropic(text);
+async function call(text: string, until?: number): Promise<{ label: string; quote: string }> {
+  const out = PROVIDER === "gemini" ? await callGemini(text, until) : await callAnthropic(text, until);
   // 시킨 형식을 안 지키는 일이 가끔 있다. 벤치마크에서 26회 중 1회였다.
   const m = /\{[\s\S]*\}/.exec(out);
   if (!m) throw new Error(`JSON 아님: ${out.slice(0, 120)}`);
@@ -98,12 +99,13 @@ export function fallbackTitle(text: string): string {
  *  (2026-09-13 결정: 이력서 문장을 제품 동작에 맞춰 고친다. 반대로 하지 않는다.) */
 export async function label(
   c: {seq:number;t:number;text:string},
-  generate: (text:string) => Promise<{label:string;quote:string}> = call,
+  generate: (text:string, until?:number) => Promise<{label:string;quote:string}> = call,
+  until?: number,
 ): Promise<Labeled> {
   const failures: string[] = [];
   for (let attempt=1;attempt<=2;attempt++) {
     try {
-      const result = await generate(c.text);
+      const result = await generate(c.text, until);
       if (!result.label || Array.from(result.label).length>25) { failures.push("invalid_label"); continue; }
       if (!holds(result.quote,c.text)) { failures.push("quote_mismatch"); continue; }
       return {seq:c.seq,t:c.t,...result,source:"model",attempts:attempt,failure:failures.join(",") || null};

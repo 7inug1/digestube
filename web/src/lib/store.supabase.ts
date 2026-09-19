@@ -260,6 +260,13 @@ export async function appendRaw(vid: string, pieces: {text: string; offset: numb
 }
 
 /** 세 줄 요약을 적는다. 목차와 같이 받으므로 목차를 저장한 뒤에 부른다. */
+/** 등록이 실패한 순간에만 한 칸을 채운다. 성공하면 비운다.
+ *  기록이 안 되어도 사용자 응답은 막지 않는다 — 부르는 쪽에서 catch 한다. */
+export async function recordFailure(vid: string, failure: import("./failure").Failure | null) {
+  const { error } = await db().from("video").update({ last_failure: failure }).eq("id", vid);
+  if (error) throw error;
+}
+
 export async function saveTldr(vid: string, lines: string[]) {
   const { error } = await db().from("video").update({ tldr: lines }).eq("id", vid);
   if (error) throw error;

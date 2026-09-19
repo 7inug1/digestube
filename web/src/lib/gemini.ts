@@ -8,6 +8,7 @@
  *  제약(데이터센터 IP 차단)을 우회하는 방식이다.
  */
 import type {Piece, Result} from "./supadata";
+import {timeoutFor} from "./deadline";
 
 const API = "https://generativelanguage.googleapis.com/v1beta";
 /** 모델을 고정한다. 바꾸면 다시 재야 한다 — 근거는 notes/26-transcription-model-compare.md.
@@ -64,8 +65,8 @@ function toPieces(segments: Segment[]): Piece[] {
 
 export type Usage = {promptTokenCount?: number; candidatesTokenCount?: number; thoughtsTokenCount?: number};
 
-export async function transcribe(videoUrl: string): Promise<Result> {
-  return (await transcribeWithUsage(videoUrl)).result;
+export async function transcribe(videoUrl: string, until?: number): Promise<Result> {
+  return (await transcribeWithUsage(videoUrl, until)).result;
 }
 
 /** 영상의 한 구간. 서버 한 번 실행이 300초까지라 긴 영상은 나눠서 받아쓴다.
@@ -73,7 +74,7 @@ export async function transcribe(videoUrl: string): Promise<Result> {
  *  그래서 이어 붙일 때 보정할 것이 없다. */
 export type Range = { from: number; to: number };
 
-function call(videoUrl: string, stream = false, range?: Range): Promise<Response> {
+function call(videoUrl: string, stream = false, range?: Range, until?: number): Promise<Response> {
   const path = stream ? "streamGenerateContent?alt=sse&" : "generateContent?";
   const file: Record<string, unknown> = { fileData: { fileUri: videoUrl } };
   if (range) file.videoMetadata = { startOffset: `${range.from}s`, endOffset: `${range.to}s` };
@@ -85,7 +86,7 @@ function call(videoUrl: string, stream = false, range?: Range): Promise<Response
       generationConfig: {responseMimeType: "application/json", maxOutputTokens: 65536, temperature: 0},
     }),
     // 실측 처리 시간은 영상 길이의 10~15% 였다(10.9분 영상 96초).
-    signal: AbortSignal.timeout(280000),
+    signal: AbortSignal.timeout(timeoutFor("전사", 280000, until)),
   });
 }
 
@@ -103,11 +104,12 @@ export async function transcribeStream(
   videoUrl: string,
   onSegment: (seg: Segment) => void,
   range?: Range,
+  until?: number,
 ): Promise<{result: Result; usage: Usage}> {
-  let r = await call(videoUrl, true, range);
+  let r = await call(videoUrl, true, range, until);
   if (r.status === 503 || r.status === 429) {
     await new Promise(res => setTimeout(res, 3000));
-    r = await call(videoUrl, true, range);
+    r = await call(videoUrl, true, range, until);
   }
   if (r.status === 503 || r.status === 429) {
     throw new Error("전사 서버가 지금 붐벼요. 잠시 뒤 다시 눌러주세요.");
@@ -203,13 +205,13 @@ function drain(json: string, already: number, emit: (seg: Segment) => void): num
 }
 
 /** 토큰 사용량까지 필요한 곳(재전사 스크립트·측정)에서 쓴다. */
-export async function transcribeWithUsage(videoUrl: string): Promise<{result: Result; usage: Usage}> {
-  let r = await call(videoUrl);
+export async function transcribeWithUsage(videoUrl: string, until?: number): Promise<{result: Result; usage: Usage}> {
+  let r = await call(videoUrl, false, undefined, until);
   // 503(혼잡)·429(속도 제한)는 구글 쪽 사정이고 비용도 없다. 3초 뒤 한 번만 더 두드린다.
   // 2026-09-16 운영에서 503 이 연달아 났는데 로컬은 4초 만에 됐다 — 경로 문제라 재시도가 먹힌다.
   if (r.status === 503 || r.status === 429) {
     await new Promise(res => setTimeout(res, 3000));
-    r = await call(videoUrl);
+    r = await call(videoUrl, false, undefined, until);
   }
   const body = await r.text();
   if (r.status === 503 || r.status === 429) {
