@@ -12,9 +12,10 @@
  *  지금은 자르지 않고 전부 돌려준다 — 점수를 눈으로 보고 정하려는 것이다.
  */
 import { embed, embedOne } from "./embed";
+import { rerank, reorder, RERANK_MODEL, RERANK_POOL, RERANK_TIMEOUT_MS } from "./rerank";
 import { search as searchStore, type Hit } from "./store";
 
-export type Found = Hit & { hl?: string; hl_score?: number };
+export type Found = Hit & { hl?: string; hl_score?: number; rerank_score?: number };
 
 const SPLIT = /(?<=[.!?。？！])\s+/;
 
@@ -81,4 +82,45 @@ export async function find(q: string, vid?: string, k = 3, ids?: string[]): Prom
   const hits = (await searchStore(qv, k, vid, ids)) as Found[];
   await highlight(qv, hits);
   return hits;
+}
+
+
+/** 화면에 먼저 낼 결과와, 나중에 다시 세울 후보.
+ *  후보는 벡터 순서로 RERANK_POOL 개를 받아 둔다. 문단을 한 번 더 가져오지 않으려는 것이다. */
+export type First = { query: string; qv: number[]; pool: Found[]; hits: Found[] };
+
+export async function findFirst(q: string, vid?: string, k = 3, ids?: string[]): Promise<First | null> {
+  const query = (q ?? "").trim();
+  if (!query) return null;
+  if (ids && !ids.length) return null;
+  const qv = await embedOne(query);
+  const pool = (await searchStore(qv, Math.max(k, RERANK_POOL), vid, ids)) as Found[];
+  const hits = pool.slice(0, k);
+  await highlight(qv, hits);
+  return { query, qv, pool, hits };
+}
+
+export type Refined = {
+  hits: Found[]; reranked: boolean; reason: "timeout" | "error" | "same" | "small" | null; model: string; ms: number;
+};
+
+/** 후보를 리랭커로 다시 세운다. 3초 안에 못 오거나 실패하면 벡터 순서를 그대로 둔다.
+ *  새로 올라온 문단만 짚을 문장을 찾는다 — 이미 보여 준 문단은 다시 계산하지 않는다. */
+export async function refine(first: First, k = 3, timeoutMs = RERANK_TIMEOUT_MS): Promise<Refined> {
+  const t0 = Date.now();
+  const keep = (reason: Refined["reason"]): Refined =>
+    ({ hits: first.hits, reranked: false, reason, model: RERANK_MODEL, ms: Date.now() - t0 });
+  if (first.pool.length <= 1) return keep("small");
+  const out = await rerank(first.query, first.pool.map(h => h.text), timeoutMs);
+  if ("error" in out) {
+    console.warn(`리랭크 생략(${out.error}): ${out.detail}`);
+    return keep(out.error);
+  }
+  first.pool.forEach((h, i) => { h.rerank_score = Math.round(out.scores[i] * 1000) / 1000; });
+  const top = reorder(first.pool, out.scores, k);
+  const key = (h: Found) => `${h.video_id}:${h.seq}`;
+  if (top.map(key).join() === first.hits.map(key).join()) return keep("same");
+  const need = top.filter(h => h.hl === undefined);
+  if (need.length) await highlight(first.qv, need, need.length);
+  return { hits: top, reranked: true, reason: null, model: RERANK_MODEL, ms: Date.now() - t0 };
 }
