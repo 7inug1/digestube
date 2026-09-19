@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import YouTube from "./YouTube";
+import YouTube, { type Controls } from "./YouTube";
 import SearchForm from "./SearchForm";
 
 type Chunk = { seq: number; t: number; t_end: number; text: string };
@@ -14,6 +14,28 @@ type Meta = {
   /** 세 줄 요약. 목차 위에 둔다 — 목차보다 먼저 읽히는 것이 순서에 맞다. */
   tldr?: string[] | null;
 };
+
+/** 접힌 띠의 작은 조작 단추. 손가락이 닿는 크기(40px)로 두고 그림만 바꿔 끼운다. */
+function Tap({ label, n, onClick, children }: {
+  label: string; n?: string; onClick: () => void; children: React.ReactNode;
+}) {
+  return (
+    <button onClick={onClick} aria-label={label}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-mfg
+                       transition hover:bg-muted hover:text-fg">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        {children}
+        {/* 숫자는 화살표 안쪽에 넣는다. 밖에 적으면 단추가 커지고 셋이 벌어진다 */}
+        {/* 숫자는 고리 한가운데. 고리를 거의 온전한 원으로 그리고 화살촉은 모서리로 뺐다 —
+            화살촉이 위로 솟으면 무게중심이 올라가 숫자가 아래로 처져 보인다.
+            central 로 세로 가운데를 맞추고, 숫자는 아래 획이 없어 0.6 만큼 내린다. */}
+        {n && <text x="12" y="12.6" textAnchor="middle" dominantBaseline="central" fontSize="7"
+                    fontWeight="700" letterSpacing="-.3" fill="currentColor" stroke="none">{n}</text>}
+      </svg>
+    </button>
+  );
+}
 
 const mm = (s: number) =>
   `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -45,6 +67,25 @@ export default function Reader({ vid, chunks, outline, meta }: {
      iframe 은 그대로 두고 감싼 상자의 자리만 바꾼다 — 다시 만들면 재생이 끊긴다. */
   const marker = useRef<HTMLDivElement>(null);
   const [mini, setMini] = useState(false);
+  /** 접힌 창을 화면 아래 띠로 더 접는다. iframe 은 그대로 살려 둬서 소리는 계속 나온다 —
+   *  글을 읽으며 듣는 사람에게는 그게 맞다.
+   *
+   *  동그라미로도 해 봤는데 글 위에 떠서 무언가를 늘 가렸다. 아래 띠는 자기 자리를
+   *  가지므로 가리는 것이 없고, 좌우로 옮길 이유도 사라진다. */
+  const [folded, setFolded] = useState(false);
+  /** 접힌 띠에는 유튜브 제 컨트롤이 안 보인다. 재생·정지·앞뒤 감기를 우리가 놓는다. */
+  const controls = useRef<Controls | null>(null);
+  const [playing, setPlaying] = useState(false);
+  /** 접힌 띠에 그릴 진행 위치. 띠를 보고 있을 때만 재고, 펴면 멈춘다 —
+   *  영상이 제 컨트롤을 보여 주는 동안에는 우리가 잴 이유가 없다. */
+  const [at, setAt] = useState({ now: 0, whole: 0 });
+  useEffect(() => {
+    if (!(mini && folded)) return;
+    const tick = () => setAt(controls.current?.at() ?? { now: 0, whole: 0 });
+    tick();
+    const id = setInterval(tick, 500);
+    return () => clearInterval(id);
+  }, [mini, folded]);
   useEffect(() => {
     const el = marker.current;
     if (!el) return;
@@ -100,6 +141,8 @@ export default function Reader({ vid, chunks, outline, meta }: {
    *  style 속성은 undefined 라 React 는 아무것도 지우지 않는다 — 자기가 쓴 값이
    *  아니기 때문이다. 그래서 줄여 둔 폭이 그대로 남아 큰 화면에서도 작게 나왔다. */
   useEffect(() => {
+    // 접어 둔 상태는 유지한다. 최소화한 건 본인 뜻이고, 다시 내려왔을 때 제멋대로
+    // 커져 있으면 읽던 자리를 가린다. 되돌리려면 동그라미를 한 번 누르면 된다.
     if (!mini) panel.current?.removeAttribute("style");
   }, [mini]);
 
@@ -163,17 +206,83 @@ export default function Reader({ vid, chunks, outline, meta }: {
             <div className="relative aspect-video w-full">
               <div ref={panel}
                 // 접힌 창은 작아서 플레이어의 최소 높이(210px)를 풀어야 비율이 맞는다.
-                className={mini
+                className={mini && folded
+                  // 화면 아래 띠. 영상은 띠 뒤에 가려 있고 소리만 난다.
+                  ? "fixed inset-x-0 bottom-0 z-40 h-16 overflow-hidden bg-bg shadow-[0_-4px_16px_rgba(0,0,0,.08)] [&_[data-testid=youtube-player]]:min-h-0 [&>div>p]:hidden"
+                  : mini
                   // 접힌 창에서는 플레이어 아래 안내문("자동 재생이 차단됐어요")을 숨긴다.
                   // 작은 창에 글이 붙으면 창이 영상보다 길어지고, 그 글이 아래 모서리의
                   // 크기 손잡이를 덮어 잡을 수 없게 된다.
                   ? "fixed z-40 overflow-hidden rounded-xl bg-bg shadow-2xl ring-1 ring-line [&_[data-testid=youtube-player]]:min-h-0 [&>div>p]:hidden"
                   : "absolute inset-0"}
-                style={mini
+                style={mini && folded
+                  // 끌던 중에 직접 쓴 값이 남아 있을 수 있어 여기서 못박는다
+                  ? {left: 0, right: 0, top: "auto", bottom: 0, width: "auto"}
+                  : mini
                   ? {width: `min(${size}px, 92vw)`, ...(spot ? {left: spot.x, top: spot.y} : {right: 12, bottom: 12}),
                      transition: "left .18s ease-out, top .18s ease-out"}
                   : undefined}>
-                {mini && (
+                {mini && folded && (
+                  // 영상 위를 덮는다. 뒤의 iframe 은 그대로 돌아가고 소리만 들린다.
+                  <div className="absolute inset-0 z-20 flex items-center gap-3 bg-bg px-3 pt-[3px]">
+                    {/* 진행 막대는 띠의 맨 윗변 그 자체다. 위에 테두리를 따로 두면 선이 둘로
+                        보이므로 테두리를 없애고, 이 막대의 바탕(bg-line)이 경계선 노릇을 한다.
+                        보이는 굵기는 3px, 누르는 자리는 아래로 넓힌다 — 손가락은 3px 를 못 맞춘다. */}
+                    <button aria-label="재생 위치 이동"
+                            onClick={e => {
+                              const box = e.currentTarget.getBoundingClientRect();
+                              if (at.whole) controls.current?.goTo(at.whole * ((e.clientX - box.left) / box.width));
+                            }}
+                            // button 은 안의 내용을 세로 가운데 둔다. 그대로 두면 16px 누르는 자리
+                            // 한가운데에 막대가 떠서 위로 6.5px 빈틈이 생긴다 — 맨 위에 붙인다.
+                            className="group/seek absolute inset-x-0 top-0 z-10 flex h-4 cursor-pointer items-start">
+                      <span className="block h-[3px] w-full bg-line transition-[height] group-hover/seek:h-1.5">
+                        <span className="block h-full bg-fg transition-[width] duration-500 ease-linear"
+                              style={{width: `${at.whole ? Math.min(100, (at.now / at.whole) * 100) : 0}%`}} />
+                      </span>
+                    </button>
+
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`https://i.ytimg.com/vi/${vid}/mqdefault.jpg`} alt=""
+                         className="h-8 w-14 shrink-0 rounded-md bg-muted object-cover" />
+
+                    {/* 제목은 넓을 때만. 좁은 화면에서는 시간이 더 쓸모 있다 —
+                        무엇을 듣는지는 이미 알고, 어디쯤인지가 궁금하다. */}
+                    <div className="min-w-0 flex-1">
+                      <p className="hidden truncate text-[13px] font-medium sm:block">{meta.title}</p>
+                      <p className="font-mono text-[11.5px] tabular-nums text-mfg">
+                        {mm(at.now)} <span className="opacity-50">/ {mm(at.whole || meta.seconds)}</span>
+                      </p>
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-0.5">
+                      <Tap label="10초 뒤로" n="10" onClick={() => controls.current?.nudge(-10)}>
+                        <path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" /><path d="M6.7 3v3.7h3.7" />
+                      </Tap>
+                      <button onClick={() => playing ? controls.current?.pause() : controls.current?.play()}
+                              aria-label={playing ? "일시정지" : "재생"}
+                              className="mx-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full
+                                         bg-fg text-bg transition hover:opacity-85">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                          {playing ? <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /> : <path d="M8 5.5v13l11-6.5z" />}
+                        </svg>
+                      </button>
+                      <Tap label="10초 앞으로" n="10" onClick={() => controls.current?.nudge(10)}>
+                        <path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" /><path d="M17.3 3v3.7h-3.7" />
+                      </Tap>
+                    </div>
+
+                    <button onClick={() => setFolded(false)} aria-label="영상 다시 보기"
+                            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg
+                                       text-mfg transition hover:bg-muted hover:text-fg">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                           strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <path d="m6 15 6-6 6 6" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+                {mini && !folded && (
                   <div onPointerDown={e => {
                          const el = panel.current;
                          const box = el?.getBoundingClientRect();
@@ -211,9 +320,18 @@ export default function Reader({ vid, chunks, outline, meta }: {
                       <circle cx="9" cy="12" r="1.6" /><circle cx="15" cy="12" r="1.6" />
                       <circle cx="9" cy="18" r="1.6" /><circle cx="15" cy="18" r="1.6" />
                     </svg>
+                    {/* 동그라미로 접는다. 닫지 않는 이유는 소리를 계속 듣는 사람이 있어서다 —
+                        닫아 버리면 재생이 끊기고 처음부터 다시 틀어야 한다. */}
+                    <button onClick={() => setFolded(true)} aria-label="영상 최소화"
+                      className="ml-auto grid h-5 w-5 place-items-center rounded hover:bg-white/20">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                           strokeWidth="2.4" strokeLinecap="round">
+                        <path d="M5 12h14" />
+                      </svg>
+                    </button>
                     <button onClick={() => window.scrollTo({top: 0, behavior: "smooth"})}
                       aria-label="영상 원래 자리로"
-                      className="ml-auto grid h-5 w-5 place-items-center rounded hover:bg-white/20">
+                      className="grid h-5 w-5 place-items-center rounded hover:bg-white/20">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                            strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="m6 15 6-6 6 6" />
@@ -221,8 +339,10 @@ export default function Reader({ vid, chunks, outline, meta }: {
                     </button>
                   </div>
                 )}
-                <YouTube videoId={vid} seek={seek} nonce={nonce} autoplay={nonce > 0} />
-                {mini && (
+                <YouTube videoId={vid} seek={seek} nonce={nonce} autoplay={nonce > 0}
+                                 onControls={c => { controls.current = c; }}
+                                 onPlaying={setPlaying} />
+                {mini && !folded && (
                   <div onPointerDown={e => {
                          const el = panel.current;
                          const box = el?.getBoundingClientRect();
@@ -335,7 +455,8 @@ export default function Reader({ vid, chunks, outline, meta }: {
       {/* 한 줄이 너무 길면 눈이 다음 줄 첫 글자를 못 찾는다. 넓은 화면에서 오른쪽 칸은
           700px 를 넘는데, 한글 17px 기준 한 줄에 45자가 넘어간다. 종이책이 대개 35~40자다.
           폭을 잡고 가운데 두면 화면이 넓어져도 읽는 리듬이 그대로다. */}
-      <div className="mx-auto w-full max-w-[40rem]">
+      {/* 아래 띠가 떠 있을 때는 글 끝에 그만큼 자리를 비운다 — 마지막 문단이 띠에 가린다 */}
+      <div className={`mx-auto w-full max-w-[40rem] ${mini && folded ? "pb-20" : ""}`}>
         {/* 요약은 글 바로 위다. 읽기 시작하기 전에 한 번 보는 것이라, 왼쪽에 두면
             영상·제목 다음으로 밀리고 좁은 화면에서는 더 그렇다.
             한 번 읽고 마는 것이라 붙여 둘 이유도 없다 — 목차와 반대다. */}

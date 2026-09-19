@@ -5,7 +5,24 @@ import { useEffect, useRef, useState } from "react";
 type Player = {
   seekTo(seconds:number,allowSeekAhead:boolean): void;
   playVideo(): void;
+  pauseVideo(): void;
+  getCurrentTime(): number;
+  getDuration(): number;
   destroy(): void;
+};
+
+/** 바깥에서 영상을 다룰 수 있게 내보내는 손잡이.
+ *  접힌 띠에서 재생·정지·앞뒤로 감기를 하려면 이게 필요하다 —
+ *  그 자리에는 유튜브 제 컨트롤이 보이지 않기 때문이다. */
+export type Controls = {
+  play(): void;
+  pause(): void;
+  /** 지금 위치에서 초 단위로 움직인다. 음수면 뒤로. */
+  nudge(seconds: number): void;
+  /** 그 지점으로 간다. 진행 막대를 눌렀을 때 쓴다. */
+  goTo(seconds: number): void;
+  /** 지금 위치와 전체 길이(초). 아직 안 잡혔으면 0. */
+  at(): { now: number; whole: number };
 };
 type PlayerOptions = {width:string;height:string;videoId:string;playerVars:Record<string,number|string>;events:{
   onReady:()=>void;onError:(event:{data:number})=>void;
@@ -57,6 +74,10 @@ type Props = {
   /** 사람이 재생을 시작했을 때. 만드는 화면이 "보는 중"인지 알아야 하기 때문이다 —
    *  보는 중에 화면을 갈아치우면 재생이 처음으로 돌아간다. */
   onPlay?:()=>void;
+  /** 손잡이를 건넨다. 플레이어가 없어지면 null 이 온다. */
+  onControls?:(c:Controls|null)=>void;
+  /** 재생 중인지 바뀔 때. 접힌 띠의 아이콘을 뒤집는 데 쓴다. */
+  onPlaying?:(playing:boolean)=>void;
 };
 /** Remount on retry/video change so old callbacks cannot affect the new player. */
 export default function YouTube(props:Props) {
@@ -64,7 +85,7 @@ export default function YouTube(props:Props) {
   return <PlayerSurface key={`${props.videoId}:${attempt}`} {...props} onRetry={()=>setAttempt(n=>n+1)} />;
 }
 
-function PlayerSurface({videoId,seek,nonce=0,autoplay=true,onPlay,onRetry}:Props&{onRetry:()=>void}) {
+function PlayerSurface({videoId,seek,nonce=0,autoplay=true,onPlay,onControls,onPlaying,onRetry}:Props&{onRetry:()=>void}) {
   const host=useRef<HTMLDivElement>(null);
   const player=useRef<Player|null>(null);
   const [ready,setReady]=useState(false);
@@ -90,18 +111,34 @@ function PlayerSurface({videoId,seek,nonce=0,autoplay=true,onPlay,onRetry}:Props
         width:"100%",height:"100%",videoId,
         playerVars:{rel:0,playsinline:1,start:Math.floor(safeSeek),origin:window.location.origin},
         events:{
-          onReady:()=>{if(!dead&&!failed){clearTimeout(timer);setReady(true);}},
+          onReady:()=>{
+            if(dead||failed)return;
+            clearTimeout(timer);setReady(true);
+            const p=player.current;
+            if(p)onControls?.({
+              play:()=>p.playVideo(),
+              pause:()=>p.pauseVideo(),
+              nudge:(s)=>p.seekTo(Math.max(0,p.getCurrentTime()+s),true),
+              goTo:(s)=>p.seekTo(Math.max(0,s),true),
+              at:()=>({now:p.getCurrentTime()||0,whole:p.getDuration()||0}),
+            });
+          },
           onError:event=>fail(errorMessage(event.data)),
           onStateChange:event=>{
             if(dead||failed)return;
             if(event.data===3)wait();else if([0,1,2,5].includes(event.data))clearTimeout(timer);
             if(event.data===1){setAutoplayBlocked(false);onPlay?.();}
+            // 1=재생, 2=일시정지, 0=끝. 버퍼링(3)은 알리지 않고 앞 상태를 그대로 둔다 —
+            // 버퍼링을 "재생 중"으로 치면 불러오는 동안부터 정지 아이콘이 뜨고,
+            // "멈춤"으로 치면 넘길 때마다 아이콘이 깜빡인다.
+            if(event.data===1)onPlaying?.(true);
+            else if(event.data===2||event.data===0)onPlaying?.(false);
           },
           onAutoplayBlocked:()=>{if(!dead&&!failed){clearTimeout(timer);setAutoplayBlocked(true);}},
         },
       });
     }).catch(()=>fail("유튜브에 연결하지 못했어요. 연결 상태를 확인하고 다시 시도해 주세요."));
-    return ()=>{dead=true;clearTimeout(timer);player.current?.destroy();player.current=null;};
+    return ()=>{dead=true;clearTimeout(timer);onControls?.(null);player.current?.destroy();player.current=null;};
     // A keyed mount represents one video/retry. Updated seeks run after readiness below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
