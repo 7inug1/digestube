@@ -83,6 +83,7 @@ export async function chunksWithoutEmbedding() {
 /** 파일 저장소에는 로그인이 없다. 라이브러리는 비어 있는 것으로 둔다. */
 export async function libraryIds(): Promise<string[]> { return []; }
 export async function libraryCount(): Promise<number> { return 0; }
+export async function deleteAccountData() {}
 export async function shareOf(): Promise<{shareId: string; name: string | null} | null> { return null; }
 export async function setShareName() {}
 export async function startShare(_u: string, id: string): Promise<string> { return id; }

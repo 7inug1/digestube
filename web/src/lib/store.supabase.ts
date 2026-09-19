@@ -61,6 +61,23 @@ export async function removeFromLibrary(userId: string, vid: string) {
   if (error) throw error;
 }
 
+/** 탈퇴 — 이 사람에게 딸린 기록을 지운다. 계정 자체는 부르는 쪽이 마지막에 지운다.
+ *
+ *  영상과 문단은 지우지 않는다. 한 영상을 여러 사람이 같이 담고 있고, 공개된 유튜브
+ *  영상의 글이라 개인 정보가 아니다. 이 사람의 목록에서 빠질 뿐이다.
+ *  쿼터 기록도 지운다 — 남겨 둘 이유가 없고, "무엇을 언제 얼마나 썼나"는 그 사람의 기록이다. */
+export async function deleteAccountData(userId: string) {
+  const s = db();
+  for (const [table, col, val] of [
+    ["library", "user_id", userId],
+    ["library_share", "user_id", userId],
+    ["quota", "key", `user:${userId}`],
+  ] as const) {
+    const { error } = await s.from(table).delete().eq(col, val);
+    if (error) throw error;
+  }
+}
+
 /** 공유 주소 한 조각. 지금 공유 중이면 share_id, 아니면 null. */
 export async function shareOf(userId: string): Promise<{shareId: string; name: string | null} | null> {
   const { data, error } = await db()
