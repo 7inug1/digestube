@@ -27,7 +27,7 @@ DB migration: `web/supabase/migrations/20260910_finish_v2.sql`.
 
 ## 이력서
 
-[Digestube 재작성안](13-digestube-resume.md). 구현·배포를 확인한 내용으로 정리했다.
+이력서 재작성안은 구현·배포를 확인한 내용으로 정리해 저장소 밖 개인 기록으로 옮겼다.
 모델 품질 검증이나 사용자 효과 측정까지 완료했다고 표현하지 않는다.
 
 ## 검증 기록
