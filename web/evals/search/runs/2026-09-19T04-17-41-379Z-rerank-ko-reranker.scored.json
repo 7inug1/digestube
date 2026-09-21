@@ -1,0 +1,1070 @@
+{
+  "summary": {
+    "corpus_stable": true,
+    "options": {
+      "q05_split": true,
+      "q07_mode": "both",
+      "q06_support_is_partial": true,
+      "q04_include_seq6": true
+    },
+    "verdicts": {
+      "all": {
+        "충분히 찾음": 3,
+        "일부 찾음": 4,
+        "못 찾음": 1,
+        "오류": 0
+      },
+      "ko": {
+        "충분히 찾음": 2,
+        "일부 찾음": 4,
+        "못 찾음": 0,
+        "오류": 0
+      },
+      "en": {
+        "충분히 찾음": 1,
+        "일부 찾음": 0,
+        "못 찾음": 1,
+        "오류": 0
+      }
+    },
+    "feature_coverage_top3": {
+      "all": {
+        "found": 8,
+        "total": 17
+      },
+      "ko": {
+        "found": 6,
+        "total": 12
+      },
+      "en": {
+        "found": 2,
+        "total": 5
+      }
+    },
+    "feature_coverage_top5": {
+      "found": 9,
+      "total": 17
+    },
+    "multi_feature_top3_vs_top5": {
+      "top3": {
+        "found": 2,
+        "total": 9
+      },
+      "top5": {
+        "found": 3,
+        "total": 9
+      },
+      "questions": [
+        "Q01",
+        "Q04",
+        "Q08"
+      ]
+    },
+    "latency_ms": {
+      "first": 20162,
+      "rest_median": 6286,
+      "rest_min": 4601,
+      "rest_max": 10420
+    },
+    "negatives_with_result": 4,
+    "negatives_error": 0
+  },
+  "positives": [
+    {
+      "id": "Q01",
+      "lang": "ko",
+      "q": "인간관계에서 스트레스 안받는 사람들은 어떠한 특징을 갖고 있어?",
+      "verdict": "일부 찾음",
+      "note": null,
+      "features": 3,
+      "found3": 1,
+      "found5": 1,
+      "ms": 20162,
+      "coverage3": [
+        {
+          "name": "불편한 상대 안 만나기",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "만나야 한다면 측은하게 여기기",
+          "found": true,
+          "seq": 2,
+          "rank": 1,
+          "via_alt": false
+        },
+        {
+          "name": "상대를 바꾸려는 기대 내려놓기",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        }
+      ],
+      "coverage5": [
+        {
+          "name": "불편한 상대 안 만나기",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "만나야 한다면 측은하게 여기기",
+          "found": true,
+          "seq": 2,
+          "rank": 1,
+          "via_alt": false
+        },
+        {
+          "name": "상대를 바꾸려는 기대 내려놓기",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        }
+      ],
+      "manual_check": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "byVgbqzYJrs",
+          "seq": 2,
+          "t": 88,
+          "t_end": 128,
+          "score": -6.990371227264404,
+          "vec_rank": 2,
+          "hl": "'아, 안됐다.' 그래서 그 사람이 싫지만 싫지만 그 사람을 미워하지는 않아.",
+          "text_sha256": "4cfc808857efc936e27a54351ee796860a87685cd01151527457cd2713563f95",
+          "time": "1:28–2:08",
+          "role": "항목 2",
+          "counted": true
+        },
+        {
+          "rank": 2,
+          "video_id": "byVgbqzYJrs",
+          "seq": 9,
+          "t": 445,
+          "t_end": 484,
+          "score": -7.791505813598633,
+          "vec_rank": 6,
+          "hl": null,
+          "text_sha256": "c48ff6bc196a759f466c986d5ae01b339114b550081a20211856233e322536ba",
+          "time": "7:25–8:04",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 3,
+          "video_id": "byVgbqzYJrs",
+          "seq": 5,
+          "t": 250,
+          "t_end": 292,
+          "score": -8.023119926452637,
+          "vec_rank": 3,
+          "hl": "참 싫은데 어, 그 사람이 싫은데 그 사람에 대해서 굳이 내가 기대를 안 하면 미워지지 않는 거야.",
+          "text_sha256": "773a2020eb3d7297e9dc85c0ea19664cc7fa791109e5e18d05f4dd7f1b664696",
+          "time": "4:10–4:52",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 4,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 8,
+          "t": 324,
+          "t_end": 376,
+          "score": -8.221864700317383,
+          "vec_rank": 1,
+          "hl": "다시 말해서 우리가 가진 유전자 그리고 우리의 뇌는 최대한 에너지를 쓰지 않고 편하게 쉬고자 진화되어 왔습니다.",
+          "text_sha256": "69483bf13ddb5d1e63bcfc2a7319740893f0c070cefa718f8b3ccc6a963838b6",
+          "time": "5:24–6:16",
+          "role": "다른 영상",
+          "counted": false
+        },
+        {
+          "rank": 5,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 14,
+          "t": 604,
+          "t_end": 655,
+          "score": -8.270549774169922,
+          "vec_rank": 12,
+          "hl": null,
+          "text_sha256": "d17fcc763ba9bc0a040bc0f2a993a6c723007e4974df60b703a57706bdd0415e",
+          "time": "10:04–10:55",
+          "role": "다른 영상",
+          "counted": false
+        }
+      ]
+    },
+    {
+      "id": "Q02",
+      "lang": "ko",
+      "q": "행복은 어떻게 만들어져?",
+      "verdict": "충분히 찾음",
+      "note": null,
+      "features": 1,
+      "found3": 1,
+      "found5": 1,
+      "ms": 7814,
+      "coverage3": [
+        {
+          "name": "즐거움·슬픔·괴로움이 함께 행복을 이룸",
+          "found": true,
+          "seq": 9,
+          "rank": 1,
+          "via_alt": false
+        }
+      ],
+      "coverage5": [
+        {
+          "name": "즐거움·슬픔·괴로움이 함께 행복을 이룸",
+          "found": true,
+          "seq": 9,
+          "rank": 1,
+          "via_alt": false
+        }
+      ],
+      "manual_check": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "byVgbqzYJrs",
+          "seq": 9,
+          "t": 445,
+          "t_end": 484,
+          "score": 1.8537744283676147,
+          "vec_rank": 1,
+          "hl": "그래서 행복 안에 슬픔이 없으면 행복은 만들어질까?",
+          "text_sha256": "c48ff6bc196a759f466c986d5ae01b339114b550081a20211856233e322536ba",
+          "time": "7:25–8:04",
+          "role": "항목 1",
+          "counted": true
+        },
+        {
+          "rank": 2,
+          "video_id": "byVgbqzYJrs",
+          "seq": 8,
+          "t": 356,
+          "t_end": 445,
+          "score": -0.3795816898345947,
+          "vec_rank": 2,
+          "hl": "그래서 어떻게 보면 우리가 즐거움이라는 것은 즐거움이 아닌 것들로 즐거움이 이루어져 있어.",
+          "text_sha256": "4130435c1d20c8fa215fb3b9c9c52435478aaf799921203adabf28f40bad44bc",
+          "time": "5:56–7:25",
+          "role": "항목 1",
+          "counted": true
+        },
+        {
+          "rank": 3,
+          "video_id": "byVgbqzYJrs",
+          "seq": 13,
+          "t": 581,
+          "t_end": 618,
+          "score": -4.688530921936035,
+          "vec_rank": 10,
+          "hl": null,
+          "text_sha256": "2491a0b489be13815d2f47990e1496c8c33949f8418ec7cd027969cb0c75a31f",
+          "time": "9:41–10:18",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 4,
+          "video_id": "byVgbqzYJrs",
+          "seq": 11,
+          "t": 523,
+          "t_end": 547,
+          "score": -5.114936828613281,
+          "vec_rank": 3,
+          "hl": "그런데 그게 둘 다 행복의 요소임을 알면 슬픈 것도 좋은 거고 기쁜 것도 좋은 거야.",
+          "text_sha256": "d6fe0f0cc7a71e019dee0b2f73838d496ffca9bcc1f6e6cd99d3dd066ce4de31",
+          "time": "8:43–9:07",
+          "role": "항목 1 (대체)",
+          "counted": false
+        },
+        {
+          "rank": 5,
+          "video_id": "byVgbqzYJrs",
+          "seq": 0,
+          "t": 0,
+          "t_end": 29,
+          "score": -5.455292224884033,
+          "vec_rank": 8,
+          "hl": null,
+          "text_sha256": "1fb2d8a37e768efda16a9efd8d4a691454db59240486691775c5eda976dadc66",
+          "time": "0:00–0:29",
+          "role": "무관",
+          "counted": false
+        }
+      ]
+    },
+    {
+      "id": "Q03",
+      "lang": "en",
+      "q": "AI 엔지니어와 ML 연구자의 차이가 뭐야?",
+      "verdict": "충분히 찾음",
+      "note": null,
+      "features": 2,
+      "found3": 2,
+      "found5": 2,
+      "ms": 10420,
+      "coverage3": [
+        {
+          "name": "연구자 역할",
+          "found": true,
+          "seq": 3,
+          "rank": 2,
+          "via_alt": false
+        },
+        {
+          "name": "엔지니어 역할",
+          "found": true,
+          "seq": 4,
+          "rank": 1,
+          "via_alt": false
+        }
+      ],
+      "coverage5": [
+        {
+          "name": "연구자 역할",
+          "found": true,
+          "seq": 3,
+          "rank": 2,
+          "via_alt": false
+        },
+        {
+          "name": "엔지니어 역할",
+          "found": true,
+          "seq": 4,
+          "rank": 1,
+          "via_alt": false
+        }
+      ],
+      "manual_check": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "LHpplKlnXes",
+          "seq": 4,
+          "t": 100,
+          "t_end": 144,
+          "score": 9.857673645019531,
+          "vec_rank": 1,
+          "hl": "So if ML researchers are the ones building the engine, then AI engineers are the ones building the car.",
+          "text_sha256": "e835526f812007c85ba1081a408489c3c993b17d76fc04bb8f129a7b8c688f65",
+          "time": "1:40–2:24",
+          "role": "항목 2",
+          "counted": true
+        },
+        {
+          "rank": 2,
+          "video_id": "LHpplKlnXes",
+          "seq": 3,
+          "t": 76,
+          "t_end": 100,
+          "score": 6.031441688537598,
+          "vec_rank": 2,
+          "hl": "An AI engineer is not a machine learning researcher.",
+          "text_sha256": "9bf74d8eafe8e2e97afcd74687ae096a58767f623bcd3ba8770d6d291d45ca5f",
+          "time": "1:16–1:40",
+          "role": "항목 1",
+          "counted": true
+        },
+        {
+          "rank": 3,
+          "video_id": "LHpplKlnXes",
+          "seq": 15,
+          "t": 467,
+          "t_end": 474,
+          "score": -7.312805652618408,
+          "vec_rank": 5,
+          "hl": null,
+          "text_sha256": "8caea3860e491597091c635dac068db6c50df692ce171b30e73ef917c3295ea9",
+          "time": "7:47–7:54",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 4,
+          "video_id": "LHpplKlnXes",
+          "seq": 21,
+          "t": 624,
+          "t_end": 637,
+          "score": -7.552807807922363,
+          "vec_rank": 6,
+          "hl": null,
+          "text_sha256": "53fdc9185e0387d429dab275e61f8698c1143621c3e1c98d64a2803fae075ebe",
+          "time": "10:24–10:37",
+          "role": "무관",
+          "counted": false
+        },
+        {
+          "rank": 5,
+          "video_id": "LHpplKlnXes",
+          "seq": 10,
+          "t": 285,
+          "t_end": 325,
+          "score": -7.603346824645996,
+          "vec_rank": 3,
+          "hl": "So tier two is where we learn about these specific AI engineering skills.",
+          "text_sha256": "873afacca6535a0082b835060b5726da9bbb671c5495ac3934df8d7d9d99bacb",
+          "time": "4:45–5:25",
+          "role": "무관",
+          "counted": false
+        }
+      ]
+    },
+    {
+      "id": "Q04",
+      "lang": "en",
+      "q": "AI 엔지니어가 되기 위해 배워야 하는 것들 알려줘",
+      "verdict": "못 찾음",
+      "note": null,
+      "features": 3,
+      "found3": 0,
+      "found5": 1,
+      "ms": 6286,
+      "coverage3": [
+        {
+          "name": "기초 (Python·Git·CLI·API)",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "AI 기술 (임베딩·RAG·에이전트)",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "배포·운영 (컨테이너·관측·비용)",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        }
+      ],
+      "coverage5": [
+        {
+          "name": "기초 (Python·Git·CLI·API)",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "AI 기술 (임베딩·RAG·에이전트)",
+          "found": true,
+          "seq": 10,
+          "rank": 4,
+          "via_alt": false
+        },
+        {
+          "name": "배포·운영 (컨테이너·관측·비용)",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        }
+      ],
+      "manual_check": "반환 문단이 기술 이름만 나열하는지, 역할·이유까지 설명하는지 사람이 표시",
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "LHpplKlnXes",
+          "seq": 0,
+          "t": 0,
+          "t_end": 23,
+          "score": 4.516360282897949,
+          "vec_rank": 1,
+          "hl": "And today, I'm going to break down what an AI Engineer actually is, the skill stack that you need to learn, and three projects that'll help demonstrate your skills to potential employers.",
+          "text_sha256": "dbe3e30a8245fb943112482a404e1b3d9fc7dc22566984681e5629e591c45f15",
+          "time": "0:00–0:23",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 2,
+          "video_id": "LHpplKlnXes",
+          "seq": 2,
+          "t": 47,
+          "t_end": 76,
+          "score": 3.8112306594848633,
+          "vec_rank": 2,
+          "hl": "So the question is, what do you actually need to learn to become an AI engineer?",
+          "text_sha256": "fb1fff2f6f18b70b2108bb2d23f76dfbdcaf80fc78015328dff9fefd198ca85d",
+          "time": "0:47–1:16",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 3,
+          "video_id": "LHpplKlnXes",
+          "seq": 3,
+          "t": 76,
+          "t_end": 100,
+          "score": 1.8758187294006348,
+          "vec_rank": 3,
+          "hl": "An AI engineer is not a machine learning researcher.",
+          "text_sha256": "9bf74d8eafe8e2e97afcd74687ae096a58767f623bcd3ba8770d6d291d45ca5f",
+          "time": "1:16–1:40",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 4,
+          "video_id": "LHpplKlnXes",
+          "seq": 10,
+          "t": 285,
+          "t_end": 325,
+          "score": 1.364865779876709,
+          "vec_rank": 7,
+          "hl": null,
+          "text_sha256": "873afacca6535a0082b835060b5726da9bbb671c5495ac3934df8d7d9d99bacb",
+          "time": "4:45–5:25",
+          "role": "항목 2",
+          "counted": false
+        },
+        {
+          "rank": 5,
+          "video_id": "LHpplKlnXes",
+          "seq": 4,
+          "t": 100,
+          "t_end": 144,
+          "score": -2.463885545730591,
+          "vec_rank": 10,
+          "hl": null,
+          "text_sha256": "e835526f812007c85ba1081a408489c3c993b17d76fc04bb8f129a7b8c688f65",
+          "time": "1:40–2:24",
+          "role": "무관",
+          "counted": false
+        }
+      ]
+    },
+    {
+      "id": "Q05",
+      "lang": "ko",
+      "q": "어떻게 해야 공부할 때 오래 기억할 수 있어?",
+      "verdict": "일부 찾음",
+      "note": null,
+      "features": 2,
+      "found3": 1,
+      "found5": 1,
+      "ms": 9500,
+      "coverage3": [
+        {
+          "name": "암기가 아닌 익힘 (말·글·적용)",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "자료를 덮고 기억나는 걸 메모",
+          "found": true,
+          "seq": 9,
+          "rank": 3,
+          "via_alt": false
+        }
+      ],
+      "coverage5": [
+        {
+          "name": "암기가 아닌 익힘 (말·글·적용)",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "자료를 덮고 기억나는 걸 메모",
+          "found": true,
+          "seq": 9,
+          "rank": 3,
+          "via_alt": false
+        }
+      ],
+      "manual_check": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 12,
+          "t": 396,
+          "t_end": 438,
+          "score": -1.611415147781372,
+          "vec_rank": 9,
+          "hl": null,
+          "text_sha256": "23ba724c32e9494d48000b65ba38f313c0d2e989e6f287e069fcfd51ff824265",
+          "time": "6:36–7:18",
+          "role": "항목 2 (대체)",
+          "counted": true
+        },
+        {
+          "rank": 2,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 32,
+          "t": 1333,
+          "t_end": 1383,
+          "score": -1.7782704830169678,
+          "vec_rank": 2,
+          "hl": "이런 방식으로 공부를 하시기 바랍니다.",
+          "text_sha256": "45a60ad0c5b39bff44a72eec362f3cf0fd348c5b4591ad515f760aeceb39bda9",
+          "time": "22:13–23:03",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 3,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 9,
+          "t": 284,
+          "t_end": 311,
+          "score": -2.1670596599578857,
+          "vec_rank": 8,
+          "hl": null,
+          "text_sha256": "999ceebf06e62b3d3c3c6bc9abeb0e51dc7420aa5bddb97508c7857601f4a0cb",
+          "time": "4:44–5:11",
+          "role": "항목 2",
+          "counted": true
+        },
+        {
+          "rank": 4,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 38,
+          "t": 1626,
+          "t_end": 1677,
+          "score": -2.2663841247558594,
+          "vec_rank": 1,
+          "hl": "이걸 반복해서 하는 것이 전공책 공부 방법이에요.",
+          "text_sha256": "2e921fd84f95be7978ae564dea96a031ce71e32be85494466afe2bfdcbbfde20",
+          "time": "27:06–27:57",
+          "role": "무관",
+          "counted": false
+        },
+        {
+          "rank": 5,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 15,
+          "t": 542,
+          "t_end": 587,
+          "score": -2.3091890811920166,
+          "vec_rank": 5,
+          "hl": null,
+          "text_sha256": "d09b80e693472e97586e31873c6df050e7fc5ecd51910f84288d37c14bc4a95e",
+          "time": "9:02–9:47",
+          "role": "무관",
+          "counted": false
+        }
+      ]
+    },
+    {
+      "id": "Q06",
+      "lang": "ko",
+      "q": "뭘 공부하건 공통적으로 중요한 공부법이 있어? 있다면 그게 뭔지 알려줘",
+      "verdict": "일부 찾음",
+      "note": "원리 문단 없이 절차 문단(보조)만 반환",
+      "features": 1,
+      "found3": 0,
+      "found5": 0,
+      "ms": 6965,
+      "coverage3": [
+        {
+          "name": "내재화·명시화 반복 원리",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        }
+      ],
+      "coverage5": [
+        {
+          "name": "내재화·명시화 반복 원리",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        }
+      ],
+      "manual_check": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 8,
+          "t": 246,
+          "t_end": 284,
+          "score": -3.1255626678466797,
+          "vec_rank": 10,
+          "hl": null,
+          "text_sha256": "8637c5f52c61826084a02e6a95bb313b00a53b111d0287a5ad9a0983ed4dcc8e",
+          "time": "4:06–4:44",
+          "role": "보조",
+          "counted": true
+        },
+        {
+          "rank": 2,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 33,
+          "t": 1386,
+          "t_end": 1469,
+          "score": -3.2153449058532715,
+          "vec_rank": 6,
+          "hl": null,
+          "text_sha256": "a11e8c5984872cfd78801ac44fe58fac4ce53b5d11fa08da8af4815daa8febab",
+          "time": "23:06–24:29",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 3,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 1,
+          "t": 18,
+          "t_end": 56,
+          "score": -3.8834872245788574,
+          "vec_rank": 9,
+          "hl": null,
+          "text_sha256": "7192a9f8d3a638f2d67e5d017876f1902a29485d7512b070ffeadf75afabd59a",
+          "time": "0:18–0:56",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 4,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 41,
+          "t": 1791,
+          "t_end": 1823,
+          "score": -3.930851936340332,
+          "vec_rank": 2,
+          "hl": "네, 오늘 제가 공부법에 대해서 종합 강의를 했는데요.",
+          "text_sha256": "83a1fd3925fb96496fa6120eb198608d2a65a05691738e649444b907c33b4002",
+          "time": "29:51–30:23",
+          "role": "무관",
+          "counted": false
+        },
+        {
+          "rank": 5,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 40,
+          "t": 1722,
+          "t_end": 1791,
+          "score": -4.630625247955322,
+          "vec_rank": 13,
+          "hl": null,
+          "text_sha256": "2f11dfd5f5a4764b235728ba0c8102a1bf0eeee3a686e0f76f8291463ed7fb59",
+          "time": "28:42–29:51",
+          "role": "무관",
+          "counted": false
+        }
+      ]
+    },
+    {
+      "id": "Q07",
+      "lang": "ko",
+      "q": "운동이 뇌 건강에 왜 그렇게 중요해?",
+      "verdict": "충분히 찾음",
+      "note": null,
+      "features": 2,
+      "found3": 2,
+      "found5": 2,
+      "ms": 5608,
+      "coverage3": [
+        {
+          "name": "움직임 부족 → 뇌 노화",
+          "found": true,
+          "seq": 12,
+          "rank": 3,
+          "via_alt": false
+        },
+        {
+          "name": "뇌 건강 = 나를 지키는 일",
+          "found": true,
+          "seq": 14,
+          "rank": 1,
+          "via_alt": false
+        }
+      ],
+      "coverage5": [
+        {
+          "name": "움직임 부족 → 뇌 노화",
+          "found": true,
+          "seq": 12,
+          "rank": 3,
+          "via_alt": false
+        },
+        {
+          "name": "뇌 건강 = 나를 지키는 일",
+          "found": true,
+          "seq": 14,
+          "rank": 1,
+          "via_alt": false
+        }
+      ],
+      "manual_check": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 14,
+          "t": 604,
+          "t_end": 655,
+          "score": 0.706381618976593,
+          "vec_rank": 1,
+          "hl": "내 뇌를 계속 건강하게 지키기 위해서 하는 것이고 그건 결국 나라는 사람을 오래오래 좋은 모습으로 지키게 만드는 것입니다.",
+          "text_sha256": "d17fcc763ba9bc0a040bc0f2a993a6c723007e4974df60b703a57706bdd0415e",
+          "time": "10:04–10:55",
+          "role": "항목 2",
+          "counted": true
+        },
+        {
+          "rank": 2,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 13,
+          "t": 569,
+          "t_end": 603,
+          "score": -0.3465726971626282,
+          "vec_rank": 2,
+          "hl": "뇌 건강이 중요한 이유는 뇌졸중이나 치매를 막고자 하는 것이 아닙니다.",
+          "text_sha256": "ffb45ce37263208e904212674e79a7eb8a1af88df8950bb3a67bdc7d8a3ab7f0",
+          "time": "9:29–10:03",
+          "role": "항목 2",
+          "counted": true
+        },
+        {
+          "rank": 3,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 12,
+          "t": 538,
+          "t_end": 569,
+          "score": -3.7176880836486816,
+          "vec_rank": 4,
+          "hl": null,
+          "text_sha256": "8ca2d1a1e40024d71ab8478c39b1e6bfb8d3cea288fa84b13f2476a6cd3e52ed",
+          "time": "8:58–9:29",
+          "role": "항목 1",
+          "counted": true
+        },
+        {
+          "rank": 4,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 18,
+          "t": 813,
+          "t_end": 862,
+          "score": -4.03737211227417,
+          "vec_rank": 3,
+          "hl": "뇌에 길을 만들거나 혹은 바꾸려면 시간과 노력이 정말 많이 듭니다.",
+          "text_sha256": "bfe474865204c23c6e75a205d85c94853c111644027a281915a6419a881cfa79",
+          "time": "13:33–14:22",
+          "role": "무관",
+          "counted": false
+        },
+        {
+          "rank": 5,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 3,
+          "t": 144,
+          "t_end": 181,
+          "score": -4.093345642089844,
+          "vec_rank": 13,
+          "hl": null,
+          "text_sha256": "9b52a62a2e7a3db539786f427f6e3d241202023b97817a137e8d01da3f69bca1",
+          "time": "2:24–3:01",
+          "role": "무관",
+          "counted": false
+        }
+      ]
+    },
+    {
+      "id": "Q08",
+      "lang": "ko",
+      "q": "뇌 건강 가장 건강하게 유지하려면 해야 하는 것들 알려줘",
+      "verdict": "일부 찾음",
+      "note": null,
+      "features": 3,
+      "found3": 1,
+      "found5": 1,
+      "ms": 4873,
+      "coverage3": [
+        {
+          "name": "의식적으로 움직이기",
+          "found": true,
+          "seq": 12,
+          "rank": 2,
+          "via_alt": false
+        },
+        {
+          "name": "일찍 시작해 습관으로",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "의지 대신 환경 만들기",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        }
+      ],
+      "coverage5": [
+        {
+          "name": "의식적으로 움직이기",
+          "found": true,
+          "seq": 12,
+          "rank": 2,
+          "via_alt": false
+        },
+        {
+          "name": "일찍 시작해 습관으로",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        },
+        {
+          "name": "의지 대신 환경 만들기",
+          "found": false,
+          "seq": null,
+          "rank": null,
+          "via_alt": false
+        }
+      ],
+      "manual_check": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 13,
+          "t": 569,
+          "t_end": 603,
+          "score": -3.197266101837158,
+          "vec_rank": 1,
+          "hl": "뇌가 건강하면 우리는 더 잘 배우고 잘 일하고 더 잘 지낼 수 있습니다.",
+          "text_sha256": "ffb45ce37263208e904212674e79a7eb8a1af88df8950bb3a67bdc7d8a3ab7f0",
+          "time": "9:29–10:03",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 2,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 12,
+          "t": 538,
+          "t_end": 569,
+          "score": -3.754997730255127,
+          "vec_rank": 3,
+          "hl": "저는 뇌를 보는 의사이기 때문에 그 결과를 매일 MRI를 통해서 외래에서 확인합니다.",
+          "text_sha256": "8ca2d1a1e40024d71ab8478c39b1e6bfb8d3cea288fa84b13f2476a6cd3e52ed",
+          "time": "8:58–9:29",
+          "role": "항목 1",
+          "counted": true
+        },
+        {
+          "rank": 3,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 14,
+          "t": 604,
+          "t_end": 655,
+          "score": -4.387948036193848,
+          "vec_rank": 2,
+          "hl": "내 뇌를 계속 건강하게 지키기 위해서 하는 것이고 그건 결국 나라는 사람을 오래오래 좋은 모습으로 지키게 만드는 것입니다.",
+          "text_sha256": "d17fcc763ba9bc0a040bc0f2a993a6c723007e4974df60b703a57706bdd0415e",
+          "time": "10:04–10:55",
+          "role": "무관",
+          "counted": true
+        },
+        {
+          "rank": 4,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 21,
+          "t": 962,
+          "t_end": 1005,
+          "score": -4.600025653839111,
+          "vec_rank": 5,
+          "hl": null,
+          "text_sha256": "f27d6a3fe033b27d8c5462006e27d50cef8078f104c08f035703356cc77f21c6",
+          "time": "16:02–16:45",
+          "role": "무관",
+          "counted": false
+        },
+        {
+          "rank": 5,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 3,
+          "t": 144,
+          "t_end": 181,
+          "score": -5.783558368682861,
+          "vec_rank": 8,
+          "hl": null,
+          "text_sha256": "9b52a62a2e7a3db539786f427f6e3d241202023b97817a137e8d01da3f69bca1",
+          "time": "2:24–3:01",
+          "role": "무관",
+          "counted": false
+        }
+      ]
+    }
+  ],
+  "negatives": [
+    {
+      "id": "N01",
+      "q": "다툰 친구에게 화해하자고 연락할 때 첫 메시지를 어떻게 쓰면 돼? 예문을 알려줘.",
+      "status": "결과 반환",
+      "returned": 3,
+      "top1": {
+        "video_id": "byVgbqzYJrs",
+        "seq": 5,
+        "score": -6.937412261962891,
+        "time": "4:10–4:52"
+      },
+      "ms": 5690
+    },
+    {
+      "id": "N02",
+      "q": "RAG 문서를 청킹할 때 청크 크기와 겹치는 길이는 각각 몇 토큰으로 정하면 돼?",
+      "status": "결과 반환",
+      "returned": 3,
+      "top1": {
+        "video_id": "LHpplKlnXes",
+        "seq": 12,
+        "score": -7.660569667816162,
+        "time": "5:39–6:18"
+      },
+      "ms": 6671
+    },
+    {
+      "id": "N03",
+      "q": "공부한 걸 오래 기억하려면 복습을 며칠 간격으로 해야 해? 날짜별 복습 주기를 알려줘.",
+      "status": "결과 반환",
+      "returned": 3,
+      "top1": {
+        "video_id": "DXDbJyZxzUg",
+        "seq": 12,
+        "score": -4.444929599761963,
+        "time": "6:36–7:18"
+      },
+      "ms": 5513
+    },
+    {
+      "id": "N04",
+      "q": "뇌 건강을 위한 달리기는 일주일에 몇 번, 한 번에 몇 분씩 해야 해?",
+      "status": "결과 반환",
+      "returned": 3,
+      "top1": {
+        "video_id": "_b7Ua3uZiZs",
+        "seq": 20,
+        "score": -7.044809341430664,
+        "time": "15:01–16:01"
+      },
+      "ms": 4601
+    }
+  ]
+}

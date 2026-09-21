@@ -1,0 +1,157 @@
+{
+  "protocol": "feature-coverage-v1",
+  "variant": "rerank:Dongjin-kr/ko-reranker",
+  "config_version": "2026-09-19-dev1",
+  "started": "2026-09-19T01:12:11.458Z",
+  "completed": "2026-09-19T01:14:17.922Z",
+  "base": "https://digestube.vercel.app",
+  "ids": [
+    "LHpplKlnXes",
+    "DXDbJyZxzUg",
+    "_b7Ua3uZiZs"
+  ],
+  "auto_sample": "byVgbqzYJrs",
+  "pool_k": 20,
+  "k_score": 3,
+  "code": {
+    "head": "97d397587163f4c10a8942ff026f62946cc2d2aa",
+    "dirty": "M web/src/components/Reader.tsx"
+  },
+  "corpus_stable": true,
+  "corpus": {
+    "byVgbqzYJrs": {
+      "revision": "4d5c48a6-9a06-4f5b-9b58-d32e2c715ecd",
+      "chunks": 15,
+      "transcript_sha256": "55971f3689fbe18974501c1c6cc03a2942db819e2759305a7bf9ee65e8c6c487",
+      "embedding_sha256": "16a3487e4daea3963113e04abf4b2dc8bbfbaf5229c97207a374867c10144fc3"
+    },
+    "LHpplKlnXes": {
+      "revision": "04616551-9855-4867-bff8-fb5a5d2ac08c",
+      "chunks": 22,
+      "transcript_sha256": "6e1e41d4516daaf334bb1dcf869486dc70319ef58899e174b8d818e1a96cfae7",
+      "embedding_sha256": "2703496aa661ad2c1694c4b76ddfb6f62b6231baa9251618194b8b10936e05aa"
+    },
+    "DXDbJyZxzUg": {
+      "revision": "2078e85a-df74-4bce-8941-8cec3faf3138",
+      "chunks": 42,
+      "transcript_sha256": "d5f6e4a9d994f6791bfe8fccb7ef4f8e05a1554feab714b0d8227d9e31072835",
+      "embedding_sha256": "c9b2f3cf9f7fbd5c1f1c5baa625bf24335236a67d5213d37a10844f33f4f8b92"
+    },
+    "_b7Ua3uZiZs": {
+      "revision": "76e9abd7-657e-4429-9e3d-a38e9270cb12",
+      "chunks": 22,
+      "transcript_sha256": "33bc03f88ba5c916fe9732b3baf90820f29e97a70c873298de696e6b1ad9d0b6",
+      "embedding_sha256": "4ae2e50eeef0141e09106cedc61421a153667d0c3716be7f52645216e80ceef2"
+    }
+  },
+  "records": [
+    {
+      "id": "Q01",
+      "kind": "positive",
+      "q": "인간관계에서 스트레스 안받는 사람들은 어떠한 특징을 갖고 있어?",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "Q02",
+      "kind": "positive",
+      "q": "행복은 어떻게 만들어져?",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "Q03",
+      "kind": "positive",
+      "q": "AI 엔지니어와 ML 연구자의 차이가 뭐야?",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "Q04",
+      "kind": "positive",
+      "q": "AI 엔지니어가 되기 위해 배워야 하는 것들 알려줘",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "Q05",
+      "kind": "positive",
+      "q": "어떻게 해야 공부할 때 오래 기억할 수 있어?",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "Q06",
+      "kind": "positive",
+      "q": "뭘 공부하건 공통적으로 중요한 공부법이 있어? 있다면 그게 뭔지 알려줘",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "Q07",
+      "kind": "positive",
+      "q": "운동이 뇌 건강에 왜 그렇게 중요해?",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "Q08",
+      "kind": "positive",
+      "q": "뇌 건강 가장 건강하게 유지하려면 해야 하는 것들 알려줘",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "N01",
+      "kind": "negative",
+      "q": "다툰 친구에게 화해하자고 연락할 때 첫 메시지를 어떻게 쓰면 돼? 예문을 알려줘.",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "N02",
+      "kind": "negative",
+      "q": "RAG 문서를 청킹할 때 청크 크기와 겹치는 길이는 각각 몇 토큰으로 정하면 돼?",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "N03",
+      "kind": "negative",
+      "q": "공부한 걸 오래 기억하려면 복습을 며칠 간격으로 해야 해? 날짜별 복습 주기를 알려줘.",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    },
+    {
+      "id": "N04",
+      "kind": "negative",
+      "q": "뇌 건강을 위한 달리기는 일주일에 몇 번, 한 번에 몇 분씩 해야 해?",
+      "http_status": 200,
+      "ms": null,
+      "error": "리랭커 응답 개수 불일치",
+      "hits": []
+    }
+  ]
+}

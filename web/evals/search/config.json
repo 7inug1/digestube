@@ -1,0 +1,263 @@
+{
+  "version": "2026-09-19-dev1",
+  "note": "필수 근거 항목과 충족 문단(seq). 원본: ../digestube-goldenset-review-codex.md, 기준: ../digestube-search-scoring-claude.md",
+  "base": "https://digestube.vercel.app",
+  "ids": [
+    "LHpplKlnXes",
+    "DXDbJyZxzUg",
+    "_b7Ua3uZiZs"
+  ],
+  "auto_sample": "byVgbqzYJrs",
+  "k_request": 5,
+  "k_score": 3,
+  "options": {
+    "q05_split": true,
+    "q07_mode": "both",
+    "q06_support_is_partial": true,
+    "q04_include_seq6": true
+  },
+  "positives": [
+    {
+      "id": "Q01",
+      "video": "byVgbqzYJrs",
+      "lang": "ko",
+      "q": "인간관계에서 스트레스 안받는 사람들은 어떠한 특징을 갖고 있어?",
+      "features": [
+        {
+          "name": "불편한 상대 안 만나기",
+          "accept": [
+            1
+          ]
+        },
+        {
+          "name": "만나야 한다면 측은하게 여기기",
+          "accept": [
+            2
+          ]
+        },
+        {
+          "name": "상대를 바꾸려는 기대 내려놓기",
+          "accept": [
+            3,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q02",
+      "video": "byVgbqzYJrs",
+      "lang": "ko",
+      "q": "행복은 어떻게 만들어져?",
+      "features": [
+        {
+          "name": "즐거움·슬픔·괴로움이 함께 행복을 이룸",
+          "accept": [
+            8,
+            9
+          ],
+          "alt": [
+            11
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q03",
+      "video": "LHpplKlnXes",
+      "lang": "en",
+      "q": "AI 엔지니어와 ML 연구자의 차이가 뭐야?",
+      "features": [
+        {
+          "name": "연구자 역할",
+          "accept": [
+            3
+          ]
+        },
+        {
+          "name": "엔지니어 역할",
+          "accept": [
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q04",
+      "video": "LHpplKlnXes",
+      "lang": "en",
+      "q": "AI 엔지니어가 되기 위해 배워야 하는 것들 알려줘",
+      "features": [
+        {
+          "name": "기초 (Python·Git·CLI·API)",
+          "accept": [
+            7,
+            8,
+            9
+          ],
+          "optional_extra": {
+            "flag": "q04_include_seq6",
+            "seq": [
+              6
+            ]
+          }
+        },
+        {
+          "name": "AI 기술 (임베딩·RAG·에이전트)",
+          "accept": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "name": "배포·운영 (컨테이너·관측·비용)",
+          "accept": [
+            16,
+            17
+          ]
+        }
+      ],
+      "manual_check": "반환 문단이 기술 이름만 나열하는지, 역할·이유까지 설명하는지 사람이 표시"
+    },
+    {
+      "id": "Q05",
+      "video": "DXDbJyZxzUg",
+      "lang": "ko",
+      "q": "어떻게 해야 공부할 때 오래 기억할 수 있어?",
+      "features": [
+        {
+          "name": "암기가 아닌 익힘 (말·글·적용)",
+          "accept": [
+            6,
+            7
+          ]
+        },
+        {
+          "name": "자료를 덮고 기억나는 걸 메모",
+          "accept": [
+            8,
+            9,
+            10
+          ],
+          "alt": [
+            12
+          ]
+        }
+      ],
+      "merged_when_not_split": {
+        "name": "오래 기억하는 방법",
+        "accept": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "alt": [
+          12
+        ]
+      }
+    },
+    {
+      "id": "Q06",
+      "video": "DXDbJyZxzUg",
+      "lang": "ko",
+      "q": "뭘 공부하건 공통적으로 중요한 공부법이 있어? 있다면 그게 뭔지 알려줘",
+      "features": [
+        {
+          "name": "내재화·명시화 반복 원리",
+          "accept": [
+            14,
+            15
+          ]
+        }
+      ],
+      "support": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "overlaps_with": "Q05"
+    },
+    {
+      "id": "Q07",
+      "video": "_b7Ua3uZiZs",
+      "lang": "ko",
+      "q": "운동이 뇌 건강에 왜 그렇게 중요해?",
+      "features": [
+        {
+          "name": "움직임 부족 → 뇌 노화",
+          "accept": [
+            11,
+            12
+          ],
+          "drop_when": {
+            "flag": "q07_mode",
+            "value": "reason_only"
+          }
+        },
+        {
+          "name": "뇌 건강 = 나를 지키는 일",
+          "accept": [
+            13,
+            14
+          ],
+          "alt": [
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q08",
+      "video": "_b7Ua3uZiZs",
+      "lang": "ko",
+      "q": "뇌 건강 가장 건강하게 유지하려면 해야 하는 것들 알려줘",
+      "features": [
+        {
+          "name": "의식적으로 움직이기",
+          "accept": [
+            12
+          ]
+        },
+        {
+          "name": "일찍 시작해 습관으로",
+          "accept": [
+            17,
+            18
+          ]
+        },
+        {
+          "name": "의지 대신 환경 만들기",
+          "accept": [
+            19
+          ]
+        }
+      ]
+    }
+  ],
+  "negatives": [
+    {
+      "id": "N01",
+      "q": "다툰 친구에게 화해하자고 연락할 때 첫 메시지를 어떻게 쓰면 돼? 예문을 알려줘."
+    },
+    {
+      "id": "N02",
+      "q": "RAG 문서를 청킹할 때 청크 크기와 겹치는 길이는 각각 몇 토큰으로 정하면 돼?"
+    },
+    {
+      "id": "N03",
+      "q": "공부한 걸 오래 기억하려면 복습을 며칠 간격으로 해야 해? 날짜별 복습 주기를 알려줘."
+    },
+    {
+      "id": "N04",
+      "q": "뇌 건강을 위한 달리기는 일주일에 몇 번, 한 번에 몇 분씩 해야 해?"
+    }
+  ],
+  "decided": "2026-09-19 사용자 결정, 검색 실행 전"
+}

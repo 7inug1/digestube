@@ -1,0 +1,849 @@
+{
+  "protocol": "feature-coverage-v1",
+  "variant": "production-rerank",
+  "config_version": "2026-09-19-dev1",
+  "started": "2026-09-19T06:20:04.740Z",
+  "completed": "2026-09-19T06:21:07.570Z",
+  "base": "https://digestube.vercel.app",
+  "ids": [
+    "LHpplKlnXes",
+    "DXDbJyZxzUg",
+    "_b7Ua3uZiZs"
+  ],
+  "auto_sample": "byVgbqzYJrs",
+  "k_request": 5,
+  "k_score": 3,
+  "code": {
+    "head": "d9ca2fee80fe9820997840dd981125cc50f7e3d0",
+    "dirty": "M web/src/components/UserMenu.tsx\n M web/src/lib/store.file.ts\n M web/src/lib/store.supabase.ts\n M web/src/lib/store.ts\n?? web/src/app/api/account/"
+  },
+  "corpus_stable": true,
+  "corpus": {
+    "byVgbqzYJrs": {
+      "revision": "4d5c48a6-9a06-4f5b-9b58-d32e2c715ecd",
+      "status": "완료",
+      "chunks": 15,
+      "missing_embedding": 0,
+      "transcript_sha256": "55971f3689fbe18974501c1c6cc03a2942db819e2759305a7bf9ee65e8c6c487",
+      "embedding_sha256": "16a3487e4daea3963113e04abf4b2dc8bbfbaf5229c97207a374867c10144fc3"
+    },
+    "LHpplKlnXes": {
+      "revision": "04616551-9855-4867-bff8-fb5a5d2ac08c",
+      "status": "완료",
+      "chunks": 22,
+      "missing_embedding": 0,
+      "transcript_sha256": "6e1e41d4516daaf334bb1dcf869486dc70319ef58899e174b8d818e1a96cfae7",
+      "embedding_sha256": "2703496aa661ad2c1694c4b76ddfb6f62b6231baa9251618194b8b10936e05aa"
+    },
+    "DXDbJyZxzUg": {
+      "revision": "2078e85a-df74-4bce-8941-8cec3faf3138",
+      "status": "완료",
+      "chunks": 42,
+      "missing_embedding": 0,
+      "transcript_sha256": "d5f6e4a9d994f6791bfe8fccb7ef4f8e05a1554feab714b0d8227d9e31072835",
+      "embedding_sha256": "c9b2f3cf9f7fbd5c1f1c5baa625bf24335236a67d5213d37a10844f33f4f8b92"
+    },
+    "_b7Ua3uZiZs": {
+      "revision": "76e9abd7-657e-4429-9e3d-a38e9270cb12",
+      "status": "완료",
+      "chunks": 22,
+      "missing_embedding": 0,
+      "transcript_sha256": "33bc03f88ba5c916fe9732b3baf90820f29e97a70c873298de696e6b1ad9d0b6",
+      "embedding_sha256": "4ae2e50eeef0141e09106cedc61421a153667d0c3716be7f52645216e80ceef2"
+    }
+  },
+  "records": [
+    {
+      "id": "Q01",
+      "kind": "positive",
+      "q": "인간관계에서 스트레스 안받는 사람들은 어떠한 특징을 갖고 있어?",
+      "http_status": 200,
+      "ms": 5442,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "byVgbqzYJrs",
+          "seq": 2,
+          "t": 88,
+          "t_end": 128,
+          "score": 0.483573,
+          "hl": "'아, 안됐다.' 그래서 그 사람이 싫지만 싫지만 그 사람을 미워하지는 않아.",
+          "text_sha256": "4cfc808857efc936e27a54351ee796860a87685cd01151527457cd2713563f95"
+        },
+        {
+          "rank": 2,
+          "video_id": "byVgbqzYJrs",
+          "seq": 9,
+          "t": 445,
+          "t_end": 484,
+          "score": 0.439451,
+          "hl": "그래서 행복 안에 슬픔이 없으면 행복은 만들어질까?",
+          "text_sha256": "c48ff6bc196a759f466c986d5ae01b339114b550081a20211856233e322536ba"
+        },
+        {
+          "rank": 3,
+          "video_id": "byVgbqzYJrs",
+          "seq": 5,
+          "t": 250,
+          "t_end": 292,
+          "score": 0.466592,
+          "hl": "참 싫은데 어, 그 사람이 싫은데 그 사람에 대해서 굳이 내가 기대를 안 하면 미워지지 않는 거야.",
+          "text_sha256": "773a2020eb3d7297e9dc85c0ea19664cc7fa791109e5e18d05f4dd7f1b664696"
+        },
+        {
+          "rank": 4,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 8,
+          "t": 324,
+          "t_end": 376,
+          "score": 0.488889,
+          "hl": "다시 말해서 우리가 가진 유전자 그리고 우리의 뇌는 최대한 에너지를 쓰지 않고 편하게 쉬고자 진화되어 왔습니다.",
+          "text_sha256": "69483bf13ddb5d1e63bcfc2a7319740893f0c070cefa718f8b3ccc6a963838b6"
+        },
+        {
+          "rank": 5,
+          "video_id": "byVgbqzYJrs",
+          "seq": 13,
+          "t": 581,
+          "t_end": 618,
+          "score": 0.44774,
+          "hl": "그래서 한 사람의 장점을 즐기고 싶으면 그 사람의 단점을 기꺼이 허용해야 돼.",
+          "text_sha256": "2491a0b489be13815d2f47990e1496c8c33949f8418ec7cd027969cb0c75a31f"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 3179
+      }
+    },
+    {
+      "id": "Q02",
+      "kind": "positive",
+      "q": "행복은 어떻게 만들어져?",
+      "http_status": 200,
+      "ms": 4229,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "byVgbqzYJrs",
+          "seq": 9,
+          "t": 445,
+          "t_end": 484,
+          "score": 0.660535,
+          "hl": "그래서 행복 안에 슬픔이 없으면 행복은 만들어질까?",
+          "text_sha256": "c48ff6bc196a759f466c986d5ae01b339114b550081a20211856233e322536ba"
+        },
+        {
+          "rank": 2,
+          "video_id": "byVgbqzYJrs",
+          "seq": 8,
+          "t": 356,
+          "t_end": 445,
+          "score": 0.630603,
+          "hl": "그래서 어떻게 보면 우리가 즐거움이라는 것은 즐거움이 아닌 것들로 즐거움이 이루어져 있어.",
+          "text_sha256": "4130435c1d20c8fa215fb3b9c9c52435478aaf799921203adabf28f40bad44bc"
+        },
+        {
+          "rank": 3,
+          "video_id": "byVgbqzYJrs",
+          "seq": 13,
+          "t": 581,
+          "t_end": 618,
+          "score": 0.477689,
+          "hl": "그래서 한 사람의 장점을 즐기고 싶으면 그 사람의 단점을 기꺼이 허용해야 돼.",
+          "text_sha256": "2491a0b489be13815d2f47990e1496c8c33949f8418ec7cd027969cb0c75a31f"
+        },
+        {
+          "rank": 4,
+          "video_id": "byVgbqzYJrs",
+          "seq": 11,
+          "t": 523,
+          "t_end": 547,
+          "score": 0.57607,
+          "hl": "그런데 그게 둘 다 행복의 요소임을 알면 슬픈 것도 좋은 거고 기쁜 것도 좋은 거야.",
+          "text_sha256": "d6fe0f0cc7a71e019dee0b2f73838d496ffca9bcc1f6e6cd99d3dd066ce4de31"
+        },
+        {
+          "rank": 5,
+          "video_id": "byVgbqzYJrs",
+          "seq": 0,
+          "t": 0,
+          "t_end": 29,
+          "score": 0.486741,
+          "hl": "물도 내가 되고, 커피도 내가 되고, 숨도 내가 되고, 돼지도 내가 되고, 소도 내가 되고, 닭도 내가 되는 거야.",
+          "text_sha256": "1fb2d8a37e768efda16a9efd8d4a691454db59240486691775c5eda976dadc66"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 2379
+      }
+    },
+    {
+      "id": "Q03",
+      "kind": "positive",
+      "q": "AI 엔지니어와 ML 연구자의 차이가 뭐야?",
+      "http_status": 200,
+      "ms": 3199,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "LHpplKlnXes",
+          "seq": 4,
+          "t": 100,
+          "t_end": 144,
+          "score": 0.731302,
+          "hl": "So if ML researchers are the ones building the engine, then AI engineers are the ones building the car.",
+          "text_sha256": "e835526f812007c85ba1081a408489c3c993b17d76fc04bb8f129a7b8c688f65"
+        },
+        {
+          "rank": 2,
+          "video_id": "LHpplKlnXes",
+          "seq": 3,
+          "t": 76,
+          "t_end": 100,
+          "score": 0.672246,
+          "hl": "An AI engineer is not a machine learning researcher.",
+          "text_sha256": "9bf74d8eafe8e2e97afcd74687ae096a58767f623bcd3ba8770d6d291d45ca5f"
+        },
+        {
+          "rank": 3,
+          "video_id": "LHpplKlnXes",
+          "seq": 15,
+          "t": 467,
+          "t_end": 474,
+          "score": 0.531111,
+          "hl": "And building these loops is what's really important because one who can do this reliably and at scale, well, that's a good AI engineer.",
+          "text_sha256": "8caea3860e491597091c635dac068db6c50df692ce171b30e73ef917c3295ea9"
+        },
+        {
+          "rank": 4,
+          "video_id": "LHpplKlnXes",
+          "seq": 21,
+          "t": 624,
+          "t_end": 637,
+          "score": 0.521769,
+          "hl": "But now you know what AI engineers do, right?",
+          "text_sha256": "53fdc9185e0387d429dab275e61f8698c1143621c3e1c98d64a2803fae075ebe"
+        },
+        {
+          "rank": 5,
+          "video_id": "LHpplKlnXes",
+          "seq": 10,
+          "t": 285,
+          "t_end": 325,
+          "score": 0.545031,
+          "hl": "So tier two is where we learn about these specific AI engineering skills.",
+          "text_sha256": "873afacca6535a0082b835060b5726da9bbb671c5495ac3934df8d7d9d99bacb"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 1869
+      }
+    },
+    {
+      "id": "Q04",
+      "kind": "positive",
+      "q": "AI 엔지니어가 되기 위해 배워야 하는 것들 알려줘",
+      "http_status": 200,
+      "ms": 3501,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "LHpplKlnXes",
+          "seq": 0,
+          "t": 0,
+          "t_end": 23,
+          "score": 0.764093,
+          "hl": "And today, I'm going to break down what an AI Engineer actually is, the skill stack that you need to learn, and three projects that'll help demonstrate your skills to potential employers.",
+          "text_sha256": "dbe3e30a8245fb943112482a404e1b3d9fc7dc22566984681e5629e591c45f15"
+        },
+        {
+          "rank": 2,
+          "video_id": "LHpplKlnXes",
+          "seq": 2,
+          "t": 47,
+          "t_end": 76,
+          "score": 0.750671,
+          "hl": "So the question is, what do you actually need to learn to become an AI engineer?",
+          "text_sha256": "fb1fff2f6f18b70b2108bb2d23f76dfbdcaf80fc78015328dff9fefd198ca85d"
+        },
+        {
+          "rank": 3,
+          "video_id": "LHpplKlnXes",
+          "seq": 3,
+          "t": 76,
+          "t_end": 100,
+          "score": 0.672499,
+          "hl": "An AI engineer is not a machine learning researcher.",
+          "text_sha256": "9bf74d8eafe8e2e97afcd74687ae096a58767f623bcd3ba8770d6d291d45ca5f"
+        },
+        {
+          "rank": 4,
+          "video_id": "LHpplKlnXes",
+          "seq": 10,
+          "t": 285,
+          "t_end": 325,
+          "score": 0.610949,
+          "hl": "So tier two is where we learn about these specific AI engineering skills.",
+          "text_sha256": "873afacca6535a0082b835060b5726da9bbb671c5495ac3934df8d7d9d99bacb"
+        },
+        {
+          "rank": 5,
+          "video_id": "LHpplKlnXes",
+          "seq": 4,
+          "t": 100,
+          "t_end": 144,
+          "score": 0.580596,
+          "hl": "On the other hand, an AI engineer is different.",
+          "text_sha256": "e835526f812007c85ba1081a408489c3c993b17d76fc04bb8f129a7b8c688f65"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 2333
+      }
+    },
+    {
+      "id": "Q05",
+      "kind": "positive",
+      "q": "어떻게 해야 공부할 때 오래 기억할 수 있어?",
+      "http_status": 200,
+      "ms": 5315,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 12,
+          "t": 396,
+          "t_end": 438,
+          "score": 0.656588,
+          "hl": "이렇게 하는데 어떻게 그 강의의 내용이 머릿속에 안 남겠어요?",
+          "text_sha256": "23ba724c32e9494d48000b65ba38f313c0d2e989e6f287e069fcfd51ff824265"
+        },
+        {
+          "rank": 2,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 32,
+          "t": 1333,
+          "t_end": 1383,
+          "score": 0.689773,
+          "hl": "이런 방식으로 공부를 하시기 바랍니다.",
+          "text_sha256": "45a60ad0c5b39bff44a72eec362f3cf0fd348c5b4591ad515f760aeceb39bda9"
+        },
+        {
+          "rank": 3,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 9,
+          "t": 284,
+          "t_end": 311,
+          "score": 0.657606,
+          "hl": "자기가 이해한 것을 자기 식으로 메모하는 것인데, 책이나 강의를 또 들으면 안 됩니다.",
+          "text_sha256": "999ceebf06e62b3d3c3c6bc9abeb0e51dc7420aa5bddb97508c7857601f4a0cb"
+        },
+        {
+          "rank": 4,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 38,
+          "t": 1626,
+          "t_end": 1677,
+          "score": 0.693797,
+          "hl": "이걸 반복해서 하는 것이 전공책 공부 방법이에요.",
+          "text_sha256": "2e921fd84f95be7978ae564dea96a031ce71e32be85494466afe2bfdcbbfde20"
+        },
+        {
+          "rank": 5,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 15,
+          "t": 542,
+          "t_end": 587,
+          "score": 0.67364,
+          "hl": "그러면 메모를 여기 두고 메모한 걸 자꾸 보면서 독서 카드에 쓰면은 얘가 될까요, 안 될까요?",
+          "text_sha256": "d09b80e693472e97586e31873c6df050e7fc5ecd51910f84288d37c14bc4a95e"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 3658
+      }
+    },
+    {
+      "id": "Q06",
+      "kind": "positive",
+      "q": "뭘 공부하건 공통적으로 중요한 공부법이 있어? 있다면 그게 뭔지 알려줘",
+      "http_status": 200,
+      "ms": 5320,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 8,
+          "t": 246,
+          "t_end": 284,
+          "score": 0.638947,
+          "hl": "우리가 공부를 한다는 건 읽거나 듣거나 하는 것이죠.",
+          "text_sha256": "8637c5f52c61826084a02e6a95bb313b00a53b111d0287a5ad9a0983ed4dcc8e"
+        },
+        {
+          "rank": 2,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 33,
+          "t": 1386,
+          "t_end": 1469,
+          "score": 0.651279,
+          "hl": "사실 공부의 핵심은 독서와 수강에 의한 공부예요.",
+          "text_sha256": "a11e8c5984872cfd78801ac44fe58fac4ce53b5d11fa08da8af4815daa8febab"
+        },
+        {
+          "rank": 3,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 1,
+          "t": 18,
+          "t_end": 56,
+          "score": 0.643378,
+          "hl": "\"아, 공부법이라는 게 총체적으로 이런 것이구나.\" \"그리고 구체적 방법들은 각각의 영역에서 이런 것이구나.\" 하는 것을 깨닫기 바랍니다.",
+          "text_sha256": "7192a9f8d3a638f2d67e5d017876f1902a29485d7512b070ffeadf75afabd59a"
+        },
+        {
+          "rank": 4,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 41,
+          "t": 1791,
+          "t_end": 1823,
+          "score": 0.680682,
+          "hl": "네, 오늘 제가 공부법에 대해서 종합 강의를 했는데요.",
+          "text_sha256": "83a1fd3925fb96496fa6120eb198608d2a65a05691738e649444b907c33b4002"
+        },
+        {
+          "rank": 5,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 38,
+          "t": 1626,
+          "t_end": 1677,
+          "score": 0.646744,
+          "hl": "이걸 반복해서 하는 것이 전공책 공부 방법이에요.",
+          "text_sha256": "2e921fd84f95be7978ae564dea96a031ce71e32be85494466afe2bfdcbbfde20"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 3809
+      }
+    },
+    {
+      "id": "Q07",
+      "kind": "positive",
+      "q": "운동이 뇌 건강에 왜 그렇게 중요해?",
+      "http_status": 200,
+      "ms": 4905,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 14,
+          "t": 604,
+          "t_end": 655,
+          "score": 0.688394,
+          "hl": "내 뇌를 계속 건강하게 지키기 위해서 하는 것이고 그건 결국 나라는 사람을 오래오래 좋은 모습으로 지키게 만드는 것입니다.",
+          "text_sha256": "d17fcc763ba9bc0a040bc0f2a993a6c723007e4974df60b703a57706bdd0415e"
+        },
+        {
+          "rank": 2,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 13,
+          "t": 569,
+          "t_end": 603,
+          "score": 0.650408,
+          "hl": "뇌 건강이 중요한 이유는 뇌졸중이나 치매를 막고자 하는 것이 아닙니다.",
+          "text_sha256": "ffb45ce37263208e904212674e79a7eb8a1af88df8950bb3a67bdc7d8a3ab7f0"
+        },
+        {
+          "rank": 3,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 12,
+          "t": 538,
+          "t_end": 569,
+          "score": 0.620966,
+          "hl": "저는 뇌를 보는 의사이기 때문에 그 결과를 매일 MRI를 통해서 외래에서 확인합니다.",
+          "text_sha256": "8ca2d1a1e40024d71ab8478c39b1e6bfb8d3cea288fa84b13f2476a6cd3e52ed"
+        },
+        {
+          "rank": 4,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 18,
+          "t": 813,
+          "t_end": 862,
+          "score": 0.631663,
+          "hl": "뇌에 길을 만들거나 혹은 바꾸려면 시간과 노력이 정말 많이 듭니다.",
+          "text_sha256": "bfe474865204c23c6e75a205d85c94853c111644027a281915a6419a881cfa79"
+        },
+        {
+          "rank": 5,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 20,
+          "t": 901,
+          "t_end": 961,
+          "score": 0.561894,
+          "hl": "본인 뇌에 건강한 길 하나 새로 낸 겁니다.",
+          "text_sha256": "00792f6d0bc2f410e29230743b6354951113fffdd32a51c1778fcf65db68a1f6"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 3484
+      }
+    },
+    {
+      "id": "Q08",
+      "kind": "positive",
+      "q": "뇌 건강 가장 건강하게 유지하려면 해야 하는 것들 알려줘",
+      "http_status": 200,
+      "ms": 3759,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 13,
+          "t": 569,
+          "t_end": 603,
+          "score": 0.638157,
+          "hl": "뇌가 건강하면 우리는 더 잘 배우고 잘 일하고 더 잘 지낼 수 있습니다.",
+          "text_sha256": "ffb45ce37263208e904212674e79a7eb8a1af88df8950bb3a67bdc7d8a3ab7f0"
+        },
+        {
+          "rank": 2,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 12,
+          "t": 538,
+          "t_end": 569,
+          "score": 0.588708,
+          "hl": "저는 뇌를 보는 의사이기 때문에 그 결과를 매일 MRI를 통해서 외래에서 확인합니다.",
+          "text_sha256": "8ca2d1a1e40024d71ab8478c39b1e6bfb8d3cea288fa84b13f2476a6cd3e52ed"
+        },
+        {
+          "rank": 3,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 14,
+          "t": 604,
+          "t_end": 655,
+          "score": 0.606818,
+          "hl": "내 뇌를 계속 건강하게 지키기 위해서 하는 것이고 그건 결국 나라는 사람을 오래오래 좋은 모습으로 지키게 만드는 것입니다.",
+          "text_sha256": "d17fcc763ba9bc0a040bc0f2a993a6c723007e4974df60b703a57706bdd0415e"
+        },
+        {
+          "rank": 4,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 21,
+          "t": 962,
+          "t_end": 1005,
+          "score": 0.544669,
+          "hl": "좋은 뇌든 나쁜 뇌든 어느 날 갑자기 만들어지지 않습니다.",
+          "text_sha256": "f27d6a3fe033b27d8c5462006e27d50cef8078f104c08f035703356cc77f21c6"
+        },
+        {
+          "rank": 5,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 3,
+          "t": 144,
+          "t_end": 181,
+          "score": 0.530156,
+          "hl": "그래서 화면 위에 띄워 놓은 사진처럼 우리 뇌는 두개골 안을 그 공간을 가득 채우고 있어야 합니다.",
+          "text_sha256": "9b52a62a2e7a3db539786f427f6e3d241202023b97817a137e8d01da3f69bca1"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 2482
+      }
+    },
+    {
+      "id": "N01",
+      "kind": "negative",
+      "q": "다툰 친구에게 화해하자고 연락할 때 첫 메시지를 어떻게 쓰면 돼? 예문을 알려줘.",
+      "http_status": 200,
+      "ms": 6317,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "byVgbqzYJrs",
+          "seq": 3,
+          "t": 129,
+          "t_end": 211,
+          "score": 0.410821,
+          "hl": "그 화와 싸움과 서로의 다툼의 전제는 뭐다?",
+          "text_sha256": "4a49ef160adf7dc4012bcba2357f66f560c0eb68c0d33e891a8b6f4916176d5b"
+        },
+        {
+          "rank": 2,
+          "video_id": "byVgbqzYJrs",
+          "seq": 4,
+          "t": 211,
+          "t_end": 250,
+          "score": 0.516674,
+          "hl": "그럴 바에야 처음부터 안 만나면 되고.",
+          "text_sha256": "6957fbdde9c49dc3d64ddf73a838c5fb384e4c0b375e0315c87d23c6b6103307"
+        },
+        {
+          "rank": 3,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 30,
+          "t": 1220,
+          "t_end": 1278,
+          "score": 0.429489,
+          "hl": "그러면 첫 번째 것은 이런 내용, 두 번째 내용은 세 번째 내용은 네 번째 내용은 이런 것인데 큰 틀에서 동일한 상황에서 해법이 몇 가지가 나와서 결국은 다른 내용이 쓰여져 있구나.\" 하는 걸 이해하게 되면 메모를 하실 때는 상황 단위 또는 해법 단위로 정리를 해서 메모를 하시면 아주 도움이 됩니다.",
+          "text_sha256": "25e9e930d07d49a733f1c83aa0010042ab495039c0a99b419c72cb2b4ab6d2d5"
+        },
+        {
+          "rank": 4,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 35,
+          "t": 1484,
+          "t_end": 1567,
+          "score": 0.460862,
+          "hl": "그래서 뭐 12권 정도의 친구 책을 여러분들이 설정을 하셔서 읽으시면 되는데 얘는 장 단위로 읽으시는 게 좋아요.",
+          "text_sha256": "ded3e634a03269380d21e9b87fd05b8f323b6c2a3516124da37a6005c10f122c"
+        },
+        {
+          "rank": 5,
+          "video_id": "byVgbqzYJrs",
+          "seq": 14,
+          "t": 618,
+          "t_end": 641,
+          "score": 0.416553,
+          "hl": "네, 오늘 좋은 말씀 해주셔서 감사합니다.",
+          "text_sha256": "068849dd07e10d42fc92a7ffb8703cf1bb980b8c0e81945a376899fafb9b5faa"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 4143
+      }
+    },
+    {
+      "id": "N02",
+      "kind": "negative",
+      "q": "RAG 문서를 청킹할 때 청크 크기와 겹치는 길이는 각각 몇 토큰으로 정하면 돼?",
+      "http_status": 200,
+      "ms": 6212,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "LHpplKlnXes",
+          "seq": 12,
+          "t": 339,
+          "t_end": 378,
+          "score": 0.534204,
+          "hl": "And the reason why this is important is because of retrieval, augmented generation, or RAG.",
+          "text_sha256": "2465d6f9bfdb7be67b44c70b3d56cd494506d220066ce3401c797aa1258c2c71"
+        },
+        {
+          "rank": 2,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 19,
+          "t": 743,
+          "t_end": 769,
+          "score": 0.433841,
+          "hl": "이 생각을 토대로 해서 요번에는 카드나 정리 노트에다가 깔끔하게 다시 쓰는 것, 이거 이제 기록 행위라고 하거든요.",
+          "text_sha256": "900b97633b3e0c846bb0c898ed778926f37c3b19856c84c2fd687aea0a598e87"
+        },
+        {
+          "rank": 3,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 30,
+          "t": 1220,
+          "t_end": 1278,
+          "score": 0.390586,
+          "hl": "\"어, 내가 다섯 개의 조문을 봤어.",
+          "text_sha256": "25e9e930d07d49a733f1c83aa0010042ab495039c0a99b419c72cb2b4ab6d2d5"
+        },
+        {
+          "rank": 4,
+          "video_id": "LHpplKlnXes",
+          "seq": 13,
+          "t": 378,
+          "t_end": 422,
+          "score": 0.468014,
+          "hl": "And almost every company experimenting with AI wants some version of RAG, or Retrieval Augmented Generation, even if you're not using embeddings or working with another form of storage.",
+          "text_sha256": "c8ee7214ff0de38c3045f49a20ae9df72c1a0263241bc9e9f62f22d69d68025e"
+        },
+        {
+          "rank": 5,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 18,
+          "t": 693,
+          "t_end": 743,
+          "score": 0.391273,
+          "hl": "\"내가 지금 세 개 단원을 공부할 거야.\" 들어가 봤더니 각각 세 개의 절로 돼 있어서 총 아홉 개의 절이 돼 있어.",
+          "text_sha256": "3be76b2afcfee1ed28e3eee3f03d026f868950132df347c01b8232829df0ca12"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 4042
+      }
+    },
+    {
+      "id": "N03",
+      "kind": "negative",
+      "q": "공부한 걸 오래 기억하려면 복습을 며칠 간격으로 해야 해? 날짜별 복습 주기를 알려줘.",
+      "http_status": 200,
+      "ms": 5675,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 6,
+          "t": 179,
+          "t_end": 210,
+          "score": 0.595868,
+          "hl": "최소한 일주일 지나면 달달달달 외운 것은 머릿속에서 지워져 버려요.",
+          "text_sha256": "43d77501626b67beaa13ad27ea55d16b316e14b5901b8e3abcc9ee3cd84dfcc5"
+        },
+        {
+          "rank": 2,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 19,
+          "t": 743,
+          "t_end": 769,
+          "score": 0.581671,
+          "hl": "이렇게 큰 틀을 본 상태에서 이제 각각의 절 단위로 공부를 해가는 것, 이 태도가 굉장히 중요합니다.",
+          "text_sha256": "900b97633b3e0c846bb0c898ed778926f37c3b19856c84c2fd687aea0a598e87"
+        },
+        {
+          "rank": 3,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 29,
+          "t": 1166,
+          "t_end": 1220,
+          "score": 0.582008,
+          "hl": "날짜별로요, 무슨 과목을 몇 쪽에서 몇 쪽까지 하고 기출 문제는 뭘 하고 하는 것들이 빽빽하게 들어가 있는 계획을 짜시는 것이 여러분들이 자격증 시험에 합격할 수 있는 제일 좋은 요령이다, 이거 잊지 마시기 바랍니다.",
+          "text_sha256": "7f21708cbb287f590433592cf8559bb3daca7369114d18272e8a15c880b02f2c"
+        },
+        {
+          "rank": 4,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 32,
+          "t": 1333,
+          "t_end": 1383,
+          "score": 0.601674,
+          "hl": "예를 들어서 다섯 과목인데 첫 번째 과목의 전체 내용의 제목을 다 외우고 계셔야 돼요.",
+          "text_sha256": "45a60ad0c5b39bff44a72eec362f3cf0fd348c5b4591ad515f760aeceb39bda9"
+        },
+        {
+          "rank": 5,
+          "video_id": "DXDbJyZxzUg",
+          "seq": 17,
+          "t": 645,
+          "t_end": 693,
+          "score": 0.559724,
+          "hl": "그게 된 상태에서 시험공부를 하면 사흘 만에 150쪽 분량에 대한 범위를 몸에 익히고 100점을 맞을 수 있는 것이죠.",
+          "text_sha256": "41f4a4a9fb0464d4a0834f16de25cf0913fb447ab4a1993e01831b0b320b715f"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 3405
+      }
+    },
+    {
+      "id": "N04",
+      "kind": "negative",
+      "q": "뇌 건강을 위한 달리기는 일주일에 몇 번, 한 번에 몇 분씩 해야 해?",
+      "http_status": 200,
+      "ms": 6081,
+      "error": null,
+      "hits": [
+        {
+          "rank": 1,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 20,
+          "t": 901,
+          "t_end": 961,
+          "score": 0.551896,
+          "hl": "본인 뇌에 건강한 길 하나 새로 낸 겁니다.",
+          "text_sha256": "00792f6d0bc2f410e29230743b6354951113fffdd32a51c1778fcf65db68a1f6"
+        },
+        {
+          "rank": 2,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 10,
+          "t": 411,
+          "t_end": 484,
+          "score": 0.538646,
+          "hl": "저는 숙제를 뭐라고 냈냐면 최소 3km 달려라 이렇게 냈는데 다 3km만 딱 달려온 거죠.",
+          "text_sha256": "743d67d68b9b56e099a62df8bcd30682d62d6fd1c732e523aeb8f08a8ac08402"
+        },
+        {
+          "rank": 3,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 14,
+          "t": 604,
+          "t_end": 655,
+          "score": 0.608001,
+          "hl": "내 뇌를 계속 건강하게 지키기 위해서 하는 것이고 그건 결국 나라는 사람을 오래오래 좋은 모습으로 지키게 만드는 것입니다.",
+          "text_sha256": "d17fcc763ba9bc0a040bc0f2a993a6c723007e4974df60b703a57706bdd0415e"
+        },
+        {
+          "rank": 4,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 3,
+          "t": 144,
+          "t_end": 181,
+          "score": 0.550893,
+          "hl": "그래서 화면 위에 띄워 놓은 사진처럼 우리 뇌는 두개골 안을 그 공간을 가득 채우고 있어야 합니다.",
+          "text_sha256": "9b52a62a2e7a3db539786f427f6e3d241202023b97817a137e8d01da3f69bca1"
+        },
+        {
+          "rank": 5,
+          "video_id": "_b7Ua3uZiZs",
+          "seq": 13,
+          "t": 569,
+          "t_end": 603,
+          "score": 0.546393,
+          "hl": "뇌가 건강하면 우리는 더 잘 배우고 잘 일하고 더 잘 지낼 수 있습니다.",
+          "text_sha256": "ffb45ce37263208e904212674e79a7eb8a1af88df8950bb3a67bdc7d8a3ab7f0"
+        }
+      ],
+      "rerank": {
+        "reranked": true,
+        "reason": null,
+        "model": "Dongjin-kr/ko-reranker",
+        "ms": 4300
+      }
+    }
+  ]
+}
