@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { saySorry } from "@/lib/errors";
 import { EMPTY, splitLines, step, type Line, type SearchState } from "@/lib/search-stream";
+import { warmReranker } from "@/lib/warm";
 
 const mm = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
@@ -17,6 +18,11 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
   const [asked, setAsked] = useState("");
   const [s, setS] = useState<SearchState>(EMPTY);
   const ctrl = useRef<AbortController | null>(null);
+  // 맞는 대목이 없어 보일 때 접어 둔 가까운 대목을 펼쳤는가
+  const [peek, setPeek] = useState(false);
+
+  // 읽는 동안 리랭커를 깨워 둔다. 첫 검색에서도 "맞는 대목 없음"을 판단할 수 있게.
+  useEffect(() => { warmReranker(); }, []);
 
   const go = async () => {
     const q = input.trim();
@@ -26,6 +32,7 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
     ctrl.current = c;
     setAsked(q);
     setS(EMPTY);
+    setPeek(false);
     try {
       const r = await fetch(`/api/search?${new URLSearchParams({ q, vid, stream: "1" })}`, { signal: c.signal });
       if (!r.ok || !r.body || !(r.headers.get("content-type") ?? "").includes("ndjson")) {
@@ -83,12 +90,19 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
           {s.failed ? <p className="text-[12.5px] text-mfg">검색에 실패했어요 — {s.failed}</p>
           : s.hits === null ? <p className="text-[12.5px] text-mfg" role="status">찾는 중…</p>
           : !s.hits.length ? <p className="text-[12.5px] text-mfg">이 영상에서 가까운 대목을 못 찾았어요.</p>
+          : s.weak && !peek ? (
+              // 결과를 지우지는 않는다. 기준값은 개발 질문 12개로 정한 값이라 틀릴 수 있다 —
+              // 틀렸을 때 버튼 한 번이면 답을 볼 수 있어야 한다.
+              <div role="status" aria-live="polite">
+                <p className="text-[13.5px] font-semibold">이 영상에서 이 질문에 맞는 내용을 찾지 못했어요.</p>
+                <button onClick={() => setPeek(true)}
+                        className="mt-1.5 text-[12px] text-mfg underline underline-offset-2 hover:text-fg">
+                  그래도 가까운 대목 보기
+                </button>
+              </div>
+            )
           : <>
-              {s.weak && (
-                <p className="mb-2 text-[12px] text-mfg" role="status" aria-live="polite">
-                  질문과 딱 맞는 대목은 없을 수 있어요. 가장 가까운 문단을 보여 드려요.
-                </p>
-              )}
+              {s.weak && <p className="mb-2 text-[12px] text-mfg">질문과 딱 맞지는 않지만 가장 가까운 대목이에요.</p>}
               <ol aria-label="이 영상에서 찾은 대목" className="grid gap-1">
                 {s.hits.map(h => (
                   <li key={h.seq}>

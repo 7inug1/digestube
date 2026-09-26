@@ -7,6 +7,7 @@ import { mine } from "@/lib/mine";
 import { saySorry } from "@/lib/errors";
 import { Bar } from "./Skeleton";
 import type { Line } from "@/lib/search-stream";
+import { warmReranker } from "@/lib/warm";
 
 /** 검색 결과. 범위가 "내 라이브러리"라 로그인하지 않은 사람은 이 브라우저 목록을
  *  같이 보내야 한다 — 그건 서버가 모르니 화면이 뜬 뒤에 물어본다. */
@@ -21,6 +22,10 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
   const [pending, setPending] = useState<FoundHit[] | null>(null);
   // 가장 가까운 결과도 질문과 거리가 멀면 알린다. 결과는 그대로 둔다 — 기준값이 틀려도 답이 사라지지 않게.
   const [weak, setWeak] = useState(false);
+  const [peek, setPeek] = useState(false);
+
+  // 검색 화면을 열면 리랭커를 깨워 둔다. 잠든 채 첫 검색이 오면 판단을 건너뛴다.
+  useEffect(() => { warmReranker(); }, []);
   const touched = useRef(false);
   const list = useRef<HTMLDivElement>(null);
   const before = useRef<Map<string, DOMRect> | null>(null);
@@ -152,17 +157,28 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
     );
   }
 
+  if (weak && !peek) {
+    // 결과는 지우지 않는다 — 기준값이 틀렸을 때 버튼 한 번이면 볼 수 있어야 한다.
+    return (
+      <div className="mt-6" role="status" aria-live="polite">
+        <p className="text-[15px] font-semibold">
+          {vid ? "이 영상에서" : "라이브러리에서"} 이 질문에 맞는 내용을 찾지 못했어요.
+        </p>
+        <button type="button" onClick={() => setPeek(true)}
+                className="mt-2 text-small text-mfg underline underline-offset-4 hover:text-fg">
+          그래도 가까운 대목 보기
+        </button>
+      </div>
+    );
+  }
+
   return (
     <>
       <p className="mt-6 text-small text-mfg">
         {`“${q}”와 가까운 영상 ${groups.length}편 · 관련 문단 ${hits.length}개`}
         {vid ? " · 이 영상 안에서" : ""}
       </p>
-      {weak && (
-        <p className="mt-3 text-small text-mfg" role="status" aria-live="polite">
-          질문과 딱 맞는 대목은 없을 수 있어요. 가장 가까운 문단을 보여 드려요.
-        </p>
-      )}
+      {weak && <p className="mt-3 text-small text-mfg">질문과 딱 맞지는 않지만 가장 가까운 대목이에요.</p>}
       <Refining refining={refining} settled={settled} pending={pending}
                 onApply={() => { if (pending) { apply(pending); setPending(null); } }} />
       <div ref={list} className="mt-3 grid gap-3">
