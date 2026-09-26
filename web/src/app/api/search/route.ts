@@ -54,11 +54,11 @@ export async function GET(req: Request) {
   if (stream) {
     return ndjson("search", async send => {
       const first = await findFirst(q, vid, k, await scope());
-      if (!first || !first.hits.length) { send({ t: "hits", hits: [] }); send({ t: "done", reranked: false, reason: null }); return; }
+      if (!first || !first.hits.length) { send({ t: "hits", hits: [] }); send({ t: "done", reranked: false, reason: null, weak: null }); return; }
       send({ t: "hits", hits: await decorate(first.hits) });
       const r = await refine(first, k);
       if (r.reranked) send({ t: "reranked", hits: await decorate(r.hits), model: r.model, ms: r.ms });
-      send({ t: "done", reranked: r.reranked, reason: r.reason });
+      send({ t: "done", reranked: r.reranked, reason: r.reason, weak: r.weak });
     });
   }
 
@@ -68,7 +68,7 @@ export async function GET(req: Request) {
     if (!wantRerank) return NextResponse.json({ hits: await decorate(first.hits) });
     const r = await refine(first, k);
     return NextResponse.json({ hits: await decorate(r.hits),
-      rerank: { reranked: r.reranked, reason: r.reason, model: r.model, ms: r.ms } });
+      rerank: { reranked: r.reranked, reason: r.reason, model: r.model, ms: r.ms, weak: r.weak } });
   } catch (e) {
     return NextResponse.json({ error: saySorry(e, "search") }, { status: 502 });
   }

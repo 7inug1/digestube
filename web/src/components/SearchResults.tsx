@@ -13,7 +13,7 @@ import { Bar } from "./Skeleton";
 type Line =
   | { t: "hits"; hits: FoundHit[] }
   | { t: "reranked"; hits: FoundHit[] }
-  | { t: "done"; reranked: boolean }
+  | { t: "done"; reranked: boolean; weak?: boolean | null }
   | { t: "error"; error: string };
 
 export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: string; signedIn: boolean }) {
@@ -24,6 +24,8 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
   const [settled, setSettled] = useState(false);
   // 읽거나 누르려는 중에 카드가 움직이면 거슬린다. 그때는 순서를 바꾸지 않고 버튼으로 제안한다.
   const [pending, setPending] = useState<FoundHit[] | null>(null);
+  // 가장 가까운 결과도 질문과 거리가 멀면 알린다. 결과는 그대로 둔다 — 기준값이 틀려도 답이 사라지지 않게.
+  const [weak, setWeak] = useState(false);
   const touched = useRef(false);
   const list = useRef<HTMLDivElement>(null);
   const before = useRef<Map<string, DOMRect> | null>(null);
@@ -73,6 +75,7 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
       else if (m.t === "reranked") { if (touched.current) setPending(m.hits); else apply(m.hits); }
       else if (m.t === "done") {
         setRefining(false);
+        setWeak(m.weak === true);
         if (m.reranked && !touched.current) { setSettled(true); setTimeout(() => setSettled(false), 2200); }
       }
       else if (m.t === "error") { setFailed(m.error); setHits(h => h ?? []); setRefining(false); }
@@ -160,6 +163,11 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
         {`“${q}”와 가까운 영상 ${groups.length}편 · 관련 문단 ${hits.length}개`}
         {vid ? " · 이 영상 안에서" : ""}
       </p>
+      {weak && (
+        <p className="mt-3 text-small text-mfg" role="status" aria-live="polite">
+          질문과 딱 맞는 대목은 없을 수 있어요. 가장 가까운 문단을 보여 드려요.
+        </p>
+      )}
       <Refining refining={refining} settled={settled} pending={pending}
                 onApply={() => { if (pending) { apply(pending); setPending(null); } }} />
       <div ref={list} className="mt-3 grid gap-3">
