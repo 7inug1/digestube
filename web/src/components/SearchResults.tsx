@@ -6,15 +6,10 @@ import Found, { type FoundHit } from "./Found";
 import { mine } from "@/lib/mine";
 import { saySorry } from "@/lib/errors";
 import { Bar } from "./Skeleton";
+import type { Line } from "@/lib/search-stream";
 
 /** 검색 결과. 범위가 "내 라이브러리"라 로그인하지 않은 사람은 이 브라우저 목록을
  *  같이 보내야 한다 — 그건 서버가 모르니 화면이 뜬 뒤에 물어본다. */
-/** 서버가 한 줄씩 보내는 것. 먼저 벡터 결과(hits), 리랭커가 순서를 바꾸면 reranked, 끝나면 done. */
-type Line =
-  | { t: "hits"; hits: FoundHit[] }
-  | { t: "reranked"; hits: FoundHit[] }
-  | { t: "done"; reranked: boolean; weak?: boolean | null }
-  | { t: "error"; error: string };
 
 export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: string; signedIn: boolean }) {
   const [hits, setHits] = useState<FoundHit[] | null>(null);

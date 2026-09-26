@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import YouTube, { type Controls } from "./YouTube";
-import SearchForm from "./SearchForm";
+import VideoSearch from "./VideoSearch";
 
 type Chunk = { seq: number; t: number; t_end: number; text: string };
 type Outline = { seq: number; t: number; label: string };
@@ -430,7 +430,7 @@ export default function Reader({ vid, chunks, outline, meta }: {
               붙어 있는 칸(sticky)에 두면 언제든 손이 닿는다. */}
           {/* 읽다가 "그 얘기 어디서 했더라" 하는 순간이 이 화면에서 생긴다.
               그때 헤더를 찾아 누르고 새 화면으로 가게 두면 대개 그냥 넘긴다. */}
-          <SearchForm q="" vid={vid} small />
+          <VideoSearch vid={vid} onJump={jump} />
 
           {outline.length > 0 && (
             <div className="rounded-xl bg-muted/60 p-4">
