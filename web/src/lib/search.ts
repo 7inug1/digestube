@@ -104,14 +104,16 @@ export type Refined = {
   hits: Found[]; reranked: boolean; reason: "timeout" | "error" | "same" | "small" | null; model: string; ms: number;
   /** 1위 리랭커 점수가 기준보다 낮은가. 리랭커가 돌지 않았으면 null — 판단하지 않는다. */
   weak: boolean | null;
+  /** 후보 중 가장 높은 리랭커 점수. 약하다고 판단한 이유를 화면에 보여 줄 때 쓴다 */
+  top: number | null;
 };
 
 /** 후보를 리랭커로 다시 세운다. 3초 안에 못 오거나 실패하면 벡터 순서를 그대로 둔다.
  *  새로 올라온 문단만 짚을 문장을 찾는다 — 이미 보여 준 문단은 다시 계산하지 않는다. */
 export async function refine(first: First, k = 3, timeoutMs = RERANK_TIMEOUT_MS): Promise<Refined> {
   const t0 = Date.now();
-  const keep = (reason: Refined["reason"], weak: boolean | null = null): Refined =>
-    ({ hits: first.hits, reranked: false, reason, model: RERANK_MODEL, ms: Date.now() - t0, weak });
+  const keep = (reason: Refined["reason"], weak: boolean | null = null, top: number | null = null): Refined =>
+    ({ hits: first.hits, reranked: false, reason, model: RERANK_MODEL, ms: Date.now() - t0, weak, top });
   if (first.pool.length <= 1) return keep("small");
   const out = await rerank(first.query, first.pool.map(h => h.text), timeoutMs);
   if ("error" in out) {
@@ -121,10 +123,11 @@ export async function refine(first: First, k = 3, timeoutMs = RERANK_TIMEOUT_MS)
   first.pool.forEach((h, i) => { h.rerank_score = Math.round(out.scores[i] * 1000) / 1000; });
   // 순서가 그대로여도 점수는 받았으니 판단은 한다
   const weak = weakMatch(out.scores);
+  const best = Math.round(Math.max(...out.scores) * 1000) / 1000;
   const top = reorder(first.pool, out.scores, k);
   const key = (h: Found) => `${h.video_id}:${h.seq}`;
-  if (top.map(key).join() === first.hits.map(key).join()) return keep("same", weak);
+  if (top.map(key).join() === first.hits.map(key).join()) return keep("same", weak, best);
   const need = top.filter(h => h.hl === undefined);
   if (need.length) await highlight(first.qv, need, need.length);
-  return { hits: top, reranked: true, reason: null, model: RERANK_MODEL, ms: Date.now() - t0, weak };
+  return { hits: top, reranked: true, reason: null, model: RERANK_MODEL, ms: Date.now() - t0, weak, top: best };
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { saySorry } from "@/lib/errors";
-import { EMPTY, splitLines, step, type Line, type SearchState } from "@/lib/search-stream";
+import { EMPTY, splitLines, stageOf, STAGE_TEXT, step, type Line, type SearchState } from "@/lib/search-stream";
 import { warmReranker } from "@/lib/warm";
 
 const mm = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -88,7 +88,10 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
           </div>
 
           {s.failed ? <p className="text-[12.5px] text-mfg">검색에 실패했어요 — {s.failed}</p>
-          : !s.done || s.hits === null ? <p className="text-[12.5px] text-mfg" role="status">찾는 중…</p>
+          : !s.done || s.hits === null
+            ? <p className="text-[12.5px] text-mfg" role="status" aria-live="polite">
+                {STAGE_TEXT[stageOf(s) === "check" ? "check" : "find"]}
+              </p>
           : !s.hits.length ? <p className="text-[12.5px] text-mfg">이 영상에서 가까운 대목을 못 찾았어요.</p>
           : s.weak && !peek ? (
               // 결과를 지우지는 않는다. 기준값은 개발 질문 12개로 정한 값이라 틀릴 수 있다 —
@@ -102,7 +105,7 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
               </div>
             )
           : <>
-              {s.weak && <p className="mb-2 text-[12px] text-mfg">질문과 딱 맞지는 않지만 가장 가까운 대목이에요.</p>}
+              {s.weak && <div className="mb-2"><WeakReason top={s.top} cut={s.cut} /></div>}
               <ol aria-label="이 영상에서 찾은 대목" className="grid gap-1">
                 {s.hits.map(h => (
                   <li key={h.seq}>
@@ -110,6 +113,8 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
                             className="flex w-full items-baseline gap-2 rounded px-1 py-1.5 text-left hover:bg-muted/60">
                       <span className="shrink-0 font-mono text-[10.5px] text-mfg">{mm(h.t)}</span>
                       <span className="line-clamp-2 flex-1 text-[13px] leading-[1.6]">{h.hl ?? h.text}</span>
+                      {s.weak && h.rerank_score !== undefined &&
+                        <span className="shrink-0 font-mono text-[10.5px] text-mfg">{`관련도 점수 ${h.rerank_score.toFixed(1)}`}</span>}
                     </button>
                   </li>
                 ))}
@@ -118,5 +123,15 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
         </div>
       )}
     </div>
+  );
+}
+
+/** 펼쳤을 때 왜 "못 찾았다"고 했는지. 점수를 받지 못했으면 말하지 않는다. */
+export function WeakReason({ top, cut }: { top: number | null; cut: number | null }) {
+  if (top === null || cut === null) return null;
+  return (
+    <p className="text-[12px] text-mfg">
+      {`가장 높은 관련도 점수 ${top.toFixed(1)} · 기준 ${cut} 미만이라 질문에 맞는 대목이 없다고 판단했어요.`}
+    </p>
   );
 }

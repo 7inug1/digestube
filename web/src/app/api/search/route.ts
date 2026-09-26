@@ -1,6 +1,7 @@
 import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { findFirst, refine, type Found } from "@/lib/search";
+import { WEAK_SCORE } from "@/lib/rerank";
 import { currentUser } from "@/lib/auth/server";
 import { libraryIds, statsOf } from "@/lib/store";
 import { meta } from "@/lib/youtube";
@@ -57,8 +58,10 @@ export async function GET(req: Request) {
       if (!first || !first.hits.length) { send({ t: "hits", hits: [] }); send({ t: "done", reranked: false, reason: null, weak: null }); return; }
       send({ t: "hits", hits: await decorate(first.hits) });
       const r = await refine(first, k);
-      if (r.reranked) send({ t: "reranked", hits: await decorate(r.hits), model: r.model, ms: r.ms });
-      send({ t: "done", reranked: r.reranked, reason: r.reason, weak: r.weak });
+      // 점수를 받았으면 순서가 그대로여도 다시 보낸다 — 문단마다 점수가 붙어 있어야
+      // 화면이 "왜 못 찾았다고 했는지"를 보여 줄 수 있다
+      if (r.reranked || r.top !== null) send({ t: "reranked", hits: await decorate(r.hits), model: r.model, ms: r.ms });
+      send({ t: "done", reranked: r.reranked, reason: r.reason, weak: r.weak, top: r.top, cut: WEAK_SCORE });
     });
   }
 
@@ -68,7 +71,7 @@ export async function GET(req: Request) {
     if (!wantRerank) return NextResponse.json({ hits: await decorate(first.hits) });
     const r = await refine(first, k);
     return NextResponse.json({ hits: await decorate(r.hits),
-      rerank: { reranked: r.reranked, reason: r.reason, model: r.model, ms: r.ms, weak: r.weak } });
+      rerank: { reranked: r.reranked, reason: r.reason, model: r.model, ms: r.ms, weak: r.weak, top: r.top, cut: WEAK_SCORE } });
   } catch (e) {
     return NextResponse.json({ error: saySorry(e, "search") }, { status: 502 });
   }

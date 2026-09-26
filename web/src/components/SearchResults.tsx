@@ -6,7 +6,8 @@ import Found, { type FoundHit } from "./Found";
 import { mine } from "@/lib/mine";
 import { saySorry } from "@/lib/errors";
 import { Bar } from "./Skeleton";
-import { EMPTY, splitLines, step, type Line, type SearchState } from "@/lib/search-stream";
+import { EMPTY, splitLines, stageOf, STAGE_TEXT, step, type Line, type SearchState } from "@/lib/search-stream";
+import { WeakReason } from "./VideoSearch";
 import { warmReranker } from "@/lib/warm";
 
 /** 검색 결과. 범위가 "내 라이브러리"라 로그인하지 않은 사람은 이 브라우저 목록을
@@ -69,6 +70,7 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
   if (!s.done || hits === null) {
     return (
       <div className="mt-6 grid gap-3">
+        <p className="text-small text-mfg" role="status" aria-live="polite">{STAGE_TEXT[stageOf(s) === "check" ? "check" : "find"]}</p>
         {[0, 1].map(c => (
           <article key={c} className="rounded-xl border border-line p-4 sm:p-5">
             <div className="flex items-center gap-3">
@@ -124,11 +126,11 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
         {`“${q}”와 가까운 영상 ${groups.length}편 · 관련 문단 ${hits.length}개`}
         {vid ? " · 이 영상 안에서" : ""}
       </p>
-      {weak && <p className="mt-3 text-small text-mfg">질문과 딱 맞지는 않지만 가장 가까운 대목이에요.</p>}
+      {weak && <div className="mt-3"><WeakReason top={s.top} cut={s.cut} /></div>}
       <div className="mt-3 grid gap-3">
         {/* 그리드 칸은 기본으로 내용 폭만큼 넓어진다. 한 줄로 자르는 긴 제목이 칸을 밀어 휴대폰 화면이
             옆으로 넘치지 않게 칸이 줄어들 수 있게 한다 */}
-        {groups.map(g => <div key={g[0].video_id} data-key={g[0].video_id} className="min-w-0"><Found hits={g} /></div>)}
+        {groups.map(g => <div key={g[0].video_id} data-key={g[0].video_id} className="min-w-0"><Found hits={g} showScore={weak} /></div>)}
       </div>
     </>
   );

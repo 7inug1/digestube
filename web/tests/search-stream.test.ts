@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { EMPTY, step, splitLines } from "../src/lib/search-stream";
+import { EMPTY, step, splitLines, stageOf } from "../src/lib/search-stream";
 
 const hit = (seq: number) => ({ video_id: "v", seq, t: seq * 10, text: `문단 ${seq}`, score: 0.5, title: "", channel: "", duration: 100 });
 
@@ -44,4 +44,18 @@ test("처리가 다 끝나야 done 이 된다 — 화면은 그때 한 번만 �
   assert.equal(s.done, true);
   assert.deepEqual(s.hits?.map(h => h.seq), [2, 1]);
   assert.equal(step(EMPTY, { t: "error", error: "x" }).done, true);
+});
+
+test("기다리는 동안 지금 하는 일을 단계로 알려 준다", () => {
+  assert.equal(stageOf(EMPTY), "find");
+  const found = step(EMPTY, { t: "hits", hits: [hit(1)] });
+  assert.equal(stageOf(found), "check");
+  assert.equal(stageOf(step(found, { t: "done", reranked: false, weak: false })), "done");
+});
+
+test("끝날 때 받은 1위 관련도 점수와 기준값을 남긴다 — 왜 못 찾았다고 했는지 보여 주려고", () => {
+  const s = step(EMPTY, { t: "done", reranked: true, weak: true, top: -7.83, cut: -4 });
+  assert.equal(s.top, -7.83);
+  assert.equal(s.cut, -4);
+  assert.equal(step(EMPTY, { t: "done", reranked: false, weak: null }).top, null);
 });
