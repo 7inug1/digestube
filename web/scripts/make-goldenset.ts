@@ -1,6 +1,9 @@
 /** 검색 정답지(골든셋) 초안을 만든다.
  *
- *    node --experimental-websocket --env-file=.env.local --import tsx scripts/make-goldenset.ts
+ *    node --experimental-websocket --env-file=.env.local --import tsx scripts/make-goldenset.ts <스냅샷 results.json>
+ *
+ *  스냅샷은 임베딩 비교 실행의 results.json 이다. 그 실행과 같은 영상·리비전·문단 수일 때만
+ *  질문을 만든다(`selectCorpus`). 라이브러리 전체로 만들면 비교 결과와 이어서 말할 수 없다.
  *
  *  구성은 실행 전에 정했다 — 30문항(답 있음 22 · 답 없음 8), dev 15 / test 15.
  *  dev 로 커트라인을 고르고 test 로 한 번만 확인한다. 같은 문항으로 고르고
@@ -11,13 +14,17 @@
  *  맞는지, "답 없음"이 정말 답이 없는지는 사람이 봐야 한다.
  *  운영 DB 는 읽기만 한다.
  */
-import {mkdirSync, writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {selectCorpus, type CorpusSnapshot} from '../src/lib/goldenset-corpus';
 import {listVideos, getVideo} from '../src/lib/store.supabase';
 import {holds} from '../src/lib/verify';
 import {meta} from '../src/lib/youtube';
 
 const MODEL = 'claude-sonnet-5';
 const OUT = 'data/evals/search';
+// v2(2026-09-13)는 문단 경계를 보여 주고 만든 초안이라 남겨 두고 새 이름으로 쓴다
+const VERSION = 'v3';
 const ANSWERABLE = 22;
 const NO_ANSWER = 8;
 
@@ -78,7 +85,13 @@ function readJson<T>(raw: string, field: string): T[] {
 }
 
 async function main() {
-  const videos = await listVideos();
+  const snapshotPath = process.argv[2];
+  if (!snapshotPath) throw new Error('스냅샷 results.json 경로가 필요하다');
+  const snapshotRaw = readFileSync(snapshotPath, 'utf8');
+  const snapshot = JSON.parse(snapshotRaw) as CorpusSnapshot;
+  const snapshotSha = createHash('sha256').update(snapshotRaw).digest('hex');
+  const wanted = new Set(snapshot.corpus.map(s => s.video.id));
+  const videos = (await listVideos()).filter(v => wanted.has(v.id));
   // 한 편씩 읽는다. 한꺼번에 부르면 Supabase 가 Gateway Timeout 을 돌려준다.
   const loaded = [];
   for (const v of videos) {
@@ -88,7 +101,7 @@ async function main() {
                  revision: v.revision ?? null, chunks: full?.chunks ?? [],
                  outline: (full?.outline ?? []).map(o => o.label)});
   }
-  const corpus = loaded.filter(v => v.chunks.length > 0);
+  const corpus = selectCorpus(loaded, snapshot);
   console.log(`코퍼스 ${corpus.length}편 · 문단 ${corpus.reduce((n, v) => n + v.chunks.length, 0)}개\n`);
 
   // 답 있는 질문 — 영상마다 나눠 만든다. 한 편에서 몰아 뽑으면 질문끼리 겹친다.
@@ -147,8 +160,9 @@ async function main() {
 
   mkdirSync(OUT, {recursive: true});
   const stamp = new Date().toISOString();
-  writeFileSync(`${OUT}/questions.draft.v2.json`, JSON.stringify({
-    version: `draft-v2-${stamp}`,
+  writeFileSync(`${OUT}/questions.draft.${VERSION}.json`, JSON.stringify({
+    version: `draft-${VERSION}-${stamp}`,
+    corpus_snapshot: {path: snapshotPath, sha256: snapshotSha},
     status: 'draft',
     note: '사람 검수 전이다. review_status 가 전부 draft 다.',
     design: {answerable: ANSWERABLE, no_answer: NO_ANSWER, split: 'dev 15 / test 15',
@@ -162,10 +176,11 @@ async function main() {
 
   // 사람이 읽고 판단할 목록. JSON 을 눈으로 읽게 하지 않는다.
   const byId = new Map(corpus.map(v => [v.id, v]));
-  const lines = ['# 검색 정답지 초안 v2 — 검수용', '',
+  const lines = [`# 검색 정답지 초안 ${VERSION} — 검수용`, '',
     `문항 ${questions.length}개 (답 있음 ${picked.length} · 답 없음 ${none.slice(0, NO_ANSWER).length})`,
     `코퍼스 ${corpus.length}편 · 문단 ${corpus.reduce((n, v) => n + v.chunks.length, 0)}개`, '',
     '각 문항에서 볼 것: ① 질문이 사람 말 같은가 ② 정답 문단이 실제로 답인가 ③ 답 없음이 정말 없는가', '',
+    '④ 같은 내용이 영상의 다른 구간에도 나오면 그 시각을 적는다. 정답 구간이 하나뿐이면 맞게 찾아도 실패로 센다(2026-09-22 Q05).', '',
     '---', ''];
   for (const q of questions) {
     lines.push(`## ${q.id} · ${q.split} · ${q.category}`, '', `**${q.question}**`, '');
@@ -181,11 +196,11 @@ async function main() {
     }
     lines.push('판정: ☐ 통과  ☐ 수정  ☐ 버림', '', '---', '');
   }
-  writeFileSync(`${OUT}/questions.draft.v2.review.md`, lines.join('\n'));
+  writeFileSync(`${OUT}/questions.draft.${VERSION}.review.md`, lines.join('\n'));
 
   console.log(`\n총 ${questions.length}문항 (답 있음 ${picked.length} · 답 없음 ${none.slice(0, NO_ANSWER).length})`);
-  console.log(`저장: ${OUT}/questions.draft.v2.json`);
-  console.log(`검수용: ${OUT}/questions.draft.v2.review.md`);
+  console.log(`저장: ${OUT}/questions.draft.${VERSION}.json`);
+  console.log(`검수용: ${OUT}/questions.draft.${VERSION}.review.md`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
