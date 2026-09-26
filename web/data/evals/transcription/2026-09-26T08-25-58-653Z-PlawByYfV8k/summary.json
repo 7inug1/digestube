@@ -1,0 +1,83 @@
+{
+  "measured_at": "2026-09-26T08:25:58.653Z",
+  "video_id": "PlawByYfV8k",
+  "model": "gemini-3.1-flash-lite",
+  "url": "https://www.youtube.com/watch?v=PlawByYfV8k",
+  "prompt": "speech",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 14856,
+  "elapsed_sec": 14.9,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 38071,
+    "candidatesTokenCount": 2906,
+    "totalTokenCount": 40977,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 37945
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "segments": 71,
+  "chars": {
+    "gemini": 2909,
+    "native": 2980
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 87,
+    "native_sentence_marks": 93
+  },
+  "bracketed": {
+    "gemini": [
+      "(두려워서)",
+      "(충격)",
+      "(6개월 만에)",
+      "(어떤 형태로든요)"
+    ],
+    "native": []
+  },
+  "word_overlap": {
+    "gemini_words": 759,
+    "native_words": 780,
+    "shared": 679,
+    "only_in_gemini": 80,
+    "only_in_native": 101
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": false,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": false,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 71,
+    "matched": 52,
+    "coverage": 0.73,
+    "median_gap_sec": 6,
+    "p90_gap_sec": 9.6
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 410,
+    "native_last_end_sec": 415,
+    "tail_gap_sec": 5
+  }
+}

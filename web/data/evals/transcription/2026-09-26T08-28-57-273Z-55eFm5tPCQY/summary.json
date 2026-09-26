@@ -1,0 +1,84 @@
+{
+  "measured_at": "2026-09-26T08:28:57.273Z",
+  "video_id": "55eFm5tPCQY",
+  "model": "gemini-3.5-flash-lite",
+  "url": "https://www.youtube.com/watch?v=55eFm5tPCQY",
+  "prompt": "speech",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 21688,
+  "elapsed_sec": 21.7,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 45804,
+    "candidatesTokenCount": 4720,
+    "totalTokenCount": 50524,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 45678
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "segments": 71,
+  "chars": {
+    "gemini": 4622,
+    "native": 4629
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 88,
+    "native_sentence_marks": 80
+  },
+  "bracketed": {
+    "gemini": [
+      "(Cursor)",
+      "(뉴욕멜론은행, BNY Mellon)",
+      "(Skywork AI)"
+    ],
+    "native": [
+      "(Cursor)"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 1092,
+    "native_words": 1109,
+    "shared": 1040,
+    "only_in_gemini": 52,
+    "only_in_native": 69
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 71,
+    "matched": 66,
+    "coverage": 0.93,
+    "median_gap_sec": 0.9,
+    "p90_gap_sec": 2.9
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 489,
+    "native_last_end_sec": 489,
+    "tail_gap_sec": 0
+  }
+}

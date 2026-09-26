@@ -1,0 +1,88 @@
+{
+  "measured_at": "2026-09-26T08:28:15.898Z",
+  "video_id": "8cp0YvSpDA8",
+  "model": "gemini-3.5-flash-lite",
+  "url": "https://www.youtube.com/watch?v=8cp0YvSpDA8",
+  "prompt": "speech",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 21399,
+  "elapsed_sec": 21.4,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 36980,
+    "candidatesTokenCount": 4358,
+    "totalTokenCount": 41338,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 36854
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "segments": 66,
+  "chars": {
+    "gemini": 3700,
+    "native": 3777
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 135,
+    "native_sentence_marks": 126
+  },
+  "bracketed": {
+    "gemini": [
+      "(?)",
+      "(?)",
+      "(난 상관 안 한다)",
+      "(난 상관한다)",
+      "(상관있어)"
+    ],
+    "native": [
+      "(난 상관 안 한다)",
+      "(난 상관한다)",
+      "(상관있어)"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 991,
+    "native_words": 1023,
+    "shared": 928,
+    "only_in_gemini": 63,
+    "only_in_native": 95
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 66,
+    "matched": 54,
+    "coverage": 0.82,
+    "median_gap_sec": 1.5,
+    "p90_gap_sec": 3.2
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 404,
+    "native_last_end_sec": 404,
+    "tail_gap_sec": 0
+  }
+}
