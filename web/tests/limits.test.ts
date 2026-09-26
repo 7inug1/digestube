@@ -64,9 +64,11 @@ test("쓴 곳 전부에 적는다 — 로그인하면 계정, 아니면 IP. 브�
 });
 
 test("전체 상한은 개인 몫보다 먼저다", async () => {
-  const { ALL_DAY_SECONDS, ANON_DAY_SECONDS } = await import("../src/lib/limits");
-  // 개인 60분 × 10명이 꽉 채워야 닿는 선. 한 사람이 혼자 닿을 수는 없다.
-  assert.equal(ALL_DAY_SECONDS / ANON_DAY_SECONDS, 10);
+  const { ALL_DAY_SECONDS, IP_DAY_SECONDS } = await import("../src/lib/limits");
+  // 개인 몫을 90분으로 올리면서(2026-09-26) 전체 상한 10시간은 그대로 뒀다 — 비용 상한을 유지한다.
+  // 지켜야 할 것은 "한 자리(IP)에서 혼자 닿을 수 없다"는 것이다.
+  assert.equal(ALL_DAY_SECONDS, 10 * 60 * 60);
+  assert.ok(ALL_DAY_SECONDS > IP_DAY_SECONDS);
 });
 
 test("IP 는 느슨한 뒷문이다 — 개인 몫의 세 배", async () => {
@@ -74,4 +76,8 @@ test("IP 는 느슨한 뒷문이다 — 개인 몫의 세 배", async () => {
   // 사무실에서 세 사람까지는 각자 제 몫을 다 쓸 수 있고,
   // 한 사람이 쿠키를 지우며 반복하면 세 번에서 끊긴다.
   assert.equal(IP_DAY_SECONDS / ANON_DAY_SECONDS, 3);
+});
+
+test("하루 몫은 90분이다", () => {
+  assert.equal(ANON_DAY_SECONDS, 90 * 60);
 });
