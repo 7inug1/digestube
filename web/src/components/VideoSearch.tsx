@@ -37,7 +37,7 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
       const r = await fetch(`/api/search?${new URLSearchParams({ q, vid, stream: "1" })}`, { signal: c.signal });
       if (!r.ok || !r.body || !(r.headers.get("content-type") ?? "").includes("ndjson")) {
         const d = await r.json();
-        setS(x => ({ ...x, hits: d.hits ?? [], failed: d.error ?? "" }));
+        setS(x => ({ ...x, hits: d.hits ?? [], failed: d.error ?? "", done: true }));
         return;
       }
       const reader = r.body.getReader();
@@ -50,7 +50,7 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
         buf = rest;
         for (const line of lines) setS(x => step(x, JSON.parse(line) as Line));
       }
-      setS(x => ({ ...x, refining: false }));
+      setS(x => ({ ...x, refining: false, done: true }));
     } catch (e) {
       if (c.signal.aborted) return;
       setS(x => step(x, { t: "error", error: saySorry(e, "search") }));
@@ -81,14 +81,14 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
       {asked && (
         <div className="mt-3 rounded-xl border border-line p-3">
           <div className="mb-2 flex items-baseline gap-2">
-            <p className="min-w-0 flex-1 truncate text-[11.5px] text-mfg">{`“${asked}” · 이 영상 안에서`}</p>
+            <p className="min-w-0 flex-1 truncate text-[11.5px] text-mfg">{`“${asked}”`}</p>
             <button onClick={close} className="shrink-0 text-[11.5px] text-mfg underline underline-offset-2 hover:text-fg">
               닫기
             </button>
           </div>
 
           {s.failed ? <p className="text-[12.5px] text-mfg">검색에 실패했어요 — {s.failed}</p>
-          : s.hits === null ? <p className="text-[12.5px] text-mfg" role="status">찾는 중…</p>
+          : !s.done || s.hits === null ? <p className="text-[12.5px] text-mfg" role="status">찾는 중…</p>
           : !s.hits.length ? <p className="text-[12.5px] text-mfg">이 영상에서 가까운 대목을 못 찾았어요.</p>
           : s.weak && !peek ? (
               // 결과를 지우지는 않는다. 기준값은 개발 질문 12개로 정한 값이라 틀릴 수 있다 —
@@ -114,7 +114,6 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
                   </li>
                 ))}
               </ol>
-              {s.refining && <p className="mt-1 text-[11px] text-mfg" role="status">질문에 더 맞는 순서로 정리하는 중…</p>}
             </>}
         </div>
       )}

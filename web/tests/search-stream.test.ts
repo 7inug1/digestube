@@ -34,3 +34,14 @@ test("오류는 메시지를 남기고 결과를 빈 목록으로 닫는다", ()
   assert.equal(s.failed, "잠시 후 다시");
   assert.deepEqual(s.hits, []);
 });
+
+test("처리가 다 끝나야 done 이 된다 — 화면은 그때 한 번만 결과를 보여 준다", () => {
+  let s = step(EMPTY, { t: "hits", hits: [hit(1), hit(2)] });
+  assert.equal(s.done, false);
+  s = step(s, { t: "reranked", hits: [hit(2), hit(1)] });
+  assert.equal(s.done, false);
+  s = step(s, { t: "done", reranked: true, weak: false });
+  assert.equal(s.done, true);
+  assert.deepEqual(s.hits?.map(h => h.seq), [2, 1]);
+  assert.equal(step(EMPTY, { t: "error", error: "x" }).done, true);
+});

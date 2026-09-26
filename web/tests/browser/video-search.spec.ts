@@ -22,6 +22,9 @@ test('searching inside a video stays on the page, scopes to that video, and jump
   const results=page.getByRole('list',{name:'이 영상에서 찾은 대목'});
   await expect(results.getByRole('button')).toHaveCount(1);
   expect(page.url()).toContain(`/videos/${VID}`);
+  // 범위·다듬기 같은 내부 사정은 말하지 않는다 — 사용자에게 필요한 건 결과뿐이다
+  await expect(page.getByText('이 영상 안에서')).toHaveCount(0);
+  await expect(page.getByText('정리하는 중')).toHaveCount(0);
   expect(new URL(asked()).searchParams.get('vid')).toBe(VID);
   await results.getByRole('button').first().click();
   await expect(page.locator('#ck9')).toBeInViewport();

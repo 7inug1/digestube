@@ -18,16 +18,19 @@ export type SearchState = {
   /** 1위 리랭커 점수가 기준보다 낮았다. 판단하지 못했으면(null) 약하다고 하지 않는다 */
   weak: boolean;
   failed: string;
+  /** 처리가 다 끝났다. 화면은 이때 한 번만 결과를 보여 준다 — 먼저 보여 줬다가 순서를 바꾸면
+   *  사용자는 다듬기 같은 내부 사정을 신경 써야 한다(2026-09-26 사용자 지적). */
+  done: boolean;
 };
 
-export const EMPTY: SearchState = { hits: null, refining: false, weak: false, failed: "" };
+export const EMPTY: SearchState = { hits: null, refining: false, weak: false, failed: "", done: false };
 
 export function step(s: SearchState, m: Line): SearchState {
   switch (m.t) {
     case "hits": return { ...s, hits: m.hits, refining: m.hits.length > 0 };
     case "reranked": return { ...s, hits: m.hits };
-    case "done": return { ...s, refining: false, weak: m.weak === true };
-    case "error": return { ...s, failed: m.error, hits: s.hits ?? [], refining: false };
+    case "done": return { ...s, refining: false, weak: m.weak === true, done: true };
+    case "error": return { ...s, failed: m.error, hits: s.hits ?? [], refining: false, done: true };
   }
 }
 
