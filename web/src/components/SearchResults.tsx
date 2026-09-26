@@ -171,7 +171,9 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
       <Refining refining={refining} settled={settled} pending={pending}
                 onApply={() => { if (pending) { apply(pending); setPending(null); } }} />
       <div ref={list} className="mt-3 grid gap-3">
-        {groups.map(g => <div key={g[0].video_id} data-key={g[0].video_id}><Found hits={g} /></div>)}
+        {/* 그리드 칸은 기본으로 내용 폭만큼 넓어진다. 한 줄로 자르는 긴 제목이 칸을 밀어 휴대폰 화면이
+            옆으로 넘치지 않게 칸이 줄어들 수 있게 한다 */}
+        {groups.map(g => <div key={g[0].video_id} data-key={g[0].video_id} className="min-w-0"><Found hits={g} /></div>)}
       </div>
     </>
   );
