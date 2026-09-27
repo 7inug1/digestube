@@ -1,4 +1,7 @@
-/** 골든셋 v3 로 운영 검색을 한 번 돌려 결과를 저장하고, 지금 방식(A: 리랭커 1위 점수 < -4)을 채점한다.
+/** 골든셋 v3 로 검색을 한 번 돌려 결과를 저장하고, 서버가 내린 "답 없음" 판단(weak)을 채점한다.
+ *
+ *  판단 방식은 서버 코드가 정한다 — 2026-09-27 08:19Z 전까지는 리랭커 1위 점수 < -4,
+ *  그 뒤(커밋 e77c75d)는 점수 -2·-8 + 애매한 구간 AI 판정. 결과 파일의 decision 칸에 판단 주체(by)를 함께 적는다.
  *
  *    node evals/search/goldenset-run.mjs dev      # 개발용 15개
  *    node evals/search/goldenset-run.mjs test     # 확인용 15개 — 방법을 고른 뒤 한 번만
@@ -41,9 +44,9 @@ for (const q of questions) {
   rows.push({
     id: q.id, kind: q.kind, question: q.question, answerable,
     required: required.length, found: found.length, trap_in_top3: trapHit,
-    weak: d.rerank.weak, top: d.rerank.top, cut: d.rerank.cut, ms: d.ms, tries: d.tries,
+    weak: d.rerank.weak, top: d.rerank.top, by: d.rerank.by ?? null, why: d.rerank.why ?? null, ms: d.ms, tries: d.tries,
     // A 판정이 맞았나: 답 있으면 "찾지 못함"이 아니어야, 답 없으면 "찾지 못함"이어야 한다
-    a_correct: answerable ? d.rerank.weak === false : d.rerank.weak === true,
+    a_correct: answerable ? d.rerank.weak === false : d.rerank.weak === true, // 서버 판단이 맞았나
     hits,
   });
   console.log(`${q.id} ${q.kind.padEnd(9)} 근거 ${found.length}/${required.length}  top ${d.rerank.top}  weak ${d.rerank.weak}  A ${rows.at(-1).a_correct ? "맞음" : "틀림"}`);
@@ -56,8 +59,9 @@ const summary = {
     required_found: `${ans.reduce((n, r) => n + r.found, 0)}/${ans.reduce((n, r) => n + r.required, 0)}`,
     all_found_questions: `${ans.filter(r => r.found === r.required).length}/${ans.length}`,
   },
-  method_A: {
-    rule: "리랭커 1위 점수 < -4 이면 찾지 못함",
+  decision: {
+    // 판단은 서버가 한다. 어떤 방식이었는지는 판단 주체 개수로 남긴다(by 가 없으면 -4 단일 기준 시절 서버)
+    by: Object.fromEntries(Object.entries(rows.reduce((m, r) => ({ ...m, [r.by ?? "score(-4, 옛 서버)"]: (m[r.by ?? "score(-4, 옛 서버)"] ?? 0) + 1 }), {}))),
     correct: `${rows.filter(r => r.a_correct).length}/${rows.length}`,
     answerable_not_rejected: `${ans.filter(r => r.a_correct).length}/${ans.length}`,
     no_answer_rejected: `${none.filter(r => r.a_correct).length}/${none.length}`,
