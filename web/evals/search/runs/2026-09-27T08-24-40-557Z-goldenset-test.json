@@ -1,0 +1,576 @@
+{
+  "summary": {
+    "split": "test",
+    "n": 15,
+    "base": "https://digestube.vercel.app",
+    "run_at": "2026-09-27T08:24:40.557Z",
+    "gold_version": "v3-final-2026-09-27",
+    "search": {
+      "required_found": "11/14",
+      "all_found_questions": "8/11"
+    },
+    "method_A": {
+      "rule": "리랭커 1위 점수 < -4 이면 찾지 못함",
+      "correct": "14/15",
+      "answerable_not_rejected": "10/11",
+      "no_answer_rejected": "4/4"
+    }
+  },
+  "rows": [
+    {
+      "id": "Q02",
+      "kind": "single",
+      "question": "그 코딩 유튜버 중 어떤 영상 올려야 할지 몰라 도움 달라고 설문조사 요청한 유튜버 있었잖아. 그 설문조사 어떤 거였지?",
+      "answerable": true,
+      "required": 1,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": -6.967,
+      "ms": 10704,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "-Z11mZaJU0w",
+          "seq": 3,
+          "score": 0.633076,
+          "rerank_score": -6.967,
+          "text": "So if you have the time, I would really appreciate it. I have a survey linked in the description. If you could just fill that out real quickly, should just take you 5, maybe 10 minutes if you're really in-depth. It's mostly just multiple-choice questions, and some of them are even optional. But essentially, it's just a way for me to gauge what actual content you want on this channel. This is to try to help gauge what I'm going to be creating for you, and try to make this channel more geared towards the actual content that you want. This is going to go for my main channel, my secondary channel, my newsletter, any content that I create, even courses."
+        },
+        {
+          "video_id": "-Z11mZaJU0w",
+          "seq": 4,
+          "score": 0.645237,
+          "rerank_score": -7.216,
+          "text": "This quick survey is going to help me actually gauge what you're looking for, and form the content that I'm going to create."
+        },
+        {
+          "video_id": "-Z11mZaJU0w",
+          "seq": 6,
+          "score": 0.60928,
+          "rerank_score": -8.978,
+          "text": "So if you have the time, just take a few minutes, fill out that survey linked in the description below. I will be reading every single response that I get, and every single answer. So if you can fill that out, it's going to be greatly helpful for me, and I really, really appreciate it. You can single-handedly help shape this channel to be exactly what you need to progress your career in whatever stage you're in. With that said, thank you very much, and especially extra thank you if you do fill out that survey, and have a good day."
+        }
+      ]
+    },
+    {
+      "id": "Q06",
+      "kind": "single",
+      "question": "챗GPT 점유율이 50% 밑으로 떨어진 시점이 언제야?",
+      "answerable": true,
+      "required": 1,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": 4.525,
+      "ms": 4050,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "55eFm5tPCQY",
+          "seq": 1,
+          "score": 0.608947,
+          "rerank_score": 4.525,
+          "text": "생성형 AI 시장이 새로운 전환점을 맞고 있습니다. AI를 신기해하고 탐색하는 단계는 이제 끝났고 실제 생산성에 얼마나 도움이 되는지, 구독료를 낼 만큼 가치가 있는지를 따지는 시장으로 성숙했다는 건데요. AI 서비스 점유율에도 이런 변화가 보입니다. 챗GPT의 글로벌 점유율은 올해 5월 사상 처음으로 50% 아래로 추락, 경쟁 서비스들의 사용자 수가 늘어나고 있는 모습! 이는 곧 소비자들이 '더 쓸모 있는 AI를 찾고 있다'는 신호로 해석할 수 있는 거죠."
+        },
+        {
+          "video_id": "55eFm5tPCQY",
+          "seq": 12,
+          "score": 0.424599,
+          "rerank_score": -8.521,
+          "text": "미래 AI 에이전트 경쟁 역시 '누가 사용자를 더 깊이 이해하느냐'로 확대될 가능성이 크다는데요. 궁극적으로 마지막 경쟁으로 가는 것은 '나다운 AI다'라고 이제 좀 이야기할 수 있을 것 같은데요. 똑똑함만으로는 차별화가 이제 안 되는 시절이 오고 있다라는 거죠. 내가 일을 할 때마다 모든 맥락을 다 알려 줘야 되는 팀원하고 일을 해야 될 것인가, 아니면 \"그거 알지? 그거 했던 거 해 봐!\"라고 했을 때 그 맥락들을 잘 이해하는 어떠한 AI, 어떠한 팀원하고 일을 할 것인가. 당연히 후자가 좋게 될 것이죠. 그러다 보니까 작년부터 올해 사이에 챗GPT나 클로드나 제미나이 같은 주요 AI 기업들이 전부 기억 기능, 나를 기억하는 기능들을 기본으로 탑재하기 시작을 합니다. 내가 무슨 일을 하는지 지난달에 뭘 AI랑 상의했는지 이런 것들을 AI가 기억하고 다음 대화로 이어 가기 시작을 한다라는 것이죠."
+        },
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 9,
+          "score": 0.420374,
+          "rerank_score": -9.819,
+          "text": "3단계, 이미지 모으기. 비전보드답게 이미지를 모아야겠죠. 2단계에서 쓴 목표 이미지를 찾을 건데요. 구글에서 검색할 수도 있고요. Pinterest라는 곳이 이미지 찾기에 꽤 괜찮습니다. 이런 이미지만 봐도 너무 멋있는데요. 업그레이드 비전보드는 한 가지 문제를 포착합니다. 남의 사진은 남일 같다. 그래서 우리는 비전보드의 주인공을 나로 바꿀 거예요. 남이 페라리를 모는 사진보다 내가 페라리 타는 사진이 100배 더 강력하거든요."
+        }
+      ]
+    },
+    {
+      "id": "Q08",
+      "kind": "single",
+      "question": "젠스파크의 세컨드브레인이 뭐 하는 기능이야?",
+      "answerable": true,
+      "required": 1,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": 5.575,
+      "ms": 3664,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "55eFm5tPCQY",
+          "seq": 10,
+          "score": 0.642423,
+          "rerank_score": 5.575,
+          "text": "그런데 한편으론 \"PPT도, 코딩도, 디자인도 다 에이전트가 알아서 하면 이제 AI 티 나는 자료들만 넘치게 되는 거 아니야?\" 업계는 이 질문에도 해답을 내놓고 있습니다. 바로 AI 에이전트의 '개인화'로요. AI가 평균치의 뻔한 결과물이 아닌 인간다운, '나다운' 결과물을 내놓게 하려면 사용자가 가진 고유의 생각과 톤이 담긴 맥락을 데이터화하여 AI에 먹여 줘야 하는 번거로운 과정을 거쳐야 하는데요. 기업들은 이런 개인화 기능에도 경쟁적으로 투자해 독자적인 작업 단계를 설계하는 모습입니다. 젠스파크 역시 최근 메일, 캘린더, 메신저, 미팅, 문서 등에 흩어져 있는 사용자의 모든 흔적을 모으는 '세컨드브레인' 시스템을 도입했다는데요. You can think of it as a AI library only for you from all the sources and of all the related informations that you are interested in. Organize book, pick which book it should be put on the shelf, and which book should we take it off. So, in this way, Second Brain is kind of your personal library with a personal librarian."
+        },
+        {
+          "video_id": "55eFm5tPCQY",
+          "seq": 11,
+          "score": 0.521162,
+          "rerank_score": -6.769,
+          "text": "이렇게 만들어진 세컨드브레인 위에서 에이전트는 일하게 되고 그 결과 사용자의 톤으로 마감된 '나다운' 작업물을 생성, 그야말로 쓰면 쓸수록 사용자를 깊게 이해하는 동료로 진화할 수 있는 거죠. And the thing is it's actually compile and understand everything. Just like human's brain, we continuously process everything, try to understand, and try to form a knowledge about the things happening around us. And then when the when some request happens, we can easily retrieve or easily get from the knowledge processed. So, it's not just, you know, store everything together. It's about understanding and compile everything together, and to make it more useful."
+        },
+        {
+          "video_id": "55eFm5tPCQY",
+          "seq": 8,
+          "score": 0.516638,
+          "rerank_score": -7.258,
+          "text": "대표적 AI 에이전트 서비스로는 젠스파크가 있는데요. 똑똑한 성능이 아닌 '모두를 위한 AI'라는 메시지를 전하는 이 기업은 누구나 쉽게 AI 에이전트와 협업하고 완성도 높은 결과물을 생성해 볼 수 있는 AI 서비스를 만들었어요. 시중 수많은 AI 에이전트를 한곳에 모아 문제별로 '알아서' 최적의 모델을 선정해 사용자를 돕도록 한 건데, 예를 들어 프레젠테이션 자료를 만드는 상황이라면 문안 작성은 클로드가, 이미지 제작은 GPT Image 2가 알아서 맡는 셈이죠. 현재 서비스에 탑재된 인공지능 모델은 70개 이상으로 다양한 작업을 한곳에서 손쉽게 해결할 수 있다는데요. 각각의 구독을 관리할 필요도 없고 모든 에이전트가 서로 데이터를 공유하는지라 연계 작업도 쉽게 할 수 있다는 강점으로 빠른 성장 가도를 달리고 있습니다."
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "kind": "single",
+      "question": "대학생 때 강의실에서 시끄럽게 떠들다가 교수님이 문 열고 와서 한 말이 뭐였어?",
+      "answerable": true,
+      "required": 1,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": 6.286,
+      "ms": 3920,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "8cp0YvSpDA8",
+          "seq": 7,
+          "score": 0.614664,
+          "rerank_score": 6.286,
+          "text": "이게 옛날에 제가 어떤 힌트를 얻은 적이 있었는데 옛날에 제가 대학생 때 와 이거는 진짜 갑자기 생각이 나는 얘기다. 빈 강의실에서 제 친구들이랑 있었어요. 20대 애들이 있으니까 뭐 좀 시끌시끌할 거 아니에요. 근데 바로 옆에가 교수님이 연구실에 계셨었던 거 같아요. 갑자기 문이 열리더라고요. 저희가 너무 시끄러웠나 그래서 \"조용히 하겠습니다\" 그랬거든요? 근데 교수님이 하는 말이 \"아니야 아니야 그럴 필요 없어. 너희들 얼굴만 내가 보면은 너네가 떠들어도 괜찮아.\" 그러신 적이 있거든요? 근데 그때는 참 제게 되게 묘했어요, 그게. 아니 소음이 똑같이 들리는데 이 소음을 내는 애들이 저 애들이라는 걸 내가 알면은 자기는 구애받지 않게 된다는 거잖아요."
+        },
+        {
+          "video_id": "NtHSSWC04Do",
+          "seq": 0,
+          "score": 0.47141,
+          "rerank_score": -8.802,
+          "text": "수능이 얼마 남지 않았습니다. 힘내, 할 수 있어. 그런데 우린 과연 할 수 있을까요? 할 수 있다는 말이, 힘내라는 말이 오히려 힘에 부칠 때가 있습니다. 못해도 되고 실패해도 괜찮을 세상을 우린 아직 배운 적이 없는 것 같습니다. 그래도 할 수 있는 만큼은 해봅시다. 최선은 다해봅시다. 다만 바랍니다. 실패하더라도 다시 일어설 수 있는 단단한 마음은 이미 우리의 편이기를."
+        },
+        {
+          "video_id": "3KtrlNyd1ec",
+          "seq": 3,
+          "score": 0.455651,
+          "rerank_score": -9.728,
+          "text": "But my lesson to everybody is when your when your moment comes, you may not be ready, but you have to take it and then figure it out on the way."
+        }
+      ]
+    },
+    {
+      "id": "Q13",
+      "kind": "single",
+      "question": "세상의 주인이라는 말에서 주인의 진짜 의미가 뭐야",
+      "answerable": true,
+      "required": 1,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": -2.368,
+      "ms": 4967,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "byVgbqzYJrs",
+          "seq": 7,
+          "score": 0.597315,
+          "rerank_score": -2.368,
+          "text": "세상이다. 근데 난 전에 그런 말 했잖아. 난 세상의 주인으로서 행복할 권리가 있다라는 말을 했어. 그때 주(主)자는 주인이라는 으뜸 주(主)를 말하는 게 아니야. 주시자의 주자라는 거야. 그래서 '아, 세상이 나한테 이런 선물을 줬구나'라고 주시하는 사람, 그게 나라는 거야. 그게 좋은 선물이든 나쁜 선물이든 바라보는... 그렇지. 세상에 또 나쁜 선물은 없어. '어, 내가 나쁘다'라는 생각이라는 선물을 받았구나라고 생각하면 돼. 그게 경험이라는 거지."
+        },
+        {
+          "video_id": "byVgbqzYJrs",
+          "seq": 6,
+          "score": 0.628191,
+          "rerank_score": -3.902,
+          "text": "이렇게 대화 나누고 작가님 이야기를 듣다 보니까 작가님이 제일 좋아하는 그 감사랑 당연함이 대척점에 있는 건가라는 생각이 들어요. 그렇지. 아까 내가 말했듯이 세상에 당연함은 없다, 감사만 있다. 왜? 세상이라는 것은 세상이 준 선물이지, 나의 마땅함으로 내가 만든 게 아니거든. 마땅히 이래야 된다는 것은 내가 이 세상의 주인이라는 착각 때문이야. 세상의 주인은 누구다? 세상."
+        },
+        {
+          "video_id": "byVgbqzYJrs",
+          "seq": 0,
+          "score": 0.427462,
+          "rerank_score": -8.305,
+          "text": "아까 내가 김치찌개 먹었다 했잖아. 네. 김치찌개는 나야? 내가 아니야? 내가 아니죠. 내가 아니잖아. 그런데 김치찌개를 먹었어. 먹는 순간 뭐가 돼? 내가 되는 거잖아. 안을 구성하고 있죠. 그렇지, 그렇지. 김치찌개가 내가 되는 거야. 물도 내가 되고, 커피도 내가 되고, 숨도 내가 되고, 돼지도 내가 되고, 소도 내가 되고, 닭도 내가 되는 거야. 결국 나라는 것은 내가 아닌 모든 것들로 구성되어 있어."
+        }
+      ]
+    },
+    {
+      "id": "Q16",
+      "kind": "single",
+      "question": "비전보드에 남 사진 말고 내 얼굴 넣는 방법이 뭐야? 어떤 프로그램 써?",
+      "answerable": true,
+      "required": 1,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": 1.173,
+      "ms": 3952,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 10,
+          "score": 0.718045,
+          "rerank_score": 1.173,
+          "text": "방법은 간단해요. ChatGPT에 내 사진을 넣고 프롬프트를 이렇게 씁니다. 첨부한 사진 속 인물의 얼굴과 특징을 유지한 채 100명 앞에서 자신감 있게 TED 강연하는 모습을 사실적인 사진 스타일로 만들어 줘. 표정은 편안하고 당당하게. 보세요. 제가 강연하는 모습이 나왔죠? 또는 아까 봤던 Pinterest 사진이 마음에 든다면 내 사진과 Pinterest 사진을 넣고 이렇게 프롬프트를 씁니다. Pinterest 사진의 파일명을 '핀터레스트'라고 일단 해볼게요. '핀터레스트'의 스티브 잡스의 얼굴을 '내 사진'의 여자 얼굴로 교체를 해줘. 너무 재밌죠? 이걸 영역별로 뽑아주시면 됩니다."
+        },
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 9,
+          "score": 0.668435,
+          "rerank_score": -1.249,
+          "text": "3단계, 이미지 모으기. 비전보드답게 이미지를 모아야겠죠. 2단계에서 쓴 목표 이미지를 찾을 건데요. 구글에서 검색할 수도 있고요. Pinterest라는 곳이 이미지 찾기에 꽤 괜찮습니다. 이런 이미지만 봐도 너무 멋있는데요. 업그레이드 비전보드는 한 가지 문제를 포착합니다. 남의 사진은 남일 같다. 그래서 우리는 비전보드의 주인공을 나로 바꿀 거예요. 남이 페라리를 모는 사진보다 내가 페라리 타는 사진이 100배 더 강력하거든요."
+        },
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 11,
+          "score": 0.66777,
+          "rerank_score": -4.257,
+          "text": "건강 목표라면 마라톤 완주하고 메달을 든 나. 일 목표면 정돈된 홈 오피스에서 여유롭게 일하는 나. 이런 모습들이 되겠죠? 팁 하나를 주자면 표정이나 분위기까지 지정을 해 주세요. '자신감 있게', '편안하게' 이런 디테일이 있어야 진짜 나 같은 느낌이 납니다. 그리고 얼굴이 일관되게 나와야 하니까 같은 사진을 기준으로 반복해서 만들어 주세요."
+        }
+      ]
+    },
+    {
+      "id": "Q18",
+      "kind": "single",
+      "question": "학생들이 소원 적을 때 어느 대학교 이름을 제일 많이 언급했나요?",
+      "answerable": true,
+      "required": 1,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": true,
+      "top": -4.859,
+      "ms": 5007,
+      "tries": 1,
+      "a_correct": false,
+      "hits": [
+        {
+          "video_id": "NtHSSWC04Do",
+          "seq": 1,
+          "score": 0.568403,
+          "rerank_score": -4.859,
+          "text": "대학 합격해서 꿈 이루기. 1지망 합격하기. 저 고려대 미디어학부 꼭 합격하고 싶습니다. 고려대 경영 입학하고 싶습니다. 저는 고려대 최초합이라고 썼습니다. 6개 다 최초합해서 인생 성공! 우리 학교 학생들 고려대 다 붙게 해주세요. 기말고사 잘 보고 싶어요. 원하는 대학 합격하게 해주세요. 추신, 07 언니들도 합격하게 해주세요."
+        },
+        {
+          "video_id": "NtHSSWC04Do",
+          "seq": 2,
+          "score": 0.565591,
+          "rerank_score": -6.144,
+          "text": "로또 1등 당첨 기원하고요. 대학도 최초합 받을 수 있게끔 네 기원 기원합니다. 100살까지 살 수 있게 해주세요. 그리고 고려대 가기! 행복해지기! 저의 소원은 대학 6관왕입니다. 모의고사 올 1등급 맞기가 목표입니다. 저는 지혜로운 사람이 되는 게 목표입니다. 고려대 간호학과 합격하기. 기말고사 올 1등급 나오기. 대학 6최초합 부탁드립니다! 평범하게 행복하게 모두가 살았으면 좋겠습니다."
+        },
+        {
+          "video_id": "NtHSSWC04Do",
+          "seq": 3,
+          "score": 0.486,
+          "rerank_score": -7.1,
+          "text": "3년 동안 준비한 게 이제 끝나니까 떨리기도 하고 뿌듯하기도 한 것 같아요. 너무 긴장돼요. 실수만 안 하게 해보겠습니다. 공부한 만큼 나올 거라고 생각합니다. 뭔가 이제 3년 동안 준비한 게 끝난다고 생각하니까 좀 후련한 것 같아요. 지금 처음으로 이런 큰 시험을 보니까 되게 떨리고 이제 인생의 처음이자 마지막이 될 수능이 되게끔 노력하고 있습니다. 아직도 초등학생 같은데 솔직히 체감이 잘 안 됩니다."
+        }
+      ]
+    },
+    {
+      "id": "M1",
+      "kind": "multi",
+      "question": "준비가 덜 됐는데 기회가 오면 어떻게 해야 해?",
+      "answerable": true,
+      "required": 2,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": -0.727,
+      "ms": 4542,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "3KtrlNyd1ec",
+          "seq": 3,
+          "score": 0.582636,
+          "rerank_score": -0.727,
+          "text": "But my lesson to everybody is when your when your moment comes, you may not be ready, but you have to take it and then figure it out on the way."
+        },
+        {
+          "video_id": "3KtrlNyd1ec",
+          "seq": 2,
+          "score": 0.521845,
+          "rerank_score": -1.161,
+          "text": "insane events took place that could not have been thought of where suddenly there's this seismic shift in late night. And this is nowadays they'd never have picked me, ever. Ever. They would have said, 'Okay, you know, the world is filled with hilarious people who've been making things on YouTube for years,' and there's so many possibilities. Back then it was, 'Oh no, who will host the show if Dave's not hosting it? We need to turn to an expert.' And they turned to Lorne Michaels, and then the whole thing started, and Lorne looked around, but he kept- he was, you know, and then lo and behold, I uh, I get a chance which I was not ready for."
+        },
+        {
+          "video_id": "3KtrlNyd1ec",
+          "seq": 6,
+          "score": 0.532402,
+          "rerank_score": -3.98,
+          "text": "It is crazy. So I I you never know when your thing is gonna come along. It won't come when you want it. It won't look the way you thought it was going to look, but it- I think that's true for all of us in different ways. So I'm incrazily lucky to be here and crazily lucky to have all of you um caring at all about what I do."
+        }
+      ]
+    },
+    {
+      "id": "M3",
+      "kind": "multi",
+      "question": "남 눈치 안 보고 살려면 어떻게 해야 해?",
+      "answerable": true,
+      "required": 2,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": -0.387,
+      "ms": 3962,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "8cp0YvSpDA8",
+          "seq": 4,
+          "score": 0.598285,
+          "rerank_score": -0.387,
+          "text": "근데 자 이제부터 얘기가 좀 자잘해지는데, 이거 공감하시는 분만 보십시오. 근데 이제 '내가 남을 신경 왜 써? 난 신경 안 써도 돼.'라고 마음을 먹으면 좋긴 한데 거기에 뭐가 있냐면은 5% 정도 불친절한 게 생겨요, 마음속에. 그러니까 뭐 적대적이고 막 그런 건 아닌데 약간 새침함 정도? 예를 들어서 버스에 서 있는데 다른 사람 신경 안 쓰려면 다른 사람들이 이쪽에 주로 앉아 있으면 나는 이렇게 이쪽으로 보고 있는 거. 그런 거나 아니면 좁은 마트 입구에서 다른 사람이랑 카트가 서로 스쳐 지나갈 때 다른 상품을 보는 척한다든지 하여튼 그런 류의 것에 다 좋은데 한 5% 정도의 불친절함이 들어가 있다. 근데 그게 싫더라고. 왜 싫으냐면 우리가 뭐 다른 사람의 시선으로부터 자유로워지고자 하는 게 사실 내가 마음이 좋기 위해서 그런 건데 그걸로 가는 길에 부정적인 마음이 필요하다? 그거 조금 말이 안 되는 거 같은 거죠."
+        },
+        {
+          "video_id": "8cp0YvSpDA8",
+          "seq": 9,
+          "score": 0.61799,
+          "rerank_score": -1.517,
+          "text": "그러면서 넘어갔던 기억이 있습니다. 예. 길에서도 이렇게 사람 마주 오면은 사람 마주 오면은 눈 잘 안 보고 그러다가 요즘엔 눈 딱 보면서 가요. 근데 보통 상대방이 안 봐. 근데 조금 연령대 있으신 분들은 눈을 보는 경우가 있거든요? 뭐 1초, 2초, 3초 되면 제가 \"아유, 일찍 나오셨네요\" 이렇게 갑니다. 예 예 예. 어쨌든 저는 이제 약간 친절한 마음을 가지고 신경 안 쓸 거야, I don't care 이게 아니라 I care(상관있어) 하지만 구애받지 않을 뿐이야. 이뻐 보이고 싶지 않을 뿐이야. 하지만 나는 친절한 마음을 갖는다. 그러고 둘러보는 거예요, 그렇게."
+        },
+        {
+          "video_id": "8cp0YvSpDA8",
+          "seq": 6,
+          "score": 0.597078,
+          "rerank_score": -1.64,
+          "text": "그래서 오히려 그냥 친절한 마음을 가져야겠다는 쪽으로 가게 됐는데 예를 들면 저는 이런 겁니다. 버스를 타, 내가 만삭이야. 그걸 가면은 그 버스 뒤에 앉은 사람을 쫙 한번 둘러봐요, 이렇게. 어어어. 어 이런 사람들이 앉아 있구나, 어 이렇게. 만삭인 상태로 봐. 만삭인 상태로 봐, 예 예 예. 내가 왜 가방을 앞으로 매? 내가 뭐 예뻐 보일 일 있어? 이 사람들한테 뭐 날씬해 보여서 뭐 뭐 하려고? 그렇게 한번 보면은 오히려 이렇게 친절한 마음이 나더라고. 신경도 덜 쓰이고."
+        }
+      ]
+    },
+    {
+      "id": "M5",
+      "kind": "multi",
+      "question": "목표를 세우고 실제로 이루려면 어떻게 해야 해?",
+      "answerable": true,
+      "required": 2,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": -4.101,
+      "ms": 5751,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 14,
+          "score": 0.627715,
+          "rerank_score": -4.101,
+          "text": "오늘 영상의 하이라이트. 아까 제가 뭐라고 했죠? 상상만 하면 오히려 실행력이 떨어진다. 그래서 비전보드는 소원에서 끝나면 안 되고 해야 할 과제까지 내려와야 합니다. 이 마지막 조각을 클로드로 완성해 볼게요. 클로드를 실행해 주시고요. 내 목표는 유튜브 구독자 10만 달성이야. 각 목표를 실현하려면 지금부터 해야 할 프로젝트를 3~5개와 프로젝트에 속한 과제를 5개 뽑아줘. 과제는 시작할 첫 행동까지 구체적으로 제안하고 예상되는 장애물과 대응책도 같이 정리해 줘. 이렇게 하면 막연했던 소원이 손에 잡히는 과제로 쪼개졌죠? 장애물이랑 대응책까지 같이요. 이게 붙어야 비로소 내가 착각을 멈추고 진짜 움직일 수 있습니다. 한 단계 더 가볼게요. 이걸 매주 반복할 수 있는 루틴으로 만들어 달라고 해볼게요. 이 과제들을 매주 반복 가능한 루틴 3개와 이번 주 할 일 체크리스트로 만들어줘. 이렇게 결과물이 쭉 나오고요. 이대로만 진행을 해도 괜찮을 것 같습니다. 이것들을 노션에 붙여넣기를 하고 챙겨보면 되겠죠? 자, 이제 벽에 붙은 비전보드가 이번 주 월요일 아침에 할 일 리스트까지 내려왔어요."
+        },
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 6,
+          "score": 0.541882,
+          "rerank_score": -4.506,
+          "text": "그래서 오늘 우리는 여기에서 멈추지 않을 거예요. 비전보드를 두 단계 업그레이드를 할 겁니다. 첫째, 그 장면 속의 주인공을 진짜 나로 만들고 둘째, 그 비전을 실제 해야 할 과제로 바꿉니다. 네, 진짜 저답죠? 뭐든 시스템화해 버리는 게. 이 두 개가 있어야 비전보드가 드디어 작동을 합니다. 이제부터 업그레이드판 비전보드를 어떻게 만드는지 알려드릴 건데요. 제가 사용하는 양식은 더보기란에 올려둘 테니까 댓글 남겨주시고 가져가세요."
+        },
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 8,
+          "score": 0.592497,
+          "rerank_score": -5.977,
+          "text": "2단계, 구체적인 장면 쓰기입니다. 여기가 핵심이에요. 돈 많이 버는 장면이 아니고요. 월 매출 3천만 원을 찍고 제주도에서 한 달 살기 하면서 노트북으로 일하는 나. 이렇게 숫자와 장면이 있어야 합니다. 수험생 분이라면 서울대학교에 원하는 과에 진학하고 열심히 공부해서 학사모를 쓰고 졸업사진을 찍는 나. 건강과 탄탄한 몸을 갖는 게 꿈이라면 50kg에 체지방률 15% 이하, 골격근량 25kg 이상의 몸을 가진 나. 이렇게 숫자와 장면을 같이 넣어야 합니다."
+        }
+      ]
+    },
+    {
+      "id": "M7",
+      "kind": "trap",
+      "question": "결과가 안 보여서 불안할 때 어떻게 버텨?",
+      "answerable": true,
+      "required": 1,
+      "found": 1,
+      "trap_in_top3": false,
+      "weak": false,
+      "top": -3.295,
+      "ms": 6534,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "PlawByYfV8k",
+          "seq": 3,
+          "score": 0.577258,
+          "rerank_score": -3.295,
+          "text": "이 사실을 직감하고 있는 우리는 다양한 반응을 보입니다. 첫 번째, 백만 가지 시나리오 예측하기. 어떤 결과가 나올지 100만 개를 다 검토해보는 거예요. 그리고 두 번째, 보험 들기. '1번 우물 안 될 수 있어, 2, 3, 4번 우물까지 같이 야금야금 파는 거죠. 세 번째, '내가 될성부른 잎인지, 이 길 그냥 쭉 가도 괜찮을지 아닐지' 전문가나 권위자한테 물어보기. 이 세 가지를 우리가 합니다. 그런데 결과가 어떠느냐, 모든 것에 대비하느라 정작 해야 할 일을 못해요. 그리고 다리 동동 구르다가 기절. 심장 부여잡고 기절, 신경쇠약 걸려서 기절. 조바심이 더 극대화돼서 최악의 결과를 맞는 거죠."
+        },
+        {
+          "video_id": "PlawByYfV8k",
+          "seq": 10,
+          "score": 0.517784,
+          "rerank_score": -3.574,
+          "text": "이 한 가지 사실을 깨닫고 가장 크게 바뀐 점이 있다면 음 목표를 정해놓긴 하되 엄청난 이 결과의 가변성을 편안하게 받아들이게 됐습니다. 자동차를 만들려고 막 시간을 쓰고 에너지를 쓰고 해. 근데 막상 가봤는데 자동차가 아니라 나사가 나올 수도 있는 거고요 고작 나사 하나. 되게 허탈할 수 있어요. 근데 조금만 길게 보면 이 다음에 뭘 만들었는데 이 나사 하나가 아주 요긴한 별첨이 되어서 내가 만들고 싶었던 거를 만들 수 있게 된다던가 하는 식으로 몰입하기만 한다면 반드시 결과가 따라오겠구나. 어떤 합격증이나 돈이나 당장 눈에 보이는 성과가 아니어도 괜찮다. 왜냐면 내가 지금 추출한 에센스들이 나중에 다 나한테 도움이 될 테니까."
+        },
+        {
+          "video_id": "PlawByYfV8k",
+          "seq": 11,
+          "score": 0.526963,
+          "rerank_score": -5.262,
+          "text": "조바심 때문에 너무나도 괴롭다 하시는 분들이 있다면 믿음을 가져보세요. 지금 시간을 올바로 쏟고만 있다면 반드시 돌아올 겁니다. 여러분 그러면 다음 영상에서 만나요."
+        }
+      ]
+    },
+    {
+      "id": "N02",
+      "kind": "no_answer",
+      "question": "코난 오브라이언이 작가 시절 받았던 첫 월급은 얼마였나요?",
+      "answerable": false,
+      "required": 0,
+      "found": 0,
+      "trap_in_top3": false,
+      "weak": true,
+      "top": -8.552,
+      "ms": 4291,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "3KtrlNyd1ec",
+          "seq": 2,
+          "score": 0.520569,
+          "rerank_score": -8.552,
+          "text": "insane events took place that could not have been thought of where suddenly there's this seismic shift in late night. And this is nowadays they'd never have picked me, ever. Ever. They would have said, 'Okay, you know, the world is filled with hilarious people who've been making things on YouTube for years,' and there's so many possibilities. Back then it was, 'Oh no, who will host the show if Dave's not hosting it? We need to turn to an expert.' And they turned to Lorne Michaels, and then the whole thing started, and Lorne looked around, but he kept- he was, you know, and then lo and behold, I uh, I get a chance which I was not ready for."
+        },
+        {
+          "video_id": "3KtrlNyd1ec",
+          "seq": 1,
+          "score": 0.570678,
+          "rerank_score": -9.035,
+          "text": "I did. I did think about it, but I didn't- I knew it had to be the right way. But I knew what I wasn't. I knew I was not a stand-up. Right, I knew that I had something to offer, but I didn't know where it fit into the firmament, and I really didn't-- I worked at SNL, and I never once looked at any of those cast members and thought, Dana Carvey, I could do that. And then"
+        },
+        {
+          "video_id": "3KtrlNyd1ec",
+          "seq": 6,
+          "score": 0.538582,
+          "rerank_score": -9.407,
+          "text": "It is crazy. So I I you never know when your thing is gonna come along. It won't come when you want it. It won't look the way you thought it was going to look, but it- I think that's true for all of us in different ways. So I'm incrazily lucky to be here and crazily lucky to have all of you um caring at all about what I do."
+        }
+      ]
+    },
+    {
+      "id": "N04",
+      "kind": "no_answer",
+      "question": "타인의 시선을 완전히 끊어내는 구체적인 하루 훈련법이 궁금해요",
+      "answerable": false,
+      "required": 0,
+      "found": 0,
+      "trap_in_top3": false,
+      "weak": true,
+      "top": -3.861,
+      "ms": 6037,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "8cp0YvSpDA8",
+          "seq": 6,
+          "score": 0.549722,
+          "rerank_score": -3.861,
+          "text": "그래서 오히려 그냥 친절한 마음을 가져야겠다는 쪽으로 가게 됐는데 예를 들면 저는 이런 겁니다. 버스를 타, 내가 만삭이야. 그걸 가면은 그 버스 뒤에 앉은 사람을 쫙 한번 둘러봐요, 이렇게. 어어어. 어 이런 사람들이 앉아 있구나, 어 이렇게. 만삭인 상태로 봐. 만삭인 상태로 봐, 예 예 예. 내가 왜 가방을 앞으로 매? 내가 뭐 예뻐 보일 일 있어? 이 사람들한테 뭐 날씬해 보여서 뭐 뭐 하려고? 그렇게 한번 보면은 오히려 이렇게 친절한 마음이 나더라고. 신경도 덜 쓰이고."
+        },
+        {
+          "video_id": "8cp0YvSpDA8",
+          "seq": 3,
+          "score": 0.543908,
+          "rerank_score": -4.198,
+          "text": "자잘한 것들이에요. 그러니까 예를 들어서 버스에 타요. 버스에 타는데 어떨 때가 있냐면은 좌석이 꽉 찬 상태에서 서야 되는 첫 번째 사람이 되는 거예요. 그러니까 다 앉아 있는데 나만 서 있는 상황인데 그건 버스 상황이고 내 상황은 어떠냐면은 점심을 배 터지게 먹었어. 배가 만삭이에요, 만삭. 요즘 그래요, 살이 쪄 가지고. 만삭으로 혼자 거기서 서 있으려니까 좀 신경 쓰이더라고요? 그래 가지고 이제 에티켓을 발휘했죠. \"야, 가방 앞으로 매. 이게 에티켓이야, 여기 한국이야. 원래 이렇게 대중교통에선 이렇게 하는 거야.\" 어어어. 아무도 없어, 뒤에. 다 지나가도 돼. 백팩 뒤로 매도 되고 더 큰 가방 매도 돼. 근데 앞으로 매요, 예. 좀 가려 보겠다고. 좀 그런 게 남아 있는 걸 제가 스스로 느꼈거든요?"
+        },
+        {
+          "video_id": "8cp0YvSpDA8",
+          "seq": 4,
+          "score": 0.549141,
+          "rerank_score": -4.279,
+          "text": "근데 자 이제부터 얘기가 좀 자잘해지는데, 이거 공감하시는 분만 보십시오. 근데 이제 '내가 남을 신경 왜 써? 난 신경 안 써도 돼.'라고 마음을 먹으면 좋긴 한데 거기에 뭐가 있냐면은 5% 정도 불친절한 게 생겨요, 마음속에. 그러니까 뭐 적대적이고 막 그런 건 아닌데 약간 새침함 정도? 예를 들어서 버스에 서 있는데 다른 사람 신경 안 쓰려면 다른 사람들이 이쪽에 주로 앉아 있으면 나는 이렇게 이쪽으로 보고 있는 거. 그런 거나 아니면 좁은 마트 입구에서 다른 사람이랑 카트가 서로 스쳐 지나갈 때 다른 상품을 보는 척한다든지 하여튼 그런 류의 것에 다 좋은데 한 5% 정도의 불친절함이 들어가 있다. 근데 그게 싫더라고. 왜 싫으냐면 우리가 뭐 다른 사람의 시선으로부터 자유로워지고자 하는 게 사실 내가 마음이 좋기 위해서 그런 건데 그걸로 가는 길에 부정적인 마음이 필요하다? 그거 조금 말이 안 되는 거 같은 거죠."
+        }
+      ]
+    },
+    {
+      "id": "N06",
+      "kind": "no_answer",
+      "question": "비전보드는 어떠한 주기로 만드는 게 좋나요?",
+      "answerable": false,
+      "required": 0,
+      "found": 0,
+      "trap_in_top3": false,
+      "weak": true,
+      "top": -2.253,
+      "ms": 5139,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 14,
+          "score": 0.609789,
+          "rerank_score": -2.253,
+          "text": "오늘 영상의 하이라이트. 아까 제가 뭐라고 했죠? 상상만 하면 오히려 실행력이 떨어진다. 그래서 비전보드는 소원에서 끝나면 안 되고 해야 할 과제까지 내려와야 합니다. 이 마지막 조각을 클로드로 완성해 볼게요. 클로드를 실행해 주시고요. 내 목표는 유튜브 구독자 10만 달성이야. 각 목표를 실현하려면 지금부터 해야 할 프로젝트를 3~5개와 프로젝트에 속한 과제를 5개 뽑아줘. 과제는 시작할 첫 행동까지 구체적으로 제안하고 예상되는 장애물과 대응책도 같이 정리해 줘. 이렇게 하면 막연했던 소원이 손에 잡히는 과제로 쪼개졌죠? 장애물이랑 대응책까지 같이요. 이게 붙어야 비로소 내가 착각을 멈추고 진짜 움직일 수 있습니다. 한 단계 더 가볼게요. 이걸 매주 반복할 수 있는 루틴으로 만들어 달라고 해볼게요. 이 과제들을 매주 반복 가능한 루틴 3개와 이번 주 할 일 체크리스트로 만들어줘. 이렇게 결과물이 쭉 나오고요. 이대로만 진행을 해도 괜찮을 것 같습니다. 이것들을 노션에 붙여넣기를 하고 챙겨보면 되겠죠? 자, 이제 벽에 붙은 비전보드가 이번 주 월요일 아침에 할 일 리스트까지 내려왔어요."
+        },
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 6,
+          "score": 0.596977,
+          "rerank_score": -6.99,
+          "text": "그래서 오늘 우리는 여기에서 멈추지 않을 거예요. 비전보드를 두 단계 업그레이드를 할 겁니다. 첫째, 그 장면 속의 주인공을 진짜 나로 만들고 둘째, 그 비전을 실제 해야 할 과제로 바꿉니다. 네, 진짜 저답죠? 뭐든 시스템화해 버리는 게. 이 두 개가 있어야 비전보드가 드디어 작동을 합니다. 이제부터 업그레이드판 비전보드를 어떻게 만드는지 알려드릴 건데요. 제가 사용하는 양식은 더보기란에 올려둘 테니까 댓글 남겨주시고 가져가세요."
+        },
+        {
+          "video_id": "JRJd1ZrHmgg",
+          "seq": 7,
+          "score": 0.61841,
+          "rerank_score": -7.033,
+          "text": "1단계, 영역 나누기. 막연하게 행복 이러지 말고 커리어와 돈, 건강과 몸, 관계, 라이프스타일, 성장. 이렇게 세 개에서 다섯 개 축으로 나눕니다. 카테고리를 이렇게 만들어 두었고요. 이건 나에게 맞게 수정을 하셔도 됩니다."
+        }
+      ]
+    },
+    {
+      "id": "N08",
+      "kind": "no_answer",
+      "question": "연애에서 생기는 조바심은 어떻게 다르게 다뤄야 하나요?",
+      "answerable": false,
+      "required": 0,
+      "found": 0,
+      "trap_in_top3": false,
+      "weak": true,
+      "top": -3.216,
+      "ms": 6860,
+      "tries": 1,
+      "a_correct": true,
+      "hits": [
+        {
+          "video_id": "PlawByYfV8k",
+          "seq": 4,
+          "score": 0.626403,
+          "rerank_score": -3.216,
+          "text": "이게 다 제 얘기입니다. 제가 그랬어요. 그래서 어떻게 했냐, 전부 다 정확히 반대로 한번 해봤어요. 일단 예측하지 않기. 어떤 결과가 나오든 아무것도 그냥 미래 생각하지 말기! 그 두 번째, 우물 한 개 놔두고 다 철수하기. 그 세 번째, 조언 구하지 않기. 이 세 가지를 동시에 했어요."
+        },
+        {
+          "video_id": "PlawByYfV8k",
+          "seq": 3,
+          "score": 0.624963,
+          "rerank_score": -5.815,
+          "text": "이 사실을 직감하고 있는 우리는 다양한 반응을 보입니다. 첫 번째, 백만 가지 시나리오 예측하기. 어떤 결과가 나올지 100만 개를 다 검토해보는 거예요. 그리고 두 번째, 보험 들기. '1번 우물 안 될 수 있어, 2, 3, 4번 우물까지 같이 야금야금 파는 거죠. 세 번째, '내가 될성부른 잎인지, 이 길 그냥 쭉 가도 괜찮을지 아닐지' 전문가나 권위자한테 물어보기. 이 세 가지를 우리가 합니다. 그런데 결과가 어떠느냐, 모든 것에 대비하느라 정작 해야 할 일을 못해요. 그리고 다리 동동 구르다가 기절. 심장 부여잡고 기절, 신경쇠약 걸려서 기절. 조바심이 더 극대화돼서 최악의 결과를 맞는 거죠."
+        },
+        {
+          "video_id": "PlawByYfV8k",
+          "seq": 2,
+          "score": 0.595569,
+          "rerank_score": -6.184,
+          "text": "A 지점에서 B 지점을 갈 때 B 지점에서 어떤 명확한 결과가 보장이 된다고 하면 조바심 날 일이 그렇게 없어요. 뭐 같은 출발 지점에서 누구는 비행기 타고 누구는 KTX 타, 근데 나는 기어가야 돼. 이럴 때 조금 띠꺼울 순 있어도 조바심 때문에 질식할 정도가 되진 않거든요. 왜냐면 여기 가면은 확실하게 얻을 수 있는데 어떤 보상이 보장된다면 그렇게 조바심이 나진 않죠. 근데 내 모든 시간과 돈과 자원을 다 썼는데도 목표한 것을 얻지 못하게 될 때를 생각하면 그 생각만으로 이미 조바심이 생기는 거예요."
+        }
+      ]
+    }
+  ]
+}
