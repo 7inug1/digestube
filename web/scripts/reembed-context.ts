@@ -11,26 +11,30 @@ import { embed } from "../src/lib/embed";
 import { searchText } from "../src/lib/context";
 import { getVideo, putEmbeddings } from "../src/lib/store.supabase";
 
-const backup = process.argv[2];
-if (!backup) throw new Error("백업 파일 경로가 필요하다");
+async function main() {
+  const backup = process.argv[2];
+  if (!backup) throw new Error("백업 파일 경로가 필요하다");
 
-const { data: rows, error } = await db().from("chunk").select("video_id,seq,embedding").order("video_id").order("seq");
-if (error) throw error;
-writeFileSync(backup, JSON.stringify(rows));
-const vids = [...new Set((rows ?? []).map(r => r.video_id as string))];
-console.log(`백업 ${rows?.length}문단 · 영상 ${vids.length}편 → ${backup}`);
+  const { data: rows, error } = await db().from("chunk").select("video_id,seq,embedding").order("video_id").order("seq");
+  if (error) throw error;
+  writeFileSync(backup, JSON.stringify(rows));
+  const vids = [...new Set((rows ?? []).map(r => r.video_id as string))];
+  console.log(`백업 ${rows?.length}문단 · 영상 ${vids.length}편 → ${backup}`);
 
-for (const vid of vids) {
-  const v = await getVideo(vid);
-  if (!v || !v.chunks.length) continue;
-  const ctx = { title: v.title, channel: v.channel, tldr: v.tldr, outline: v.outline };
-  const vectors: { seq: number; vector: number[] }[] = [];
-  for (let i = 0; i < v.chunks.length; i += 16) {
-    const batch = v.chunks.slice(i, i + 16);
-    const out = await embed(batch.map(c => searchText(ctx, c)));
-    batch.forEach((c, j) => vectors.push({ seq: c.seq, vector: out[j] }));
+  for (const vid of vids) {
+    const v = await getVideo(vid);
+    if (!v || !v.chunks.length) continue;
+    const ctx = { title: v.title, channel: v.channel, tldr: v.tldr, outline: v.outline };
+    const vectors: { seq: number; vector: number[] }[] = [];
+    for (let i = 0; i < v.chunks.length; i += 16) {
+      const batch = v.chunks.slice(i, i + 16);
+      const out = await embed(batch.map(c => searchText(ctx, c)));
+      batch.forEach((c, j) => vectors.push({ seq: c.seq, vector: out[j] }));
+    }
+    await putEmbeddings(vid, vectors);
+    console.log(`${vid} ${vectors.length}문단 · 목차 ${v.outline.length} · 요지 ${v.tldr?.length ?? 0}`);
   }
-  await putEmbeddings(vid, vectors);
-  console.log(`${vid} ${vectors.length}문단 · 목차 ${v.outline.length} · 요지 ${v.tldr?.length ?? 0}`);
+  console.log("끝");
 }
-console.log("끝");
+
+main().catch(e => { console.error(e); process.exit(1); });
