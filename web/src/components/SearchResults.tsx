@@ -8,6 +8,7 @@ import { saySorry } from "@/lib/errors";
 import { Bar } from "./Skeleton";
 import { EMPTY, splitLines, stageOf, STAGE_TEXT, step, type Line, type SearchState } from "@/lib/search-stream";
 import { WeakReason } from "./VideoSearch";
+import AnswerCard from "./AnswerCard";
 import { warmReranker } from "@/lib/warm";
 
 /** 검색 결과. 범위가 "내 라이브러리"라 로그인하지 않은 사람은 이 브라우저 목록을
@@ -122,6 +123,8 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
 
   return (
     <>
+      {/* 전체 검색에서 "답이 있다"고 판단했을 때만 답을 쓴다. 영상 안 검색(vid)은 검색만 한다 */}
+      {!weak && !vid && <AnswerCard q={q} hits={hits} />}
       <p className="mt-6 text-small text-mfg">
         {`“${q}”와 가까운 영상 ${groups.length}편 · 관련 문단 ${hits.length}개`}
         {vid ? " · 이 영상 안에서" : ""}

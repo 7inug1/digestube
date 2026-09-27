@@ -169,3 +169,31 @@ export function quotaKeys(req: Request, userId?: string | null): string[] {
 function no(code: string, error: string, status: number): Verdict {
   return { ok: false, code, error, status };
 }
+
+/** 물어보기 하루 상한. 한 번에 약 1원(Gemini 3.8 Flash 입력 약 2천·출력 약 3백 토큰)이라
+ *  영상 사용량(분)과 따로 번 수로 센다. 50번이면 1인 하루 약 50원 — 영상 90분(약 1,000원)보다 훨씬 작다. */
+export const ASK_DAY_LIMIT = 50;
+
+export function askKeys(keys: string[]): string[] {
+  return keys.map(k => `ask:${k}`);
+}
+
+/** 열쇠 중 하나라도 상한을 채웠으면 막는다. 못 읽은 열쇠(null)는 세지 않는다 — DB 가 안 닿는다고 막지 않는다. */
+export function askVerdict(counts: (number | null)[]): Verdict {
+  if (counts.some(n => n !== null && n >= ASK_DAY_LIMIT)) {
+    return no("ASK_QUOTA", `오늘 물어보기 ${ASK_DAY_LIMIT}번을 다 썼어요. 검색은 계속 쓸 수 있어요.`, 429);
+  }
+  return { ok: true };
+}
+
+export async function checkAsk(keys: string[]): Promise<Verdict> {
+  return askVerdict(await Promise.all(askKeys(keys).map(used)));
+}
+
+export async function spendAsk(keys: string[]): Promise<void> {
+  const day = today();
+  await Promise.all(askKeys(keys).map(async key => {
+    try { await db().rpc("quota_use", { p_key: key, p_day: day, p_seconds: 1 }); }
+    catch (e) { console.error("물어보기 사용량 기록 실패", (e as Error).message); }
+  }));
+}
