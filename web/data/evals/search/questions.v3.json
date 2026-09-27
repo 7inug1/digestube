@@ -1,0 +1,891 @@
+{
+  "version": "v3-final-2026-09-27",
+  "status": "frozen",
+  "corpus_snapshot": {
+    "path": "/Users/user/Desktop/for claude code/pilab/digestube-v2/web/data/evals/search/runs/2026-09-22T10-30-30-153Z-embedding-refresh/results.json",
+    "sha256": "3048854aebefe45396eaebb0cff43ebc67047ced716178483705a7c8699ffb04"
+  },
+  "design": {
+    "total": 30,
+    "answerable": 22,
+    "no_answer": 8,
+    "kinds": "single 15 · multi 5 · trap 2 · no_answer 8",
+    "split": "dev 15 / test 15",
+    "rule": "dev 로 커트라인·리랭커·물어보기 조건을 고르고 test 는 마지막에 한 번만 적용한다",
+    "scoring": "문항마다 evidence 항목(required)이 상위 3개 안에 하나라도 들면 그 항목 충족. trap 항목은 검색 채점에 쓰지 않고, 물어보기 답이 인용하면 감점",
+    "scope": "8편 전체 검색(ids 를 스냅샷 8편으로 한정)"
+  },
+  "review": "2026-09-27 사용자 검수 — Q01·Q02·Q04 문구 사용자 작성, N06 교체, Q03·Q05·Q12·Q15·Q19·Q20·Q22 제외(중복·예전 임베딩 문항과 같은 문단·단순 사실 과다), M1~M7 추가",
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "코딩 유튜버 중 요즘 영상 잘 안 올리는 유튜버가 누구였지?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "dev",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "'Please… I Need Your Help' 영상의 코딩 유튜버. 지쳐서 영상을 많이 못 올렸다고 말함",
+      "evidence": [
+        {
+          "name": "영상을 잘 안 올린다는 대목",
+          "video_id": "-Z11mZaJU0w",
+          "role": "required",
+          "seqs": [
+            0,
+            1
+          ],
+          "spans": [
+            [
+              0,
+              18
+            ],
+            [
+              18,
+              42
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q02",
+      "question": "그 코딩 유튜버 중 어떤 영상 올려야 할지 몰라 도움 달라고 설문조사 요청한 유튜버 있었잖아. 그 설문조사 어떤 거였지?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "test",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "5~10분 걸리고 대부분 객관식인, 시청자가 원하는 콘텐츠를 파악하려는 설문",
+      "evidence": [
+        {
+          "name": "설문 설명",
+          "video_id": "-Z11mZaJU0w",
+          "role": "required",
+          "seqs": [
+            3,
+            4
+          ],
+          "spans": [
+            [
+              53,
+              81
+            ],
+            [
+              81,
+              86
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q04",
+      "question": "코난 오브라이언이 카메라 앞에 서게 된 계기가 뭐야?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "dev",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "스스로 할 수 있다고 생각해서가 아니라, 심야 토크쇼 판도가 갑자기 바뀌는 예상 못 한 일로 진행자로 뽑혔다",
+      "evidence": [
+        {
+          "name": "예상 못 한 심야 토크쇼 변화",
+          "video_id": "3KtrlNyd1ec",
+          "role": "required",
+          "seqs": [
+            2
+          ],
+          "spans": [
+            [
+              32,
+              75
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q06",
+      "question": "챗GPT 점유율이 50% 밑으로 떨어진 시점이 언제야?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "test",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "2025년 5월",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "55eFm5tPCQY",
+          "role": "required",
+          "seqs": [
+            1
+          ],
+          "spans": [
+            [
+              16,
+              43
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q07",
+      "question": "월마트 쇼핑 에이전트 쓰는 고객이랑 안 쓰는 고객 주문 금액 차이가 얼마나 나?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "dev",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "에이전트를 쓰는 고객의 평균 주문 금액이 약 35% 더 높음",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "55eFm5tPCQY",
+          "role": "required",
+          "seqs": [
+            5
+          ],
+          "spans": [
+            [
+              138,
+              172
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q08",
+      "question": "젠스파크의 세컨드브레인이 뭐 하는 기능이야?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "test",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "메일, 캘린더, 메신저, 미팅, 문서 등에 흩어진 사용자의 모든 흔적을 모아 개인화된 AI 라이브러리처럼 활용하게 해주는 시스템",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "55eFm5tPCQY",
+          "role": "required",
+          "seqs": [
+            10,
+            11
+          ],
+          "spans": [
+            [
+              288,
+              347
+            ],
+            [
+              348,
+              387
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q09",
+      "question": "버스에서 낯선 아저씨랑 눈이 3초 넘게 마주쳤을 때 어떻게 반응했다는 거야?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "dev",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "웃으면서 목례를 했다.",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "8cp0YvSpDA8",
+          "role": "required",
+          "seqs": [
+            8
+          ],
+          "spans": [
+            [
+              279,
+              321
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "question": "대학생 때 강의실에서 시끄럽게 떠들다가 교수님이 문 열고 와서 한 말이 뭐였어?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "test",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "교수님은 학생들 얼굴만 보면 떠들어도 괜찮다고 말했다.",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "8cp0YvSpDA8",
+          "role": "required",
+          "seqs": [
+            7
+          ],
+          "spans": [
+            [
+              240,
+              279
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q11",
+      "question": "어머니가 옷차림 지적했을 때 뭐라고 대답했대?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "dev",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "남한테 예뻐 보이거나 귀여움 받으려고 그러냐고 되물었다.",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "8cp0YvSpDA8",
+          "role": "required",
+          "seqs": [
+            10
+          ],
+          "spans": [
+            [
+              354,
+              386
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q13",
+      "question": "세상의 주인이라는 말에서 주인의 진짜 의미가 뭐야",
+      "category": "answerable",
+      "kind": "single",
+      "split": "test",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "으뜸 주가 아니라 세상이 준 것을 바라보는 주시자라는 뜻이다",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "byVgbqzYJrs",
+          "role": "required",
+          "seqs": [
+            7
+          ],
+          "spans": [
+            [
+              321,
+              356
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q14",
+      "question": "장점만 취하고 단점은 버리는 게 왜 안 되는지 설명한 부분 찾아줘",
+      "category": "answerable",
+      "kind": "single",
+      "split": "dev",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "한 사람은 좋아하는 것과 싫어하는 것 모두로 구성되어 있어서 단점을 버리면 그 사람 자체를 버리게 되기 때문이다",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "byVgbqzYJrs",
+          "role": "required",
+          "seqs": [
+            13,
+            12
+          ],
+          "spans": [
+            [
+              581,
+              618
+            ],
+            [
+              548,
+              581
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q16",
+      "question": "비전보드에 남 사진 말고 내 얼굴 넣는 방법이 뭐야? 어떤 프로그램 써?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "test",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "ChatGPT에 내 사진을 넣고 원하는 장면을 사실적인 사진 스타일로 만들어달라는 프롬프트를 써서 내 얼굴이 들어간 비전 이미지를 생성한다.",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "JRJd1ZrHmgg",
+          "role": "required",
+          "seqs": [
+            10,
+            15
+          ],
+          "spans": [
+            [
+              216,
+              253
+            ],
+            [
+              404,
+              421
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q17",
+      "question": "비전보드에 있는 목표를 실제로 해야 할 일로 쪼개려면 어떤 AI 툴을 쓰라고 했어?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "dev",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "클로드(Claude)를 실행해서 목표를 프로젝트와 과제로 쪼개달라고 요청하면 된다.",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "JRJd1ZrHmgg",
+          "role": "required",
+          "seqs": [
+            14,
+            15
+          ],
+          "spans": [
+            [
+              333,
+              404
+            ],
+            [
+              404,
+              421
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q18",
+      "question": "학생들이 소원 적을 때 어느 대학교 이름을 제일 많이 언급했나요?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "test",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "고려대학교",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "NtHSSWC04Do",
+          "role": "required",
+          "seqs": [
+            1,
+            2
+          ],
+          "spans": [
+            [
+              62,
+              90
+            ],
+            [
+              90,
+              123
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q21",
+      "question": "조바심이 생기는 근본적인 이유가 뭐야?",
+      "category": "answerable",
+      "kind": "single",
+      "split": "dev",
+      "author": "AI+사용자 검수",
+      "review_status": "approved",
+      "expected_answer": "내 노력이 헛수고가 될까 봐 조바심이 난다.",
+      "evidence": [
+        {
+          "name": "정답 대목",
+          "video_id": "PlawByYfV8k",
+          "role": "required",
+          "seqs": [
+            1
+          ],
+          "spans": [
+            [
+              28,
+              48
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M1",
+      "question": "준비가 덜 됐는데 기회가 오면 어떻게 해야 해?",
+      "category": "answerable",
+      "kind": "multi",
+      "split": "test",
+      "author": "Claude 후보+사용자 선택",
+      "review_status": "approved",
+      "expected_answer": "준비가 안 됐어도 잡고 가면서 알아내라(코난). 모든 걸 대비하느라 정작 할 일을 못 하면 안 된다(조바심)",
+      "evidence": [
+        {
+          "name": "코난: 준비 안 돼도 잡아라",
+          "video_id": "3KtrlNyd1ec",
+          "role": "required",
+          "seqs": [
+            3,
+            4
+          ],
+          "spans": [
+            [
+              69,
+              86
+            ],
+            [
+              86,
+              126
+            ]
+          ]
+        },
+        {
+          "name": "조바심: 대비하느라 할 일을 못 함",
+          "video_id": "PlawByYfV8k",
+          "role": "required",
+          "seqs": [
+            3
+          ],
+          "spans": [
+            [
+              89,
+              134
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M2",
+      "question": "싫거나 불편한 사람은 어떻게 대해야 해?",
+      "category": "answerable",
+      "kind": "multi",
+      "split": "dev",
+      "author": "Claude 후보+사용자 선택",
+      "review_status": "approved",
+      "expected_answer": "굳이 만나지 않고, 만나야 하면 측은하게 곁에서 지켜본다(인간관계). 친절하되 그들로부터 자유롭게(털게)",
+      "evidence": [
+        {
+          "name": "인간관계: 안 만나거나 측은히 지켜보기",
+          "video_id": "byVgbqzYJrs",
+          "role": "required",
+          "seqs": [
+            1,
+            2
+          ],
+          "spans": [
+            [
+              33,
+              88
+            ],
+            [
+              88,
+              128
+            ]
+          ]
+        },
+        {
+          "name": "털게: 친절하되 자유롭게",
+          "video_id": "8cp0YvSpDA8",
+          "role": "required",
+          "seqs": [
+            9,
+            11
+          ],
+          "spans": [
+            [
+              321,
+              354
+            ],
+            [
+              386,
+              404
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M3",
+      "question": "남 눈치 안 보고 살려면 어떻게 해야 해?",
+      "category": "answerable",
+      "kind": "multi",
+      "split": "test",
+      "author": "Claude 후보+사용자 선택",
+      "review_status": "approved",
+      "expected_answer": "시선을 신경 쓰던 습관을 알아차리고, 신경 쓰되 구애받지 않는다(털게). 남에게 기대하지 않으면 실망·상처가 줄어든다(인간관계)",
+      "evidence": [
+        {
+          "name": "털게: 시선에 구애받지 않기",
+          "video_id": "8cp0YvSpDA8",
+          "role": "required",
+          "seqs": [
+            2,
+            3,
+            4,
+            5,
+            9
+          ],
+          "spans": [
+            [
+              57,
+              86
+            ],
+            [
+              86,
+              126
+            ],
+            [
+              126,
+              177
+            ],
+            [
+              177,
+              209
+            ],
+            [
+              321,
+              354
+            ]
+          ]
+        },
+        {
+          "name": "인간관계: 기대를 내려놓기",
+          "video_id": "byVgbqzYJrs",
+          "role": "required",
+          "seqs": [
+            4
+          ],
+          "spans": [
+            [
+              211,
+              250
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M4",
+      "question": "AI 시대에 사람은 뭘 준비해야 해?",
+      "category": "answerable",
+      "kind": "multi",
+      "split": "dev",
+      "author": "Claude 후보+사용자 선택",
+      "review_status": "approved",
+      "expected_answer": "내 경험·맥락을 데이터로 쌓는 것이 경쟁력(AI 에이전트). AI로 바로 만들기보다 배우는 과정을 건너뛰지 말 것(코딩 유튜버)",
+      "evidence": [
+        {
+          "name": "AI 에이전트: 나만의 맥락이 자산",
+          "video_id": "55eFm5tPCQY",
+          "role": "required",
+          "seqs": [
+            12,
+            13
+          ],
+          "spans": [
+            [
+              388,
+              441
+            ],
+            [
+              441,
+              471
+            ]
+          ]
+        },
+        {
+          "name": "코딩 유튜버: 배우는 과정을 건너뛰는 문제",
+          "video_id": "-Z11mZaJU0w",
+          "role": "required",
+          "seqs": [
+            1
+          ],
+          "spans": [
+            [
+              18,
+              42
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M5",
+      "question": "목표를 세우고 실제로 이루려면 어떻게 해야 해?",
+      "category": "answerable",
+      "kind": "multi",
+      "split": "test",
+      "author": "Claude 후보+사용자 선택",
+      "review_status": "approved",
+      "expected_answer": "상상에서 끝내지 말고 과제까지 쪼갠다(비전보드). 목표는 정하되 결과가 달라지는 건 편하게 받아들인다(조바심)",
+      "evidence": [
+        {
+          "name": "비전보드: 상상 말고 과제까지",
+          "video_id": "JRJd1ZrHmgg",
+          "role": "required",
+          "seqs": [
+            5,
+            14
+          ],
+          "spans": [
+            [
+              89,
+              114
+            ],
+            [
+              333,
+              404
+            ]
+          ]
+        },
+        {
+          "name": "조바심: 결과의 가변성 받아들이기",
+          "video_id": "PlawByYfV8k",
+          "role": "required",
+          "seqs": [
+            10
+          ],
+          "spans": [
+            [
+              350,
+              403
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M6",
+      "question": "큰 시험이나 도전 앞에서 떨릴 때 어떻게 마음먹어?",
+      "category": "answerable",
+      "kind": "trap",
+      "split": "dev",
+      "author": "Claude 후보+사용자 선택",
+      "review_status": "approved",
+      "expected_answer": "준비가 안 돼도 기회를 잡는다(코난). 지금 시간을 올바로 쏟고 있다면 결과는 돌아온다(조바심)",
+      "evidence": [
+        {
+          "name": "코난: 준비 안 돼도 잡아라",
+          "video_id": "3KtrlNyd1ec",
+          "role": "required",
+          "seqs": [
+            3
+          ],
+          "spans": [
+            [
+              69,
+              86
+            ]
+          ]
+        },
+        {
+          "name": "조바심: 올바로 쏟은 시간은 돌아온다",
+          "video_id": "PlawByYfV8k",
+          "role": "required",
+          "seqs": [
+            11
+          ],
+          "spans": [
+            [
+              403,
+              415
+            ]
+          ]
+        },
+        {
+          "name": "함정: 수험생 소원·각오 인터뷰",
+          "video_id": "NtHSSWC04Do",
+          "role": "trap",
+          "seqs": [
+            3
+          ],
+          "spans": [
+            [
+              126,
+              162
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M7",
+      "question": "결과가 안 보여서 불안할 때 어떻게 버텨?",
+      "category": "answerable",
+      "kind": "trap",
+      "split": "test",
+      "author": "Claude 후보+사용자 선택",
+      "review_status": "approved",
+      "expected_answer": "보상이 보장되지 않아 조바심이 생긴다는 걸 알고, 결과의 가변성을 받아들이며, 올바로 쏟은 시간은 돌아온다고 믿는다(조바심)",
+      "evidence": [
+        {
+          "name": "조바심: 원인과 버티는 법",
+          "video_id": "PlawByYfV8k",
+          "role": "required",
+          "seqs": [
+            2,
+            10,
+            11
+          ],
+          "spans": [
+            [
+              48,
+              89
+            ],
+            [
+              350,
+              403
+            ],
+            [
+              403,
+              415
+            ]
+          ]
+        },
+        {
+          "name": "함정: 수험생 소원·각오 인터뷰",
+          "video_id": "NtHSSWC04Do",
+          "role": "trap",
+          "seqs": [
+            3
+          ],
+          "spans": [
+            [
+              126,
+              162
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "N01",
+      "question": "번아웃에서 완전히 회복하는 데 보통 며칠이나 걸리나요?",
+      "category": "no_answer",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": null,
+      "why": "번아웃을 겪었다는 언급만 있을 뿐 회복 기간이나 구체적 회복 과정은 다루지 않음",
+      "kind": "no_answer",
+      "evidence": []
+    },
+    {
+      "id": "N02",
+      "question": "코난 오브라이언이 작가 시절 받았던 첫 월급은 얼마였나요?",
+      "category": "no_answer",
+      "split": "test",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": null,
+      "why": "작가 시절의 어려움은 언급되지만 급여 같은 구체적 수치는 다루지 않음",
+      "kind": "no_answer",
+      "evidence": []
+    },
+    {
+      "id": "N03",
+      "question": "영상에서 추천하는 AI 에이전트 툴의 실제 가격이 얼마인가요?",
+      "category": "no_answer",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": null,
+      "why": "시장 성장과 도입 사례는 다루지만 특정 툴의 가격 정보는 없음",
+      "kind": "no_answer",
+      "evidence": []
+    },
+    {
+      "id": "N04",
+      "question": "타인의 시선을 완전히 끊어내는 구체적인 하루 훈련법이 궁금해요",
+      "category": "no_answer",
+      "split": "test",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": null,
+      "why": "시선을 의식하는 습관과 극복 방향은 말하지만 구체적 실천 루틴은 제시하지 않음",
+      "kind": "no_answer",
+      "evidence": []
+    },
+    {
+      "id": "N05",
+      "question": "가족처럼 가까운 사이에서도 기대를 내려놓는 방법이 있을까요?",
+      "category": "no_answer",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": null,
+      "why": "타인 일반에 대한 기대 내려놓기는 다루지만 가족 관계에 특화된 내용은 없음",
+      "kind": "no_answer",
+      "evidence": []
+    },
+    {
+      "id": "N06",
+      "question": "비전보드는 어떠한 주기로 만드는 게 좋나요?",
+      "category": "no_answer",
+      "split": "test",
+      "author": "사용자",
+      "review_status": "approved",
+      "expected_answer": null,
+      "why": "비전보드 영상에 만드는 주기·빈도 언급 없음(전사문 검색 확인). 원래 문항(도구 추천)은 노션·웹 파워포인트·ChatGPT·클로드가 실제로 나와 교체",
+      "kind": "no_answer",
+      "evidence": []
+    },
+    {
+      "id": "N07",
+      "question": "영상에 나온 학생들의 실제 수능 성적표 결과도 공개되나요?",
+      "category": "no_answer",
+      "split": "dev",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": null,
+      "why": "수험생들의 소원과 심경은 다루지만 이후 결과 공개 여부는 언급하지 않음",
+      "kind": "no_answer",
+      "evidence": []
+    },
+    {
+      "id": "N08",
+      "question": "연애에서 생기는 조바심은 어떻게 다르게 다뤄야 하나요?",
+      "category": "no_answer",
+      "split": "test",
+      "author": "AI",
+      "review_status": "approved",
+      "expected_answer": null,
+      "why": "조바심의 근본 원인과 대응 방식은 다루지만 연애 상황에 특화된 내용은 없음",
+      "kind": "no_answer",
+      "evidence": []
+    }
+  ]
+}
