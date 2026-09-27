@@ -11,7 +11,7 @@ ns = {}; exec(src, ns)
 HI, LO = -2.0, -8.0
 rep = json.load(open(sys.argv[1]))
 out = {}
-for var in ['base', 'T', 'TC']:
+for var in (sys.argv[2].split(',') if len(sys.argv) > 2 else ['base', 'T', 'TC']):
     rows = rep[var]['rows']; ok = calls = 0; detail = []
     for r in rows:
         t = r['top']
