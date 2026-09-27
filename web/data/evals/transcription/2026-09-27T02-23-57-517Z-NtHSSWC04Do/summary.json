@@ -1,0 +1,81 @@
+{
+  "measured_at": "2026-09-27T02:23:57.517Z",
+  "video_id": "NtHSSWC04Do",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=NtHSSWC04Do",
+  "prompt": "speech",
+  "input": "youtube-url",
+  "thinking": "default(medium)",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 14188,
+  "elapsed_sec": 14.2,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 18597,
+    "candidatesTokenCount": 1835,
+    "totalTokenCount": 21734,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 18471
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      }
+    ],
+    "thoughtsTokenCount": 1302,
+    "serviceTier": "standard"
+  },
+  "segments": 38,
+  "chars": {
+    "gemini": 853,
+    "native": 847
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 40,
+    "native_sentence_marks": 38
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": []
+  },
+  "word_overlap": {
+    "gemini_words": 215,
+    "native_words": 213,
+    "shared": 212,
+    "only_in_gemini": 3,
+    "only_in_native": 1
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 38,
+    "matched": 30,
+    "coverage": 0.79,
+    "median_gap_sec": 1,
+    "p90_gap_sec": 2
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 162,
+    "native_last_end_sec": 162,
+    "tail_gap_sec": 0
+  }
+}

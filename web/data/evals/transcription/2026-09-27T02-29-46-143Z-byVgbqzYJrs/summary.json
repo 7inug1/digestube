@@ -1,0 +1,98 @@
+{
+  "measured_at": "2026-09-27T02:29:46.143Z",
+  "video_id": "byVgbqzYJrs",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=byVgbqzYJrs",
+  "prompt": "speech",
+  "input": "youtube-url",
+  "thinking": "low",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 34531,
+  "elapsed_sec": 34.5,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 59926,
+    "candidatesTokenCount": 9980,
+    "totalTokenCount": 69906,
+    "cachedContentTokenCount": 56727,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 59800
+      }
+    ],
+    "cacheTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 119
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 56608
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "segments": 371,
+  "chars": {
+    "gemini": 5417,
+    "native": 4843
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 337,
+    "native_sentence_marks": 217
+  },
+  "bracketed": {
+    "gemini": [
+      "(主)",
+      "(主)",
+      "(注)"
+    ],
+    "native": [
+      "(主)",
+      "(主)"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 1440,
+    "native_words": 1264,
+    "shared": 1222,
+    "only_in_gemini": 218,
+    "only_in_native": 42
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": false,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": false,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 371,
+    "matched": 139,
+    "coverage": 0.37,
+    "median_gap_sec": 1.2,
+    "p90_gap_sec": 3.7
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 641,
+    "native_last_end_sec": 641,
+    "tail_gap_sec": 0
+  }
+}
