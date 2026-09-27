@@ -53,9 +53,12 @@ test("기다리는 동안 지금 하는 일을 단계로 알려 준다", () => {
   assert.equal(stageOf(step(found, { t: "done", reranked: false, weak: false })), "done");
 });
 
-test("끝날 때 받은 1위 관련도 점수와 기준값을 남긴다 — 왜 못 찾았다고 했는지 보여 주려고", () => {
-  const s = step(EMPTY, { t: "done", reranked: true, weak: true, top: -7.83, cut: -4 });
-  assert.equal(s.top, -7.83);
-  assert.equal(s.cut, -4);
-  assert.equal(step(EMPTY, { t: "done", reranked: false, weak: null }).top, null);
+test("끝날 때 1위 관련도 점수와 누가 판단했는지(점수·AI)·이유를 남긴다 — 왜 못 찾았다고 했는지 보여 주려고", () => {
+  const s = step(EMPTY, { t: "done", reranked: true, weak: true, top: -5.2, by: "ai", why: "가격 정보 없음" });
+  assert.equal(s.top, -5.2);
+  assert.equal(s.by, "ai");
+  assert.equal(s.why, "가격 정보 없음");
+  const n = step(EMPTY, { t: "done", reranked: false, weak: null });
+  assert.equal(n.top, null);
+  assert.equal(n.by, null);
 });

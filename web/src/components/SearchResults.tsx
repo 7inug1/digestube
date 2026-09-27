@@ -126,7 +126,7 @@ export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: s
         {`“${q}”와 가까운 영상 ${groups.length}편 · 관련 문단 ${hits.length}개`}
         {vid ? " · 이 영상 안에서" : ""}
       </p>
-      {weak && <div className="mt-3"><WeakReason top={s.top} cut={s.cut} /></div>}
+      {weak && <div className="mt-3"><WeakReason top={s.top} by={s.by} why={s.why} /></div>}
       <div className="mt-3 grid gap-3">
         {/* 그리드 칸은 기본으로 내용 폭만큼 넓어진다. 한 줄로 자르는 긴 제목이 칸을 밀어 휴대폰 화면이
             옆으로 넘치지 않게 칸이 줄어들 수 있게 한다 */}

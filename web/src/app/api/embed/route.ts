@@ -1,6 +1,7 @@
 import { saySorry } from "@/lib/errors";
 import { NextResponse } from "next/server";
 import { embed } from "@/lib/embed";
+import { searchText } from "@/lib/context";
 import { chunksWithoutEmbedding, getVideo, refreshVideoStatus, saveEmbeddingBatch } from "@/lib/store";
 
 /** outline 과 같다 — 벡터가 없는 문단만 처리하므로 반복해 불러도 총량이 영상 하나
@@ -14,7 +15,8 @@ export async function POST(req: Request) {
     if (!v) return NextResponse.json({error:"없는 영상입니다."}, {status:404});
     const todo = (await chunksWithoutEmbedding(vid)).slice(0,16);
     if (todo.length) {
-      const vectors = await embed(todo.map(c=>c.text));
+      // 문맥 줄(영상 제목·채널·요지·목차)을 붙여 임베딩한다. 목차·요약은 이 단계 전에 만들어진다(ingest-client 순서)
+      const vectors = await embed(todo.map(c=>searchText({title:v.title,channel:v.channel,tldr:v.tldr,outline:v.outline},c)));
       await saveEmbeddingBatch(vid,v.revision ?? null,todo.map((c,i)=>({seq:c.seq,vector:vectors[i]})));
     }
     await refreshVideoStatus(vid,v.revision ?? null);

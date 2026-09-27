@@ -12,8 +12,10 @@
  *  지금은 자르지 않고 전부 돌려준다 — 점수를 눈으로 보고 정하려는 것이다.
  */
 import { embed, embedOne } from "./embed";
-import { rerank, reorder, weakMatch, RERANK_MODEL, RERANK_POOL, RERANK_TIMEOUT_MS } from "./rerank";
-import { search as searchStore, type Hit } from "./store";
+import { rerank, reorder, RERANK_MODEL, RERANK_POOL, RERANK_TIMEOUT_MS } from "./rerank";
+import { getVideo, search as searchStore, type Hit } from "./store";
+import { searchText, type ContextSource } from "./context";
+import { decide, judgeWithGemini } from "./judge";
 
 export type Found = Hit & { hl?: string; hl_score?: number; rerank_score?: number };
 
@@ -102,32 +104,53 @@ export async function findFirst(q: string, vid?: string, k = 3, ids?: string[]):
 
 export type Refined = {
   hits: Found[]; reranked: boolean; reason: "timeout" | "error" | "same" | "small" | null; model: string; ms: number;
-  /** 1위 리랭커 점수가 기준보다 낮은가. 리랭커가 돌지 않았으면 null — 판단하지 않는다. */
+  /** 질문에 맞는 대목이 없다고 판단했나. 리랭커가 돌지 않았으면 null — 판단하지 않는다. */
   weak: boolean | null;
   /** 후보 중 가장 높은 리랭커 점수. 약하다고 판단한 이유를 화면에 보여 줄 때 쓴다 */
   top: number | null;
+  /** 판단을 누가 했나 — 점수(확실한 구간) · AI(애매한 구간) · AI 실패 시 점수 */
+  by: "score" | "ai" | "fallback" | null;
+  why: string | null;
 };
+
+/** 문맥 줄에 쓸 영상 정보. 같은 영상을 검색마다 다시 읽지 않도록 잠깐 기억한다. */
+const contexts = new Map<string, { at: number; v: ContextSource }>();
+async function contextOf(vids: string[]): Promise<Map<string, ContextSource>> {
+  const now = Date.now();
+  await Promise.all([...new Set(vids)].map(async vid => {
+    const hit = contexts.get(vid);
+    if (hit && now - hit.at < 5 * 60 * 1000) return;
+    const v = await getVideo(vid);
+    contexts.set(vid, { at: now, v: { title: v?.title, channel: v?.channel, tldr: v?.tldr, outline: v?.outline ?? [] } });
+  }));
+  return new Map(vids.map(vid => [vid, contexts.get(vid)!.v]));
+}
 
 /** 후보를 리랭커로 다시 세운다. 3초 안에 못 오거나 실패하면 벡터 순서를 그대로 둔다.
  *  새로 올라온 문단만 짚을 문장을 찾는다 — 이미 보여 준 문단은 다시 계산하지 않는다. */
 export async function refine(first: First, k = 3, timeoutMs = RERANK_TIMEOUT_MS): Promise<Refined> {
   const t0 = Date.now();
-  const keep = (reason: Refined["reason"], weak: boolean | null = null, top: number | null = null): Refined =>
-    ({ hits: first.hits, reranked: false, reason, model: RERANK_MODEL, ms: Date.now() - t0, weak, top });
+  const keep = (reason: Refined["reason"], d: Pick<Refined, "weak" | "top" | "by" | "why"> = { weak: null, top: null, by: null, why: null }): Refined =>
+    ({ hits: first.hits, reranked: false, reason, model: RERANK_MODEL, ms: Date.now() - t0, ...d });
   if (first.pool.length <= 1) return keep("small");
-  const out = await rerank(first.query, first.pool.map(h => h.text), timeoutMs);
+  // 리랭커도 문맥 줄을 붙인 글로 순서를 매긴다 — 임베딩과 같은 글이어야 "어느 영상의 어떤 대목인지"를 같이 본다
+  const ctx = await contextOf(first.pool.map(h => h.video_id)).catch(() => null);
+  const texts = first.pool.map(h => ctx ? searchText(ctx.get(h.video_id)!, h) : h.text);
+  const out = await rerank(first.query, texts, timeoutMs);
   if ("error" in out) {
     console.warn(`리랭크 생략(${out.error}): ${out.detail}`);
     return keep(out.error);
   }
   first.pool.forEach((h, i) => { h.rerank_score = Math.round(out.scores[i] * 1000) / 1000; });
   // 순서가 그대로여도 점수는 받았으니 판단은 한다
-  const weak = weakMatch(out.scores);
   const best = Math.round(Math.max(...out.scores) * 1000) / 1000;
+  const order = out.scores.map((s, i) => [s, i] as const).sort((a, b) => b[0] - a[0]).slice(0, 3).map(([, i]) => texts[i]);
+  const d = await decide(best, () => judgeWithGemini(first.query, order));
+  const verdict = { weak: d.weak, top: best, by: d.by, why: d.why ?? null };
   const top = reorder(first.pool, out.scores, k);
   const key = (h: Found) => `${h.video_id}:${h.seq}`;
-  if (top.map(key).join() === first.hits.map(key).join()) return keep("same", weak, best);
+  if (top.map(key).join() === first.hits.map(key).join()) return keep("same", verdict);
   const need = top.filter(h => h.hl === undefined);
   if (need.length) await highlight(first.qv, need, need.length);
-  return { hits: top, reranked: true, reason: null, model: RERANK_MODEL, ms: Date.now() - t0, weak, top: best };
+  return { hits: top, reranked: true, reason: null, model: RERANK_MODEL, ms: Date.now() - t0, ...verdict };
 }

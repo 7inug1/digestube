@@ -105,7 +105,7 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
               </div>
             )
           : <>
-              {s.weak && <div className="mb-2"><WeakReason top={s.top} cut={s.cut} /></div>}
+              {s.weak && <div className="mb-2"><WeakReason top={s.top} by={s.by} why={s.why} /></div>}
               <ol aria-label="이 영상에서 찾은 대목" className="grid gap-1">
                 {s.hits.map(h => (
                   <li key={h.seq}>
@@ -126,12 +126,14 @@ export default function VideoSearch({ vid, onJump }: { vid: string; onJump: (t: 
   );
 }
 
-/** 펼쳤을 때 왜 "못 찾았다"고 했는지. 점수를 받지 못했으면 말하지 않는다. */
-export function WeakReason({ top, cut }: { top: number | null; cut: number | null }) {
-  if (top === null || cut === null) return null;
-  return (
-    <p className="text-[12px] text-mfg">
-      {`가장 높은 관련도 점수 ${top.toFixed(1)} · 기준 ${cut} 미만이라 질문에 맞는 대목이 없다고 판단했어요.`}
-    </p>
-  );
+/** 펼쳤을 때 왜 "못 찾았다"고 했는지 — 누가(점수·AI) 어떤 근거로 판단했는지. */
+export function WeakReason({ top, by, why }: { top: number | null; by: SearchState["by"]; why: string | null }) {
+  if (top === null || by === null) return null;
+  const score = `가장 높은 관련도 점수 ${top.toFixed(1)}`;
+  const text = by === "ai"
+    ? `${score} · AI가 문단을 읽고 판단: ${why ?? "질문에 맞는 대목이 없어요"}`
+    : by === "fallback"
+      ? `${score} · AI 판정이 늦어 점수로 판단했어요`
+      : `${score} · 점수가 매우 낮아 질문에 맞는 대목이 없다고 판단했어요`;
+  return <p className="text-[12px] text-mfg">{text}</p>;
 }

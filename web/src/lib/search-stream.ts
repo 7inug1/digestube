@@ -8,7 +8,7 @@ import type { FoundHit } from "@/components/Found";
 export type Line =
   | { t: "hits"; hits: FoundHit[] }
   | { t: "reranked"; hits: FoundHit[] }
-  | { t: "done"; reranked: boolean; weak?: boolean | null; top?: number | null; cut?: number }
+  | { t: "done"; reranked: boolean; weak?: boolean | null; top?: number | null; by?: "score" | "ai" | "fallback" | null; why?: string | null }
   | { t: "error"; error: string };
 
 export type SearchState = {
@@ -21,18 +21,19 @@ export type SearchState = {
   /** 처리가 다 끝났다. 화면은 이때 한 번만 결과를 보여 준다 — 먼저 보여 줬다가 순서를 바꾸면
    *  사용자는 다듬기 같은 내부 사정을 신경 써야 한다(2026-09-26 사용자 지적). */
   done: boolean;
-  /** 1위 관련도 점수와 "못 찾음" 기준값. 판단 이유를 보여 줄 때 쓴다 */
+  /** 1위 관련도 점수와, 판단을 누가 했는지(점수·AI·AI 실패 시 점수)와 AI 가 말한 이유 */
   top: number | null;
-  cut: number | null;
+  by: "score" | "ai" | "fallback" | null;
+  why: string | null;
 };
 
-export const EMPTY: SearchState = { hits: null, refining: false, weak: false, failed: "", done: false, top: null, cut: null };
+export const EMPTY: SearchState = { hits: null, refining: false, weak: false, failed: "", done: false, top: null, by: null, why: null };
 
 export function step(s: SearchState, m: Line): SearchState {
   switch (m.t) {
     case "hits": return { ...s, hits: m.hits, refining: m.hits.length > 0 };
     case "reranked": return { ...s, hits: m.hits };
-    case "done": return { ...s, refining: false, weak: m.weak === true, done: true, top: m.top ?? null, cut: m.cut ?? null };
+    case "done": return { ...s, refining: false, weak: m.weak === true, done: true, top: m.top ?? null, by: m.by ?? null, why: m.why ?? null };
     case "error": return { ...s, failed: m.error, hits: s.hits ?? [], refining: false, done: true };
   }
 }

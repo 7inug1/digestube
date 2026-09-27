@@ -5,10 +5,10 @@ import {test,expect,type Page} from '@playwright/test';
 const VID='byVgbqzYJrs';
 const hit={video_id:VID,seq:9,t:445,text:'결과로 보여 줄 문단입니다.',score:0.6,title:'',channel:'',duration:640};
 
-async function answer(page:Page,weak:boolean|null,top:number|null=null){
+async function answer(page:Page,weak:boolean|null,top:number|null=null,by:string|null=null,why:string|null=null){
   let asked='';
   await page.route(/\/api\/search/,route=>{asked=route.request().url();return route.fulfill({status:200,contentType:'application/x-ndjson',
-    body:JSON.stringify({t:'hits',hits:[hit]})+'\n'+JSON.stringify({t:'done',reranked:false,weak,top,cut:-4})+'\n'});});
+    body:JSON.stringify({t:'hits',hits:[hit]})+'\n'+JSON.stringify({t:'done',reranked:false,weak,top,by,why})+'\n'});});
   await page.route(/\/api\/rerank\/warm/,route=>route.fulfill({status:204,body:''}));
   return ()=>asked;
 }
@@ -31,7 +31,7 @@ test('searching inside a video stays on the page, scopes to that video, and jump
 });
 
 test('a weak match says nothing was found first and folds the nearest paragraphs',async({page})=>{
-  await answer(page,true,-7.83);
+  await answer(page,true,-5.2,'ai','비트코인 이야기는 문단에 없음');
   await page.goto(`/videos/${VID}`);
   await page.getByLabel('이 영상에서 찾기').fill('비트코인 전망');
   await page.getByLabel('이 영상에서 찾기').press('Enter');
@@ -40,9 +40,9 @@ test('a weak match says nothing was found first and folds the nearest paragraphs
   await expect(results).toHaveCount(0);
   await page.getByRole('button',{name:'그래도 가까운 대목 보기'}).click();
   await expect(results.getByRole('button')).toHaveCount(1);
-  // 펼치면 왜 못 찾았다고 했는지 점수와 기준을 같이 보여 준다
-  await expect(page.getByText('관련도 점수 -7.8')).toBeVisible();
-  await expect(page.getByText('기준 -4')).toBeVisible();
+  // 펼치면 왜 못 찾았다고 했는지 — 누가(AI) 어떤 이유로 판단했는지 보여 준다
+  await expect(page.getByText('AI가 문단을 읽고 판단')).toBeVisible();
+  await expect(page.getByText('비트코인 이야기는 문단에 없음')).toBeVisible();
 });
 
 test('while waiting it says what it is doing',async({page})=>{
