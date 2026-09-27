@@ -10,6 +10,7 @@
  */
 import {writeFileSync, mkdirSync, readFileSync} from 'node:fs';
 import {audioPart} from '../src/lib/audio';
+import {thinkingConfig} from '../src/lib/thinking';
 import {db} from '../src/lib/supabase';
 
 const API = 'https://generativelanguage.googleapis.com/v1beta';
@@ -127,6 +128,7 @@ async function main() {
   if (!vid) throw new Error('영상 id 를 인자로 준다');
   const useScreen = process.argv.includes('--screen');
   const audioPath = process.argv.find(a => a.startsWith('--audio='))?.slice('--audio='.length);
+  const thinking = process.argv.find(a => a.startsWith('--thinking='))?.slice('--thinking='.length);
   const model = process.argv.filter(a => !a.startsWith('--'))[3] ?? 'gemini-3.5-flash';
   const url = `https://www.youtube.com/watch?v=${vid}`;
 
@@ -142,7 +144,7 @@ async function main() {
     headers: {'content-type': 'application/json'},
     body: JSON.stringify({
       contents: [{parts: [{text: useScreen ? PROMPT_SCREEN : PROMPT}, audioPath ? audioPart(audioPath, readFileSync(audioPath)) : {fileData: {fileUri: url}}]}],
-      generationConfig: {responseMimeType: 'application/json', maxOutputTokens: 65536, temperature: 0},
+      generationConfig: {responseMimeType: 'application/json', maxOutputTokens: 65536, temperature: 0, ...thinkingConfig(thinking)},
     }),
     signal: AbortSignal.timeout(900000),
   });
@@ -191,6 +193,7 @@ async function main() {
     measured_at: new Date(started).toISOString(),
     video_id: vid, model, url, prompt: useScreen ? 'speech+screen' : 'speech',
     input: audioPath ? 'audio-file' : 'youtube-url',
+    thinking: thinking ?? 'default(medium)',
     screen: {items: screen.length, chars: screen.map(s => s.text).join(' ').length},
     elapsed_ms, elapsed_sec: +(elapsed_ms / 1000).toFixed(1),
     finish_reason: d.candidates?.[0]?.finishReason ?? null,
