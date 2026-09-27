@@ -116,7 +116,7 @@ async function main() {
     console.log(`${model}: 완료`);
   }
 
-  const folder = join(dirname(sourcePath), "embedding-comparison-2026-09-12");
+  const folder = join(dirname(sourcePath), `embedding-comparison-${new Date().toISOString().slice(0, 10)}`);
   await mkdir(folder, { recursive: true });
   await writeFile(join(folder, "results.json"), JSON.stringify(output, null, 2) + "\n");
   const rows = output.models as {model:string;answer_hit_at_3:number;answer_questions:number;answer_top_1:number;reciprocal_rank_sum:number;records:{id:string;correct_rank:number|null}[]}[];
