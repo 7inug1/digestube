@@ -6,8 +6,10 @@
  *  사용법:
  *    node --env-file=.env.local --import tsx scripts/eval-gemini-transcript.ts <videoId> [model]
  *    node --env-file=.env.local --import tsx scripts/eval-gemini-transcript.ts --models
+ *    ... <videoId> [model] --audio=<내려받은 음성 파일>   (로컬 전용: 화면 없이 음성만 넘긴다, notes/34)
  */
-import {writeFileSync, mkdirSync} from 'node:fs';
+import {writeFileSync, mkdirSync, readFileSync} from 'node:fs';
+import {audioPart} from '../src/lib/audio';
 import {db} from '../src/lib/supabase';
 
 const API = 'https://generativelanguage.googleapis.com/v1beta';
@@ -124,6 +126,7 @@ async function main() {
   const vid = process.argv[2];
   if (!vid) throw new Error('영상 id 를 인자로 준다');
   const useScreen = process.argv.includes('--screen');
+  const audioPath = process.argv.find(a => a.startsWith('--audio='))?.slice('--audio='.length);
   const model = process.argv.filter(a => !a.startsWith('--'))[3] ?? 'gemini-3.5-flash';
   const url = `https://www.youtube.com/watch?v=${vid}`;
 
@@ -138,7 +141,7 @@ async function main() {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify({
-      contents: [{parts: [{text: useScreen ? PROMPT_SCREEN : PROMPT}, {fileData: {fileUri: url}}]}],
+      contents: [{parts: [{text: useScreen ? PROMPT_SCREEN : PROMPT}, audioPath ? audioPart(audioPath, readFileSync(audioPath)) : {fileData: {fileUri: url}}]}],
       generationConfig: {responseMimeType: 'application/json', maxOutputTokens: 65536, temperature: 0},
     }),
     signal: AbortSignal.timeout(900000),
@@ -187,6 +190,7 @@ async function main() {
   const out = {
     measured_at: new Date(started).toISOString(),
     video_id: vid, model, url, prompt: useScreen ? 'speech+screen' : 'speech',
+    input: audioPath ? 'audio-file' : 'youtube-url',
     screen: {items: screen.length, chars: screen.map(s => s.text).join(' ').length},
     elapsed_ms, elapsed_sec: +(elapsed_ms / 1000).toFixed(1),
     finish_reason: d.candidates?.[0]?.finishReason ?? null,
