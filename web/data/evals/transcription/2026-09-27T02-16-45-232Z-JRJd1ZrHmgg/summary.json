@@ -1,0 +1,80 @@
+{
+  "measured_at": "2026-09-27T02:16:45.232Z",
+  "video_id": "JRJd1ZrHmgg",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=JRJd1ZrHmgg",
+  "prompt": "speech",
+  "input": "audio-file",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 23525,
+  "elapsed_sec": 23.5,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 11401,
+    "candidatesTokenCount": 3348,
+    "totalTokenCount": 17994,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      },
+      {
+        "modality": "AUDIO",
+        "tokenCount": 11275
+      }
+    ],
+    "thoughtsTokenCount": 3245,
+    "serviceTier": "standard"
+  },
+  "segments": 73,
+  "chars": {
+    "gemini": 3695,
+    "native": 3689
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 107,
+    "native_sentence_marks": 120
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": []
+  },
+  "word_overlap": {
+    "gemini_words": 918,
+    "native_words": 893,
+    "shared": 844,
+    "only_in_gemini": 74,
+    "only_in_native": 49
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 73,
+    "matched": 69,
+    "coverage": 0.95,
+    "median_gap_sec": 0.4,
+    "p90_gap_sec": 1.6
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 436,
+    "native_last_end_sec": 440,
+    "tail_gap_sec": 4
+  }
+}

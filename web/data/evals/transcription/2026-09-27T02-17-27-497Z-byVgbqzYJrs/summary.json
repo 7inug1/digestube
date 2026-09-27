@@ -1,0 +1,83 @@
+{
+  "measured_at": "2026-09-27T02:17:27.497Z",
+  "video_id": "byVgbqzYJrs",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=byVgbqzYJrs",
+  "prompt": "speech",
+  "input": "audio-file",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 61338,
+  "elapsed_sec": 61.3,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 16561,
+    "candidatesTokenCount": 13456,
+    "totalTokenCount": 37969,
+    "promptTokensDetails": [
+      {
+        "modality": "AUDIO",
+        "tokenCount": 16435
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 126
+      }
+    ],
+    "thoughtsTokenCount": 7952,
+    "serviceTier": "standard"
+  },
+  "segments": 294,
+  "chars": {
+    "gemini": 5327,
+    "native": 4843
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 331,
+    "native_sentence_marks": 217
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": [
+      "(主)",
+      "(主)"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 1409,
+    "native_words": 1264,
+    "shared": 1202,
+    "only_in_gemini": 207,
+    "only_in_native": 62
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": false,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": false,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 294,
+    "matched": 103,
+    "coverage": 0.35,
+    "median_gap_sec": 1.2,
+    "p90_gap_sec": 3.7
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 640,
+    "native_last_end_sec": 641,
+    "tail_gap_sec": 1
+  }
+}
