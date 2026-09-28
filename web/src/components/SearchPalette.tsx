@@ -132,8 +132,16 @@ export default function SearchPalette({ signedIn }: { signedIn: boolean }) {
                      aria-activedescendant={current >= 0 ? `palette-opt-${current}` : undefined}
                      placeholder="라이브러리에서 뜻으로 찾아요 — 영상에 없는 표현도 괜찮아요"
                      className="h-9 min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-mfg" />
-              <button type="button" onClick={() => close()} className="shrink-0 rounded-md px-2 py-1 text-[12px] text-mfg hover:bg-muted">
-                닫기
+              {/* Enter 를 치기 어려운 환경(일부 휴대폰 키보드·마우스만 쓰는 경우)을 위해 버튼으로도 찾는다 */}
+              <button type="button" onClick={submit} disabled={!input.trim()}
+                      className="h-8 shrink-0 rounded-lg bg-fg px-3.5 text-[13px] font-semibold text-bg disabled:cursor-default disabled:opacity-35">
+                찾기
+              </button>
+              <button type="button" onClick={() => close()} aria-label="검색 창 닫기" title="닫기 (Esc)"
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-mfg hover:bg-muted hover:text-fg">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden>
+                  <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
               </button>
             </div>
 

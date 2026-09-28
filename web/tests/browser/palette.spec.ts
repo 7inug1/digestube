@@ -61,3 +61,15 @@ test('on a phone the search sheet covers the whole screen, not just the header',
   const box=await page.getByRole('dialog',{name:'라이브러리 검색'}).boundingBox();
   expect(box!.height).toBeGreaterThan(800);
 });
+
+test('a search button runs the search without Enter, and an x closes',async({page})=>{
+  await mock(page);
+  await page.goto('/videos');
+  await page.getByRole('button',{name:/검색/}).first().click();
+  const dialog=page.getByRole('dialog',{name:'라이브러리 검색'});
+  await dialog.getByRole('combobox').fill('싫은 사람 대하는 법');
+  await dialog.getByRole('button',{name:'찾기'}).click();
+  await expect(dialog.getByRole('option').first()).toBeVisible();
+  await dialog.getByRole('button',{name:'검색 창 닫기'}).click();
+  await expect(dialog).toHaveCount(0);
+});
