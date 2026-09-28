@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { JUMP_EVENT, seqFromHash } from "@/lib/palette";
 import YouTube, { type Controls } from "./YouTube";
 import VideoSearch from "./VideoSearch";
 
@@ -181,6 +182,31 @@ export default function Reader({ vid, chunks, outline, meta }: {
 
 
 
+
+  /* 검색 창·검색 결과·각주에서 #ck번호 로 들어오면 그 문단으로 가서 두 번 반짝인다.
+     눈이 도착한 자리를 찾느라 헤매지 않게 한다. 같은 영상 안이면 검색 창이 이벤트로 알려 준다. */
+  const [flashSeq, setFlashSeq] = useState<number | null>(null);
+  useEffect(() => {
+    const land = (seq: number | null) => {
+      const c = seq === null ? undefined : chunks.find(x => x.seq === seq);
+      if (!c) return;
+      jump(c.t, c.seq);
+      setFlashSeq(null);
+      requestAnimationFrame(() => setFlashSeq(c.seq));
+    };
+    land(seqFromHash(window.location.hash));
+    const onHash = () => land(seqFromHash(window.location.hash));
+    const onJump = (e: Event) => land((e as CustomEvent<{ seq: number }>).detail.seq);
+    window.addEventListener("hashchange", onHash);
+    window.addEventListener(JUMP_EVENT, onJump);
+    return () => { window.removeEventListener("hashchange", onHash); window.removeEventListener(JUMP_EVENT, onJump); };
+    // 처음 한 번 붙인다. jump 는 매 렌더 새로 만들어지지만 상태 setter 만 쓰므로 안전하다
+  }, [chunks]);
+  useEffect(() => {
+    if (flashSeq === null) return;
+    const id = setTimeout(() => setFlashSeq(null), 2000);
+    return () => clearTimeout(id);
+  }, [flashSeq]);
 
   function jump(t: number, seq?: number) {
     setSeek(t);
@@ -478,7 +504,7 @@ export default function Reader({ vid, chunks, outline, meta }: {
           const on = selectedSeq === c.seq;
           const head = heads.get(c.seq);
           return (
-            <section key={c.seq} id={`ck${c.seq}`}
+            <section key={c.seq} id={`ck${c.seq}`} data-flash={flashSeq === c.seq ? "on" : undefined}
                      className={`scroll-mt-24 border-b border-line last:border-0 ${
                        head ? "pb-5 pt-12 first:pt-5" : "py-5"}`}>
               {/* 제목은 본문(17px)보다 커야 제목으로 읽힌다. 전에는 15.5px 이라

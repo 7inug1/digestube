@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Found, { type FoundHit } from "./Found";
-import { mine } from "@/lib/mine";
-import { saySorry } from "@/lib/errors";
 import { Bar } from "./Skeleton";
-import { EMPTY, splitLines, stageOf, STAGE_TEXT, step, type Line, type SearchState } from "@/lib/search-stream";
+import { stageOf, STAGE_TEXT } from "@/lib/search-stream";
+import { useSearchStream } from "@/lib/use-search";
 import { WeakReason } from "./VideoSearch";
 import AnswerCard from "./AnswerCard";
 import { warmReranker } from "@/lib/warm";
@@ -17,45 +16,11 @@ import { warmReranker } from "@/lib/warm";
 export default function SearchResults({ q, vid, signedIn }: { q: string; vid?: string; signedIn: boolean }) {
   // 처리가 다 끝난 뒤 최종 결과만 보여 준다. 먼저 보여 줬다가 다듬은 순서로 바꾸지 않는다 —
   // 다듬기는 사용자가 신경 쓸 일이 아니다(2026-09-26). 기다림은 최대 리랭커 제한 5초만큼 는다.
-  const [s, setS] = useState<SearchState>(EMPTY);
+  const s = useSearchStream(q, { vid, signedIn });
   const [peek, setPeek] = useState(false);
 
   // 검색 화면을 열면 리랭커를 깨워 둔다. 잠든 채 첫 검색이 오면 판단을 건너뛴다.
   useEffect(() => { warmReranker(); }, []);
-
-  // q 가 바뀌면 key 로 이 컴포넌트를 새로 만든다 — 효과 안에서 상태를 되돌리지 않아도 된다.
-  useEffect(() => {
-    if (!q) return;
-    const ctrl = new AbortController();
-    const p = new URLSearchParams({ q, stream: "1" });
-    if (vid) p.set("vid", vid);
-    if (!signedIn && !vid) p.set("ids", mine().join(","));
-
-    (async () => {
-      const r = await fetch(`/api/search?${p}`, { signal: ctrl.signal });
-      // 오류 응답은 한 번에 오는 JSON 이다
-      if (!r.ok || !r.body || !(r.headers.get("content-type") ?? "").includes("ndjson")) {
-        const d = await r.json();
-        setS(x => ({ ...x, hits: d.hits ?? [], failed: d.error ?? "", done: true }));
-        return;
-      }
-      const reader = r.body.getReader();
-      const dec = new TextDecoder();
-      let buf = "";
-      for (;;) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        const { lines, rest } = splitLines(buf + dec.decode(value, { stream: true }));
-        buf = rest;
-        for (const line of lines) setS(x => step(x, JSON.parse(line) as Line));
-      }
-      setS(x => ({ ...x, refining: false, done: true }));
-    })().catch(e => {
-      if (ctrl.signal.aborted) return;
-      setS(x => step(x, { t: "error", error: saySorry(e, "search") }));
-    });
-    return () => ctrl.abort();
-  }, [q, vid, signedIn]);
 
   const { hits, failed, weak } = s;
 

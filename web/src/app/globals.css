@@ -113,3 +113,13 @@ body {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: none; }
 }
+
+/* 검색에서 들어온 문단을 두 번 반짝인다(Reader data-flash). 움직임을 줄인 사람에게는 잠깐 칠해 두기만 한다. */
+[data-flash="on"] { border-radius: 10px; background: color-mix(in srgb, var(--color-keep, #fde68a) 45%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  [data-flash="on"] { background: transparent; animation: para-flash 0.9s ease-in-out 2; }
+}
+@keyframes para-flash {
+  0%, 100% { background: transparent; box-shadow: none; }
+  40% { background: color-mix(in srgb, var(--color-keep, #fde68a) 55%, transparent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-keep, #fde68a) 55%, transparent); }
+}

@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthNav from "@/components/AuthNav";
 import AnonNotice from "@/components/AnonNotice";
 import MergeMine from "@/components/MergeMine";
+import SearchPalette from "@/components/SearchPalette";
 import { currentUser } from "@/lib/auth/server";
 
 export const metadata: Metadata = {
@@ -37,9 +38,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Link href="/videos" className="text-[14px] font-semibold text-fg/65 transition-colors hover:text-fg">
                 라이브러리
               </Link>
-              <Link href="/search" className="text-[14px] font-semibold text-fg/65 transition-colors hover:text-fg">
-                검색
-              </Link>
+              {/* 검색은 페이지 이동 없이 지금 페이지 위 창으로 연다(⌘K). 검색 화면(/search)은 공유 링크용으로 남긴다 */}
+              <SearchPalette signedIn={Boolean(user)} />
               <AuthNav />
             </div>
           </div>
