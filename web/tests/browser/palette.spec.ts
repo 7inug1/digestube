@@ -73,3 +73,46 @@ test('a search button runs the search without Enter, and an x closes',async({pag
   await dialog.getByRole('button',{name:'검색 창 닫기'}).click();
   await expect(dialog).toHaveCount(0);
 });
+
+// 입력하는 동안 글자가 맞는 대목을 바로 보여 준다 — Enter 전, 서버 검색 없이(2026-09-28)
+test('while typing, paragraphs containing the words show up with the words marked',async({page})=>{
+  await mock(page);
+  let searched=0;
+  page.on('request',r=>{ if(/\/api\/search/.test(r.url())) searched++; });
+  await page.route(/\/api\/library\/text/,r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({videos:[
+    {video_id:VID,title:'인간관계에서 스트레스 받지 않는 사람의 특징',chunks:[{seq:0,t:0,text:'오늘 이야기는 관계입니다.'},{seq:2,t:88,text:'곁에서 지켜보며 측은하게 여긴다.'}]},
+  ]})}));
+  await page.goto('/videos');
+  await page.getByRole('button',{name:/검색/}).first().click();
+  const dialog=page.getByRole('dialog',{name:'라이브러리 검색'});
+  await dialog.getByRole('combobox').pressSequentially('측은하게 여기는 사람은');
+  const preview=dialog.getByRole('listbox',{name:/글자가 맞는 대목/});
+  await expect(preview).toBeVisible();
+  await expect(dialog).toContainText('1편 1곳');
+  await expect(preview.locator('mark')).toHaveText(['측은하게']);
+  expect(searched).toBe(0);
+  await preview.getByRole('option').first().click();
+  await page.waitForURL(new RegExp(`/videos/${VID}#ck2`));
+  await expect(page.locator('#ck2')).toHaveAttribute('data-flash','on');
+});
+
+test('arrow keys pick a preview line and Enter jumps there; with nothing picked Enter searches by meaning',async({page})=>{
+  await mock(page);
+  await page.route(/\/api\/library\/text/,r=>r.fulfill({status:200,contentType:'application/json',body:JSON.stringify({videos:[
+    {video_id:VID,title:'인간관계',chunks:[{seq:2,t:88,text:'곁에서 지켜보며 측은하게 여긴다.'}]},
+  ]})}));
+  await page.goto('/videos');
+  await page.getByRole('button',{name:/검색/}).first().click();
+  const dialog=page.getByRole('dialog',{name:'라이브러리 검색'});
+  const box=dialog.getByRole('combobox');
+  await box.pressSequentially('측은하게');
+  await expect(dialog.getByRole('listbox',{name:/글자가 맞는 대목/})).toBeVisible();
+  await box.press('Enter');
+  await expect(dialog.getByRole('region',{name:'AI 답'})).toBeVisible();
+  await expect(dialog.getByRole('listbox',{name:/글자가 맞는 대목/})).toHaveCount(0);
+  await box.fill('');
+  await box.pressSequentially('지켜보며');
+  await box.press('ArrowDown');
+  await box.press('Enter');
+  await page.waitForURL(new RegExp(`/videos/${VID}#ck2`));
+});
