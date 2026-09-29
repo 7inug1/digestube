@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="28" viewBox="0 0 560 28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="13">
+  <title>범례: AI가 처리, 저장소, 사용자가 입력하거나 보는 곳, 눌러서 이동</title>
+  <rect x="1" y="7" width="22" height="14" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5"/>
+  <text x="31" y="18.5" fill="#8B949E">AI가 처리</text>
+  <g fill="#FFFFFF" stroke="#64748B" stroke-width="1.2">
+    <path d="M112 9 v10 a9 3 0 0 0 18 0 v-10"/>
+    <ellipse cx="121" cy="9" rx="9" ry="3"/>
+  </g>
+  <text x="138" y="18.5" fill="#8B949E">저장소</text>
+  <rect x="198" y="7" width="26" height="14" rx="7" fill="#FFFFFF" stroke="#64748B" stroke-width="1.2"/>
+  <text x="232" y="18.5" fill="#8B949E">사용자가 입력하거나 보는 곳</text>
+  <line x1="418" y1="14" x2="446" y2="14" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <path d="M446 10 L453 14 L446 18 Z" fill="#94A3B8"/>
+  <text x="461" y="18.5" fill="#8B949E">눌러서 이동</text>
+</svg>
