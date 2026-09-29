@@ -81,3 +81,7 @@ test("IP 는 느슨한 뒷문이다 — 개인 몫의 세 배", async () => {
 test("하루 몫은 90분이다", () => {
   assert.equal(ANON_DAY_SECONDS, 90 * 60);
 });
+
+test("한 번에 받아쓰는 구간은 5분 이하 — 길게 받아쓰면 재생 시각이 뒤로 갈수록 밀린다(notes/38)", () => {
+  assert.ok(SLICE_SECONDS <= 5 * 60);
+});
