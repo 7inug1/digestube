@@ -1,0 +1,96 @@
+{
+  "measured_at": "2026-09-29T04:03:27.479Z",
+  "video_id": "JRJd1ZrHmgg",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=JRJd1ZrHmgg",
+  "prompt": "production",
+  "baseline": "saved-native",
+  "input": "youtube-url",
+  "thinking": "default(medium)",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 22305,
+  "elapsed_sec": 22.3,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 41193,
+    "candidatesTokenCount": 4424,
+    "totalTokenCount": 48796,
+    "cachedContentTokenCount": 38978,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 41044
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 149
+      }
+    ],
+    "cacheTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 140
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 38838
+      }
+    ],
+    "thoughtsTokenCount": 3179,
+    "serviceTier": "standard"
+  },
+  "segments": 68,
+  "chars": {
+    "gemini": 3685,
+    "native": 3664
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 102,
+    "native_sentence_marks": 114
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": [
+      "[음악]",
+      "[음악]"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 882,
+    "native_words": 915,
+    "shared": 760,
+    "only_in_gemini": 122,
+    "only_in_native": 155
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 68,
+    "matched": 51,
+    "coverage": 0.75,
+    "median_gap_sec": 0.9,
+    "p90_gap_sec": 1.9
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 436,
+    "native_last_end_sec": 447,
+    "tail_gap_sec": 10.7
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "measured_at": "2026-09-29T03:59:17.043Z",
+  "video_id": "NtHSSWC04Do",
+  "model": "gemini-3.5-flash",
+  "url": "https://www.youtube.com/watch?v=NtHSSWC04Do",
+  "prompt": "production",
+  "baseline": "saved-native",
+  "input": "youtube-url",
+  "thinking": "default(medium)",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 17651,
+  "elapsed_sec": 17.7,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 18620,
+    "candidatesTokenCount": 1691,
+    "totalTokenCount": 23727,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 149
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 18471
+      }
+    ],
+    "thoughtsTokenCount": 3416,
+    "serviceTier": "standard"
+  },
+  "segments": 34,
+  "chars": {
+    "gemini": 846,
+    "native": 1029
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 38,
+    "native_sentence_marks": 9
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": [
+      "[드라마 '스물다섯 스물하나' 중]",
+      "[당신이 이루고 싶은 소원은 무엇인가요?]",
+      "[수능을 앞둔 소감은?]",
+      "[(촬영에 협조해 주신 양곡고등학교에 감사드립니다)",
+      "[학생들에게 조금이나마 힘이 되고자]"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 212,
+    "native_words": 255,
+    "shared": 204,
+    "only_in_gemini": 8,
+    "only_in_native": 51
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": false,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": false,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 34,
+    "matched": 29,
+    "coverage": 0.85,
+    "median_gap_sec": 0.8,
+    "p90_gap_sec": 1.3
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 162,
+    "native_last_end_sec": 201,
+    "tail_gap_sec": 39.1
+  }
+}

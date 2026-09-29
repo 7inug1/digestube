@@ -1,0 +1,93 @@
+{
+  "measured_at": "2026-09-29T04:02:59.165Z",
+  "video_id": "8cp0YvSpDA8",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=8cp0YvSpDA8",
+  "prompt": "production",
+  "baseline": "saved-native",
+  "input": "youtube-url",
+  "thinking": "default(medium)",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 28067,
+  "elapsed_sec": 28.1,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 37003,
+    "candidatesTokenCount": 5215,
+    "totalTokenCount": 45537,
+    "cachedContentTokenCount": 31890,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 149
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 36854
+      }
+    ],
+    "cacheTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 128
+      },
+      {
+        "modality": "VIDEO",
+        "tokenCount": 31762
+      }
+    ],
+    "thoughtsTokenCount": 3319,
+    "serviceTier": "standard"
+  },
+  "segments": 88,
+  "chars": {
+    "gemini": 3765,
+    "native": 3633
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 138,
+    "native_sentence_marks": 134
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": []
+  },
+  "word_overlap": {
+    "gemini_words": 1005,
+    "native_words": 978,
+    "shared": 843,
+    "only_in_gemini": 162,
+    "only_in_native": 135
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 88,
+    "matched": 57,
+    "coverage": 0.65,
+    "median_gap_sec": 1,
+    "p90_gap_sec": 2.2
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 405,
+    "native_last_end_sec": 407,
+    "tail_gap_sec": 1.9
+  }
+}
