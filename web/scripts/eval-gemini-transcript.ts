@@ -7,11 +7,14 @@
  *    node --env-file=.env.local --import tsx scripts/eval-gemini-transcript.ts <videoId> [model]
  *    node --env-file=.env.local --import tsx scripts/eval-gemini-transcript.ts --models
  *    ... <videoId> [model] --audio=<내려받은 음성 파일>   (로컬 전용: 화면 없이 음성만 넘긴다, notes/34)
+ *    ... <videoId> [model] --prod-prompt --baseline=<원본 자막 json>   (운영 지시문으로, 저장해 둔 원본 자막과 대조)
  */
 import {writeFileSync, mkdirSync, readFileSync} from 'node:fs';
 import {audioPart} from '../src/lib/audio';
 import {thinkingConfig} from '../src/lib/thinking';
 import {db} from '../src/lib/supabase';
+import {PROMPT as PROD_PROMPT} from '../src/lib/gemini';
+import {piecesToChunks} from '../src/lib/baseline';
 
 const API = 'https://generativelanguage.googleapis.com/v1beta';
 
@@ -133,7 +136,11 @@ async function main() {
   const url = `https://www.youtube.com/watch?v=${vid}`;
 
   // 기존 전사문(운영 DB, 읽기 전용)
-  const got = await db().from('chunk').select('seq,t,t_end,text').eq('video_id', vid).order('seq');
+  // --baseline: 운영 DB 문단은 이제 Gemini 전사라, 원본 자막과 대조하려면 저장해 둔 조각을 쓴다
+  const baselinePath = process.argv.find(a => a.startsWith('--baseline='))?.slice('--baseline='.length);
+  const got = baselinePath
+    ? {data: piecesToChunks(JSON.parse(readFileSync(baselinePath, 'utf8'))), error: null}
+    : await db().from('chunk').select('seq,t,t_end,text').eq('video_id', vid).order('seq');
   if (got.error) throw got.error;
   const native = (got.data ?? []).map(c => c.text).join(' ').replace(/\s+/gu, ' ').trim();
   if (!native) throw new Error(`${vid} 의 기존 문단이 DB 에 없다`);
@@ -143,7 +150,7 @@ async function main() {
     method: 'POST',
     headers: {'content-type': 'application/json'},
     body: JSON.stringify({
-      contents: [{parts: [{text: useScreen ? PROMPT_SCREEN : PROMPT}, audioPath ? audioPart(audioPath, readFileSync(audioPath)) : {fileData: {fileUri: url}}]}],
+      contents: [{parts: [{text: useScreen ? PROMPT_SCREEN : process.argv.includes('--prod-prompt') ? PROD_PROMPT : PROMPT}, audioPath ? audioPart(audioPath, readFileSync(audioPath)) : {fileData: {fileUri: url}}]}],
       generationConfig: {responseMimeType: 'application/json', maxOutputTokens: 65536, temperature: 0, ...thinkingConfig(thinking)},
     }),
     signal: AbortSignal.timeout(900000),
@@ -191,7 +198,7 @@ async function main() {
 
   const out = {
     measured_at: new Date(started).toISOString(),
-    video_id: vid, model, url, prompt: useScreen ? 'speech+screen' : 'speech',
+    video_id: vid, model, url, prompt: useScreen ? 'speech+screen' : process.argv.includes('--prod-prompt') ? 'production' : 'speech', baseline: baselinePath ? 'saved-native' : 'db-chunks',
     input: audioPath ? 'audio-file' : 'youtube-url',
     thinking: thinking ?? 'default(medium)',
     screen: {items: screen.length, chars: screen.map(s => s.text).join(' ').length},
@@ -229,7 +236,7 @@ async function main() {
   const dir = `data/evals/transcription/${new Date(started).toISOString().replace(/[:.]/g, '-')}-${vid}`;
   mkdirSync(dir, {recursive: true});
   writeFileSync(`${dir}/summary.json`, JSON.stringify(out, null, 2));
-  writeFileSync(`${dir}/gemini.json`, JSON.stringify({prompt: useScreen ? PROMPT_SCREEN : PROMPT, prompt_kind: useScreen ? 'speech+screen' : 'speech', model, segments, screen, raw}, null, 2));
+  writeFileSync(`${dir}/gemini.json`, JSON.stringify({prompt: useScreen ? PROMPT_SCREEN : process.argv.includes('--prod-prompt') ? PROD_PROMPT : PROMPT, prompt_kind: useScreen ? 'speech+screen' : 'speech', model, segments, screen, raw}, null, 2));
   writeFileSync(`${dir}/native.txt`, native);
   writeFileSync(`${dir}/gemini.txt`, text);
 

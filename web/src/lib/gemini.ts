@@ -16,7 +16,8 @@ const API = "https://generativelanguage.googleapis.com/v1beta";
  *  3.8 은 아직 2편만 확인했다. 나머지는 채우는 중이다. */
 export const MODEL = process.env.GEMINI_TRANSCRIBE_MODEL ?? "gemini-3.8-flash";
 
-const PROMPT = `이 영상의 음성을 그대로 받아쓴다.
+/** 운영 전사 지시문. 점검 스크립트도 같은 글을 쓰도록 내보낸다. */
+export const PROMPT = `이 영상의 음성을 그대로 받아쓴다.
 
 규칙
 - 들리는 말을 빠짐없이 옮긴다. 요약하거나 생략하지 않는다.

@@ -1,0 +1,87 @@
+{
+  "measured_at": "2026-09-29T04:03:50.029Z",
+  "video_id": "55eFm5tPCQY",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=55eFm5tPCQY",
+  "prompt": "production",
+  "baseline": "saved-native",
+  "input": "youtube-url",
+  "thinking": "default(medium)",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 15929,
+  "elapsed_sec": 15.9,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 45827,
+    "candidatesTokenCount": 4901,
+    "totalTokenCount": 50728,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 45678
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 149
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "segments": 76,
+  "chars": {
+    "gemini": 4602,
+    "native": 4492
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 83,
+    "native_sentence_marks": 74
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": [
+      "[음악]",
+      "[음악]",
+      "[음악]",
+      "[음악]",
+      "[음악]"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 1098,
+    "native_words": 1077,
+    "shared": 980,
+    "only_in_gemini": 118,
+    "only_in_native": 97
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": true,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": true,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 76,
+    "matched": 55,
+    "coverage": 0.72,
+    "median_gap_sec": 1.1,
+    "p90_gap_sec": 2
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 489,
+    "native_last_end_sec": 493,
+    "tail_gap_sec": 3.6
+  }
+}

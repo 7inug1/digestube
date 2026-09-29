@@ -1,0 +1,83 @@
+{
+  "measured_at": "2026-09-29T03:56:08.314Z",
+  "video_id": "PlawByYfV8k",
+  "model": "gemini-3.8-flash",
+  "url": "https://www.youtube.com/watch?v=PlawByYfV8k",
+  "prompt": "production",
+  "baseline": "saved-native",
+  "input": "youtube-url",
+  "thinking": "default(medium)",
+  "screen": {
+    "items": 0,
+    "chars": 0
+  },
+  "elapsed_ms": 12663,
+  "elapsed_sec": 12.7,
+  "finish_reason": "STOP",
+  "usage": {
+    "promptTokenCount": 38094,
+    "candidatesTokenCount": 2584,
+    "totalTokenCount": 40678,
+    "promptTokensDetails": [
+      {
+        "modality": "VIDEO",
+        "tokenCount": 37945
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 149
+      }
+    ],
+    "serviceTier": "standard"
+  },
+  "segments": 54,
+  "chars": {
+    "gemini": 2940,
+    "native": 2865
+  },
+  "punctuation": {
+    "gemini_sentence_marks": 87,
+    "native_sentence_marks": 0
+  },
+  "bracketed": {
+    "gemini": [],
+    "native": [
+      "[음악]"
+    ]
+  },
+  "word_overlap": {
+    "gemini_words": 772,
+    "native_words": 833,
+    "shared": 537,
+    "only_in_gemini": 235,
+    "only_in_native": 296
+  },
+  "criteria": {
+    "A_run": true,
+    "B_sentence_marks": true,
+    "C_timestamp_parse": true,
+    "D_alignment": false,
+    "E_not_truncated": true,
+    "F_no_contamination": true,
+    "G_time_under_25pct": true
+  },
+  "criteria_passed": false,
+  "contamination": {
+    "speaker_marks": 0,
+    "bracket_marks": 0
+  },
+  "alignment": {
+    "comparable": 54,
+    "matched": 15,
+    "coverage": 0.28,
+    "median_gap_sec": 0.3,
+    "p90_gap_sec": 3.4
+  },
+  "timestamps": {
+    "unparsable": 0,
+    "out_of_order": 0,
+    "last_end_sec": 410,
+    "native_last_end_sec": 416,
+    "tail_gap_sec": 5.5
+  }
+}
