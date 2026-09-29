@@ -50,9 +50,11 @@ export const IP_DAY_SECONDS = 3 * ANON_DAY_SECONDS;
 export const ALL_DAY_SECONDS = 10 * 60 * 60;
 /** 전체 사용량을 적는 열쇠. 사람이 아니라 서비스 자신이다. */
 const ALL = "all";
-/** 한 번에 받아쓸 구간. 서버 한 번 실행이 300초이고 받아쓰기가 길이의 15% 쯤 걸리니
- *  20분(=180초)이면 모델 준비 시간까지 넣어도 넉넉하다. */
-export const SLICE_SECONDS = 20 * 60;
+/** 한 번에 받아쓸 구간. 서버 한 번 실행(300초) 안에 끝나야 하고, 길게 받아쓰면
+ *  재생 시각이 뒤로 갈수록 밀린다(2026-09-29, notes/38: 10.9분 한 번에 5번 중 3번 밀림,
+ *  5분씩 나누니 9구간 중 1구간). 밀림이 4분쯤부터 쌓여 5분으로 자른다.
+ *  예전 값은 20분이었다. */
+export const SLICE_SECONDS = 5 * 60;
 /** 서버가 심는 브라우저 표시. httpOnly 라 화면 코드가 건드리지 못한다. */
 export const BROWSER_COOKIE = "dt.bid";
 
