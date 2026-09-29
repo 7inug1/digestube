@@ -13,14 +13,16 @@ import { currentUser } from "@/lib/auth/server";
 import { addToLibrary, recordFailure } from "@/lib/store";
 import { describe, type FailureStage } from "@/lib/failure";
 import { ndjson } from "@/lib/ndjson";
-import { withDriftRetry } from "@/lib/drift";
+import { withDriftRetry, GAP_TOLERANCE_SEC } from "@/lib/drift";
 
 /** 다시 받아쓸 시간이 남았나. 첫 시도만큼 한 번 더 걸린다고 보고 20% 여유를 둔다. */
 const timeLeftFor = (until: number) => (firstMs: number) => Date.now() + firstMs * 1.2 < until - SAVE_RESERVE_MS;
 
-/** 밀림이 남았으면 서버 기록에 남긴다. 실패 기록은 성공하면 지워져서 여기에 두지 않는다. */
-function logDrift(vid: string, drift: number | null, retried: boolean, range?: { from: number; to: number }) {
-  if (drift !== null && (retried || drift > 0)) console.warn(`[drift] ${vid} ${range ? `${range.from}-${range.to}s` : "whole"} overshoot=${drift}s retried=${retried}`);
+/** 시각이 어긋났으면(끝 넘침·긴 빈틈) 서버 기록에 남긴다. 실패 기록은 성공하면 지워져서 여기에 두지 않는다. */
+function logDrift(vid: string, c: { drift: number | null; gap: number | null; retried: boolean }, range?: { from: number; to: number }) {
+  if (c.drift === null) return;
+  if (c.retried || c.drift > 0 || (c.gap ?? 0) > GAP_TOLERANCE_SEC)
+    console.warn(`[drift] ${vid} ${range ? `${range.from}-${range.to}s` : "whole"} overshoot=${c.drift}s gap=${c.gap}s retried=${c.retried}`);
 }
 
 // Gemini 전사는 영상 길이의 10~15% 가 걸린다(실측: 10.9분 영상 96초).
@@ -123,7 +125,7 @@ export async function POST(req: Request) {
       try {
         const url = `https://www.youtube.com/watch?v=${vid}`;
         const range = total > SLICE_SECONDS ? { from, to } : undefined;
-        // 마지막 시각이 구간 끝을 넘으면(시각 밀림) 한 번 다시 받아쓴다. 다시 받을 때는 화면에 줄을 또 보내지 않는다.
+        // 시각이 어긋나면(구간 끝 넘침·긴 빈틈·몰린 조각) 한 번 다시 받아쓴다. 다시 받을 때는 화면에 줄을 또 보내지 않는다.
         let tries = 0;
         const checked = await withDriftRetry(
           () => {
@@ -134,7 +136,7 @@ export async function POST(req: Request) {
           range ? range.to : total || undefined,
           timeLeftFor(until),
         );
-        logDrift(vid, checked.drift, checked.retried, range);
+        logDrift(vid, checked, range);
         const { result } = checked.value;
         stage = "spend_quota";
         // Gemini 는 늘 조각 배열을 준다. Result 의 content 는 옛 제공자 때문에 문자열도
@@ -201,7 +203,7 @@ export async function POST(req: Request) {
         video.seconds || undefined,
         timeLeftFor(until),
       );
-      logDrift(vid, checked.drift, checked.retried);
+      logDrift(vid, checked);
       const r = checked.value.result;
       stage = "spend_quota";
       // 전사가 돌아온 뒤에 센다. 그 전에 세면 구글이 503 으로 튕긴 것도 깎인다 —
