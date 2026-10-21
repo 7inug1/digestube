@@ -4,6 +4,10 @@ import { about, countText, meta, whenText } from "@/lib/youtube";
 import { readTime } from "@/lib/format";
 import Reader from "@/components/Reader";
 import Building from "@/components/Building";
+import KeepInBrowser from "@/components/KeepInBrowser";
+import { currentUser } from "@/lib/auth/server";
+import { addToLibrary } from "@/lib/store";
+import { keepOnOpen } from "@/lib/keep";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +39,15 @@ export default async function Video({
                      avatar={a?.avatar ?? null} />;
   }
 
+  // 랜딩에서 넣은 완성된 영상은 여기서 담는다. 변환을 거치지 않으니 담는 곳이 여기뿐이다.
+  const user = convert === "1" ? await currentUser() : null;
+  const keep = keepOnOpen({ convert, ready: true, signedIn: Boolean(user) });
+  // 담기에 실패해도 읽기는 막지 않는다. 다음에 다시 넣으면 그때 담긴다.
+  if (keep === "account" && user) await addToLibrary(user.id, [vid]).catch(e => console.error("addToLibrary failed:", e));
+
   return (
+    <>
+    {keep === "browser" && <KeepInBrowser vid={vid} />}
     <Reader
       vid={vid}
       chunks={v!.chunks}
@@ -52,5 +64,6 @@ export default async function Video({
         tldr: v!.tldr ?? null,
       }}
     />
+    </>
   );
 }
